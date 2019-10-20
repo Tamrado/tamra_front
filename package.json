@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "axios": "^0.19.0",
+    "proxy": "http://localhost:4000",
     "immutable": "^4.0.0-rc.12",
+    "lodash": "^4.17.15",
     "open-color": "^1.7.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
@@ -12,10 +15,13 @@
     "react-scripts": "3.2.0",
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",
-    "styled-components": "^4.4.0"
+    "redux-pender": "^2.0.12",
+    "styled-components": "^4.4.0",
+    "validator": "^11.1.0"
+
   },
   "scripts": {
-    "start": "cross-env NODE_PATH=src react-scripts start",
+    "start": "cross-env NODE_PATH=src PORT=3000 react-scripts start",
     "build": "cross-env NODE_PATH=src react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"

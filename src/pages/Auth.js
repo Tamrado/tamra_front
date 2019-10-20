@@ -11,7 +11,7 @@ class Auth extends Component {
         this.props.BaseActions.setHeaderVisibility(false);
     }
 
-    getSnapshotBeforeUpdate(){
+    componentWillUnmount(){
         this.props.BaseActions.setHeaderVisibility(true);
     }
 
