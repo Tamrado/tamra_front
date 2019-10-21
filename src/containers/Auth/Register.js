@@ -10,6 +10,16 @@ import storage from 'lib/storage';
 
 class Register extends Component{  
 
+    constructor(props) {
+
+        super(props);
+        
+        this.state = {
+        
+        file: null
+        }
+        this.handleFileInput = this.handleFileInput.bind(this);
+    }
     setError = (message) => {
         const{AuthActions} = this.props;
         AuthActions.setError({
@@ -136,13 +146,13 @@ class Register extends Component{
           form: 'register'  
         });
     }
+    
 
     handleFileInput(e){
-          const {image} = e.target;
-          AuthActions.changeInput({
-              image,
-
-          })
+            this.setState({
+            file: e.target.files[0]
+            });
+        
       }
     handleChange = (e) =>{
     const {AuthActions} = this.props;
@@ -161,8 +171,9 @@ handleLocalRegister = async () => {
     const{form, AuthActions, error, history,UserActions} = this.props;
     const {email, id, password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
     const formData = new FormData();
-    formData.append('file', this.state.selectedFile);
-
+    formData.append('file',this.state.file);
+    console.log(this.state.file);
+    formData.append('userId',id);
     const {validate} = this;
 
     if(error) return; //현재 에러 있는 상태라면 진행 x
@@ -179,12 +190,12 @@ handleLocalRegister = async () => {
     }
     
     try{
-        await AuthActions.localRegisterImage({
-            formData
-        });
         await AuthActions.localRegister({
             email,id,password,name,comment,phone,address,gender,birthday
         });
+        await AuthActions.localRegisterImage(
+            formData
+        );
         const loggedInfo = this.props.result.toJS();
         storage.set('loggedInfo', loggedInfo);
         UserActions.setLoggedInfo(loggedInfo);
@@ -201,8 +212,8 @@ handleLocalRegister = async () => {
 }
     render(){
         const {error} = this.props;
-        const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender,image} = this.props.form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange} = this;
+        const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
+        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput} = this;
         return(
             <AuthContent title='회원가입'>
                 <InputWithLabel label = "아이디" name="id" placeholder="아이디"
@@ -236,7 +247,7 @@ handleLocalRegister = async () => {
                 <input name="gender" type="radio" value ={gender}  onChange={defaultNullChange}/>남성
                 <input name="gender" type="radio"value={gender} onChange={defaultNullChange} />others
                 <InputWithLabel label ="주소" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
-                <InputWithLabel label = "프로필 사진" name ="image" type="file" value = {image} onChange={e => this.handleFileInput(e)}></InputWithLabel>
+                <InputWithLabel label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
                 {
                     error && <AuthError>{error}</AuthError>
                 }               

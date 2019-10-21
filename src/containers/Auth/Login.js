@@ -42,10 +42,11 @@ class Login extends Component {
             const loggedInfo = this.props.result.toJS();
 
             UserActions.setLoggedInfo(loggedInfo);
-            //history.push('/');
+            history.push('/');
             storage.set('loggedInfo', loggedInfo);
+            console.log(loggedInfo);
+            console.log(storage.get('loggedInfo'));
         } catch(e){
-            console.log('a');
             this.setError('잘못된 계정정보입니다.');
         }
      }

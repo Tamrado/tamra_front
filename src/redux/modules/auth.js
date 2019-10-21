@@ -14,7 +14,7 @@ const LOCAL_LOGIN = 'auth/LOCAL_LOGIN';
 const LOCAL_REGISTER_IMAGE = 'auth/LOCAL_REGISTER_IMAGE';
 const LOGOUT = 'auth/LOGOUT';
 
-const CHANGE_INPUT = "auth/CHANGE_INPUT";// input 값 변경
+const CHANGE_INPUT = 'auth/CHANGE_INPUT';// input 값 변경
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM'; // form 초기화
 
 export const checkEmailExists = createAction(CHECK_EMAIL_EXISTS, AuthAPI.checkEmailExists);
@@ -29,7 +29,6 @@ export const logout = createAction(LOGOUT, AuthAPI.logout);
 
 export const changeInput = createAction(CHANGE_INPUT);// {form, name, value}
 export const initializeForm = createAction(INITIALIZE_FORM); //form
-
 export const setError = createAction(SET_ERROR);
 
 const initialState = Map({
@@ -49,11 +48,9 @@ const initialState = Map({
         error: null
     }),
     registerImage: Map({
-        form: Map({
-            id: '',
-            image: ''
-        }),
-        error: null
+        form : Map({
+            image : null
+        })
     }),
     login: Map({
         form: Map({
@@ -64,6 +61,7 @@ const initialState = Map({
     }),
     result: Map({})
 });
+
 
 export default handleActions({
     [CHANGE_INPUT]:(state, action) => {
