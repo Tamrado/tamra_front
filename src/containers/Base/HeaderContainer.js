@@ -1,15 +1,30 @@
 import React, {Component} from 'react';
-import Header, {LoginButton} from 'components/Base/Header';
+import Header, {LoginButton,UserThumbnail} from 'components/Base/Header';
 import {connect} from 'react-redux';
+import * as userActions from 'redux/modules/user';
+import * as baseActions from 'redux/modules/base';
+import {bindActionCreators} from 'redux';
+import UserMenuContainer from './UserMenuContainer';
 
 class HeaderContainer extends Component {
+
+    handleThumbnailClick = () => {
+        const {BaseActions} = this.props;
+        BaseActions.setUserMenuVisibility(true);
+    }
+
     render(){
-    const {visible} = this.props;
+    const {visible, user} = this.props;
+    const {handleThumbnailClick} = this;
     if(!visible) return null;
 
         return(
             <Header>
-                <LoginButton/>
+                { user.get('logged')
+                    ?(<UserThumbnail thumbnail={user.getIn(['loggedInfo','thumbnail'])} onClick={handleThumbnailClick}/>)
+                        : <LoginButton/>
+                }
+                <UserMenuContainer eventTypes="click"/>
                 </Header>
         );
     }
@@ -17,9 +32,11 @@ class HeaderContainer extends Component {
 
 export default connect(
     (state) => ({
-        visible: state.base.getIn(['header', 'visible'])
+        visible: state.base.getIn(['header', 'visible']),
+        user: state.user
     }),
     (dispatch) => ({
-
+        UserActions: bindActionCreators(userActions, dispatch),
+        BaseActions: bindActionCreators(baseActions,dispatch)
     })
 ) (HeaderContainer);

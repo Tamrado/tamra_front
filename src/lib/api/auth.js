@@ -6,6 +6,6 @@ export const checkPhoneExists = (phone) => axios.get('http://localhost:8080/api/
 
 export const localRegister = ({email,id,password,phone,birthday,name,comment,address,gender}) => axios.post('http://localhost:8080/api/member', {email,id,password,phone,birthday,name,comment,address,gender});
 export const localLogin = ({id,password}) => axios.post('http://localhost:8080/api/member/auth', {id, password});
-export const localRegisterImage = (formData,id) => axios.post('http://localhost:8080/api/member/image',formData,{headers:{'content-type' : 'multipart/form-data'}});
-export const checkStatus = () => axios.get('http://localhost:8080/api/member/auth/token/id');
-export const logout = () => axios.post('/api/auth/logout');
+export const localRegisterImage = (formData) => axios.post('http://localhost:8080/api/member/image',formData,{headers:{'content-type' : 'multipart/form-data'}});
+export const checkStatus = () => axios.get('http://localhost:8080/api/member/auth/token/id', {withCredentials: true});
+export const logout = () => axios.get('http://localhost:8080/api//member/auth/token', {withCredentials: true});

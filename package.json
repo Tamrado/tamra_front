@@ -4,21 +4,21 @@
   "private": true,
   "dependencies": {
     "axios": "^0.19.0",
-    "proxy": "http://localhost:4000",
     "immutable": "^4.0.0-rc.12",
     "lodash": "^4.17.15",
     "open-color": "^1.7.0",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
+    "react-onclickoutside": "^6.9.0",
     "react-redux": "^7.1.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
+    "react-toastify": "^5.4.0",
     "redux": "^4.0.4",
     "redux-actions": "^2.6.5",
     "redux-pender": "^2.0.12",
     "styled-components": "^4.4.0",
     "validator": "^11.1.0"
-
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src PORT=3000 react-scripts start",

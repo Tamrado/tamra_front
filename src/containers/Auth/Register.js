@@ -32,7 +32,7 @@ class Register extends Component{
         const { AuthActions } = this.props;
         try{
             await AuthActions.checkEmailExists(email);
-            if(!this.props.result.get('success')) {
+            if(this.props.result.get('issue')!== null) {
                 this.setError('이미 존재하는 이메일입니다.');
             } else {
                 this.setError(null);
@@ -46,7 +46,7 @@ class Register extends Component{
         const {AuthActions} = this.props;
         try{
             await AuthActions.checkIdExists(id);
-            if(!this.props.result.get('success')){
+            if(this.props.result.get('issue')!== null){
                 this.setError('이미 존재하는 아이디입니다.');
             } else {
                 this.setError(null);
@@ -60,7 +60,7 @@ class Register extends Component{
         const {AuthActions} = this.props;
         try{
             await AuthActions.checkPhoneExists(phone);
-            if(!this.props.result.get('success')){
+            if(this.props.result.get('issue')!== null){
                 this.setError('이미 존재하는 핸드폰 번호입니다.');
             } else {
                 this.setError(null);
@@ -193,6 +193,10 @@ handleLocalRegister = async () => {
         await AuthActions.localRegister({
             email,id,password,name,comment,phone,address,gender,birthday
         });
+    } catch(e){
+        
+    }
+    try{
         await AuthActions.localRegisterImage(
             formData
         );
@@ -202,14 +206,10 @@ handleLocalRegister = async () => {
         UserActions.setValidated(true);
         history.push('/');
     } catch(e){
-        if(e.response.status === 409){
-            const {key} = e.response.data;
-            const message = key === 'email' ? '이미 존재하는 이메일입니다.' : 'id'? '이미 존재하는 아이디입니다.' : '이미 존재하는 핸드폰번호입니다.';
-            return this.setError(message);
-        }
+        console.log(e);
+    }
         this.setError('알 수 없는 에러가 발생했습니다.');
     }
-}
     render(){
         const {error} = this.props;
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
