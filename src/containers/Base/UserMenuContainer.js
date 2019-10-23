@@ -13,6 +13,10 @@ class UserMenuContainer extends Component{
         router: PropTypes.object
     }
 
+    handleSetUserInfo = async() => {
+        window.location.href='/member';
+    }
+
 
     handleLogout = async()=> {
         const {UserActions} = this.props;
@@ -29,7 +33,7 @@ class UserMenuContainer extends Component{
 
     render(){
         const{visible, username} = this.props;
-        const {handleLogout} = this;
+        const {handleLogout,handleSetUserInfo} = this;
 
         if(!visible){
             return null;
@@ -37,7 +41,7 @@ class UserMenuContainer extends Component{
         return (
             <UserMenu>
                 <Username username={username}/>
-                <UserMenuItem>설정</UserMenuItem>
+                <UserMenuItem onClick={handleSetUserInfo}>설정</UserMenuItem>
                 <UserMenuItem onClick={handleLogout}>로그아웃</UserMenuItem>
                 </UserMenu>
         );
