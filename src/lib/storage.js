@@ -11,7 +11,6 @@ const storage = {
             return null;
         }
         try {
-            console.log(localStorage[key]);
             const parsed = JSON.parse(localStorage[key]);
             return parsed;
         } catch(e){

@@ -14,7 +14,9 @@ class UserMenuContainer extends Component{
     }
 
     handleSetUserInfo = async() => {
-        window.location.href='/member';
+        const {username} = this.props;
+        window.location.href = '/@' + username+'/password';
+        
     }
 
 
@@ -41,7 +43,7 @@ class UserMenuContainer extends Component{
         return (
             <UserMenu>
                 <Username username={username}/>
-                <UserMenuItem onClick={handleSetUserInfo}>설정</UserMenuItem>
+                <UserMenuItem onClick={handleSetUserInfo}>마이페이지</UserMenuItem>
                 <UserMenuItem onClick={handleLogout}>로그아웃</UserMenuItem>
                 </UserMenu>
         );

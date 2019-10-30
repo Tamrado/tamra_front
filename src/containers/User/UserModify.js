@@ -2,13 +2,13 @@ import React, {Component} from 'react';
 import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError,Label} from 'components/Auth';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
-import * as authActions from 'redux/modules/auth';
+import * as userPageActions from 'redux/modules/userPage';
 import {isEmail,isAlphanumeric,isLength} from 'validator';
 import debounce from 'lodash/debounce';
 import * as userActions from 'redux/modules/user';
 import storage from 'lib/storage';
 
-class Register extends Component{  
+class UserModify extends Component{  
 
     constructor(props) {
 
@@ -21,45 +21,52 @@ class Register extends Component{
         this.handleFileInput = this.handleFileInput.bind(this);
     }
     setError = (message) => {
-        const{AuthActions} = this.props;
-        AuthActions.setError({
+        const{UserPageActions} = this.props;
+        UserPageActions.setError({
             form: 'register',
             message
         });
     }
 
     checkEmailExists = debounce(async (email) => {
-        const { AuthActions } = this.props;
+        const { UserPageActions } = this.props;
         try{
-            await AuthActions.checkEmailExists(email);
-            this.setError(null);
+            await UserPageActions.checkEmailExists(email);
+            if(this.props.result.get('issue')!== null) {
+                this.setError('이미 존재하는 이메일입니다.');
+            } else {
+                this.setError(null);
+            }
         }catch(e){
-            if(e.response.status === 400)
-            this.setError('이미 존재하는 이메일입니다.');
+            console.log(e);
         }
     },300);
 
     checkIdExists = debounce(async(id)=> {
-        const {AuthActions} = this.props;
+        const {UserPageActions} = this.props;
         try{
-            await AuthActions.checkIdExists(id);
+            await UserPageActions.checkIdExists(id);
+            if(this.props.result.get('issue')!== null){
+                this.setError('이미 존재하는 아이디입니다.');
+            } else {
                 this.setError(null);
-            
+            }
         } catch (e){
-            if(e.response.status === 400)
-            this.setError('이미 존재하는 아이디입니다.');
+            console.log(e);
         }
     },300);
 
     checkPhoneExists = debounce(async(phone) => {
-        const {AuthActions} = this.props;
+        const {UserPageActions} = this.props;
         try{
-            await AuthActions.checkPhoneExists(phone);
+            await UserPageActions.checkPhoneExists(phone);
+            if(this.props.result.get('issue')!== null){
+                this.setError('이미 존재하는 핸드폰 번호입니다.');
+            } else {
                 this.setError(null);
-            
+            } 
         }catch (e){
-            if(e.response.status === 400)
-            this.setError('이미 존재하는 핸드폰 번호입니다.');
+                console.log(e);
         }
     },300);
 
@@ -134,14 +141,14 @@ class Register extends Component{
     }
     
     componentWillUnmount(){
-        const {AuthActions} = this.props;
-        AuthActions.initializeForm('register');
+        const {UserPageActions} = this.props;
+        UserPageActions.initializeForm('register');
     }
 
     checkedChange = (e) =>{
-        const {AuthActions} = this.props;
+        const {UserPageActions} = this.props;
         const {name, value} = e.target.checked;
-        AuthActions.changeInput({
+        UserPageActions.changeInput({
           name,
           value,
           form: 'register'  
@@ -149,15 +156,16 @@ class Register extends Component{
     }
 
     defaultNullChange = (e) =>{
-        const {AuthActions} = this.props;
+        const {UserPageActions} = this.props;
         const {name, value} = e.target;
-        AuthActions.changeInput({
+        UserPageActions.changeInput({
           name,
           value,
           form: 'register'  
         });
         
     }
+    
 
     handleFileInput(e){
             this.setState({
@@ -166,25 +174,20 @@ class Register extends Component{
         
       }
     handleChange = (e) =>{
-    const {AuthActions} = this.props;
+    const {UserPageActions} = this.props;
     const {name, value} = e.target;
-    AuthActions.changeInput({
+    UserPageActions.changeInput({
       name,
       value,
       form: 'register'  
     });
     const validation = this.validate[name](value);
     if(name.indexOf('password') > -1 || !validation) return;
-    if( name.indexOf('email') > -1)
-    this.checkEmailExists(value);
-    else if(name.indexOf('id') > -1) 
-     this.checkIdExists(value); 
-     else if(name.indexOf('phone') > -1) 
-     this.checkPhoneExists(value);
-    
+    const check = name === 'email' ? this.checkEmailExists : 'id' ? this.checkIdExists : this.checkPhoneExists;
+    check(value);
 }
 handleLocalRegister = async () => {
-    const{form, AuthActions, error, history,UserActions} = this.props;
+    const{form, UserPageActions, error, history,UserActions} = this.props;
     const {email, id, password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
     const formData = new FormData();
     if(this.state.file !== null)
@@ -209,14 +212,14 @@ handleLocalRegister = async () => {
     }
     
     try{
-        await AuthActions.localRegister({
+        await UserPageActions.localRegister({
             email,id,password,name,comment,phone,address,gender,birthday
         });
     } catch(e){
         console.log(e);
     }
     try{
-        await AuthActions.localRegisterImage(
+        await UserPageActions.localRegisterImage(
             formData
         );
         const loggedInfo = this.props.result.toJS();
@@ -230,13 +233,18 @@ handleLocalRegister = async () => {
     }
     }
     render(){
-        const {error} = this.props;
+        const {error,userPage,userId} = this.props;
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this;
+        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this; 
+        console.log(userPage.get('pass'));
         return(
-            <AuthContent title='회원가입'>
+            <div>
+                {
+                userPage.get('pass') ?
+                <AuthContent title='마이페이지'>
                 <InputWithLabel label = "아이디" name="id" placeholder="아이디"
                 value = {id}
+                disabled
                 onChange={handleChange}/>
                 <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
                 type="password"
@@ -262,8 +270,8 @@ handleLocalRegister = async () => {
                 <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
                 value = {comment} onChange={handleChange} /> <br/>
                 <Label label = "성별"></Label>
-                <input name= "gender" type="radio" value= {gender} onChange={checkedChange} />여성
-                <input name="gender" type="radio" value ={gender}  onChange={checkedChange}/>남성
+                <input name= "gender" type="radio" value= {gender} onChange={checkedChange} />여자
+                <input name="gender" type="radio" value ={gender}  onChange={checkedChange}/>남자
                 <input name="gender" type="radio"value={gender} onChange={checkedChange} />others
                 <InputWithLabel label ="주소" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
                 <InputWithLabel label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
@@ -272,19 +280,24 @@ handleLocalRegister = async () => {
                 }               
                 <AuthButton onClick={handleLocalRegister}>회원가입</AuthButton>
                 <RightAlignedLink to="/auth/login">로그인</RightAlignedLink>
-            </AuthContent>
-        );
+                </AuthContent>
+                : window.location.href='/@' + userId + '/password'
+                }
+            </div>
+            );
         }
 }
 
 export default connect(
     (state) => ({
-        form: state.auth.getIn(['register','form']),
-        error: state.auth.getIn(['register','error']),
-        result: state.auth.get('result')
+        form: state.userPage.getIn(['User','form']),
+        error: state.userPage.getIn(['User','error']),
+        result: state.userPage.get('result'),
+        userId : state.user.getIn(['loggedInfo','username']),
+        userPage : state.userPage
     }),
     (dispatch)=>({
-        AuthActions : bindActionCreators(authActions,dispatch),
+        UserPageActions : bindActionCreators(userPageActions,dispatch),
         UserActions : bindActionCreators(userActions, dispatch)
     })
-)(Register);
+)(UserModify);

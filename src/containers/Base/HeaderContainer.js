@@ -9,8 +9,9 @@ import UserMenuContainer from './UserMenuContainer';
 class HeaderContainer extends Component {
 
     handleThumbnailClick = () => {
-        const {BaseActions} = this.props;
-        BaseActions.setUserMenuVisibility(true);
+        const {BaseActions,menuvisible} = this.props;
+        if(!menuvisible)BaseActions.setUserMenuVisibility(true);
+        else BaseActions.setUserMenuVisibility(false);
     }
 
     render(){
@@ -33,6 +34,7 @@ class HeaderContainer extends Component {
 export default connect(
     (state) => ({
         visible: state.base.getIn(['header', 'visible']),
+        menuvisible: state.base.getIn(['userMenu','visible']),
         user: state.user
     }),
     (dispatch) => ({

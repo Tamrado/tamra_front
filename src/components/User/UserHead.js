@@ -9,7 +9,7 @@ const Wrapper = styled.div`
 `;
 
 const Thumbnail = styled.div`
-    background-image: url(${props => props.image});
+    background-image: url(${props => props.thumbnail});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -28,9 +28,9 @@ const Username = styled.div`
 
 
 
-const UserHead = ({image="/static/images/default_thumbnail.png", username="username"}) => (
+const UserHead = ({thumbnail="/static/images/default_thumbnail.png", username="username"}) => (
     <Wrapper>
-        <Thumbnail image={image}/>
+        <Thumbnail thumbnail={thumbnail}/>
         <Username>{username}</Username>
     </Wrapper>
 );

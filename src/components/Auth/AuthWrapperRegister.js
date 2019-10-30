@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 // 화면의 중앙에 위치시킨다
 const Positioner = styled.div`
     position: absolute;
-    top: 50%;
+    top: 70%;
     left: 50%;
     transform: translate(-50%, -50%);
 `;
@@ -42,7 +42,7 @@ const Contents = styled.div`
     height: auto;
 `;
 
-const AuthWrapper = ({children}) => (
+const AuthWrapperRegister = ({children}) => (
     <Positioner>
         <ShadowedBox>
             <LogoWrapper>
@@ -55,4 +55,4 @@ const AuthWrapper = ({children}) => (
     </Positioner>
 );
 
-export default AuthWrapper;
+export default AuthWrapperRegister;

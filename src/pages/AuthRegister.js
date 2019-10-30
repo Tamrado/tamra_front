@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as baseActions from 'redux/modules/base';
-import {AuthWrapper} from 'components/Auth';
+import {AuthWrapperRegister} from 'components/Auth';
 import {Route} from 'react-router-dom';
-import {Login,Register} from 'containers/Auth';
-class Auth extends Component {
+import {Register} from 'containers/Auth';
+class AuthRegister extends Component {
 
     componentDidMount(){
         this.props.BaseActions.setHeaderVisibility(false);
@@ -16,11 +16,10 @@ class Auth extends Component {
     }
 
     render() {
-        return (
-            <AuthWrapper>
-                <Route path="/auth/Login" component={Login}/>
-                <Route path="/auth/Register" component={Register}/>
-            </AuthWrapper>
+        return (        
+            <AuthWrapperRegister>
+            <Route path="/auth/Register" component={Register}/>
+            </AuthWrapperRegister>
         );
     }
 }
@@ -34,4 +33,4 @@ export default connect(
         // bindActionCreators 는 액션함수들을 자동으로 바인딩해줍니다.
         BaseActions : bindActionCreators(baseActions, dispatch)
     })
-)(Auth);
+)(AuthRegister);
