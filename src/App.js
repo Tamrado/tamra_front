@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route,Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { Home, AuthLogin,AuthRegister, User,UserPage } from 'pages';
 import HeaderContainer from 'containers/Base/HeaderContainer';
 
@@ -37,12 +37,10 @@ class App extends Component {
             <div>
               <HeaderContainer/>
                 <Route exact path="/" component={Home}/>
-                <Switch>
                 <Route path="/auth/Login" component={AuthLogin}/>
                 <Route path="/auth/Register" component={AuthRegister}/>
                 <Route path="/@:username/password" component={User}/>
                 <Route path="/@:username/info"component={UserPage}/>
-                </Switch>
                 <ToastContainer style={{zIndex: 20}} hideProgressBar={true} position="bottom-right"/>
             </div>
         );

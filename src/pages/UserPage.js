@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PageWrapper from 'components/Base/PageWrapper';
-import {Route} from 'react-router-dom';
-import {UserModify} from 'containers/User';
+import UserModify from 'containers/User/UserModify';
 
 class UserPage extends Component {
 
     render() {
+        const { match } = this.props;
+        const { username } = match.params;
         return(
             <PageWrapper>
-                <Route path = '/@:username/info' component={UserModify}/>
+                <UserModify username = {username}/>
             </PageWrapper>
         );
     }

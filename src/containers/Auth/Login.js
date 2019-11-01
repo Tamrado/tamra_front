@@ -52,9 +52,8 @@ class Login extends Component {
             const loggedInfo = this.props.result.toJS();
 
             UserActions.setLoggedInfo(loggedInfo);
-            history.push('/');
+            history.replace('/');
             storage.set('loggedInfo', loggedInfo);
-            console.log(loggedInfo);
         
         } catch(e){
             this.setError('잘못된 계정정보입니다.');
@@ -97,7 +96,8 @@ export default connect(
     (state) => ({
         form: state.auth.getIn(['login', 'form']),
         error: state.auth.getIn(['login', 'error']),
-        result : state.auth.get('result')
+        result : state.auth.get('result'),
+        user: state.user
     }),
     (dispatch) => ({
         AuthActions: bindActionCreators(authActions, dispatch),

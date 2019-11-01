@@ -1,37 +1,58 @@
 import React, {Component} from 'react';
-import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError,Label} from 'components/Auth';
+import {AuthContent,InputWithLabel,AuthButton,AuthError,Label} from 'components/Auth';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as userPageActions from 'redux/modules/userPage';
-import {isEmail,isAlphanumeric,isLength} from 'validator';
+import {isEmail,isLength} from 'validator';
 import debounce from 'lodash/debounce';
 import * as userActions from 'redux/modules/user';
+import * as authActions from 'redux/modules/auth';
 import storage from 'lib/storage';
 
-class UserModify extends Component{  
 
-    constructor(props) {
-
-        super(props);
-        
-        this.state = {
-        
-        file: null
-        }
-        this.handleFileInput = this.handleFileInput.bind(this);
-    }
+class UserModify extends Component{ 
+ 
     setError = (message) => {
         const{UserPageActions} = this.props;
         UserPageActions.setError({
-            form: 'register',
+            form: 'User',
             message
         });
     }
 
-    checkEmailExists = debounce(async (email) => {
-        const { UserPageActions } = this.props;
+    checkIfUserPassed = () => {
+        const{username} = this.props;
+        if(!storage.get('passed')) window.location.href = '/@' + username+ "/password";
+    }
+    
+    initialModifyInfo = async() => {
+        const{username,UserPageActions} = this.props;
         try{
-            await UserPageActions.checkEmailExists(email);
+        await UserPageActions.checkUserAndGetUser();
+        const user = this.props.result.toJS();
+        UserPageActions.setUserData(user);
+        
+        }
+        catch(e){
+            console.log(e);
+            window.location.href = '/@' + username+ "/password";
+        }
+    }
+
+    componentDidMount(){
+        this.checkIfUserPassed();
+        this.initialModifyInfo();
+    }
+    componentWillUnmount(){
+        const {UserPageActions} = this.props;
+        UserPageActions.initializeForm('User');
+        
+    }
+
+    checkEmailExists = debounce(async (email) => {
+        const { UserPageActions,username } = this.props;
+        try{
+            await UserPageActions.checkEmailExists(email,username);
             if(this.props.result.get('issue')!== null) {
                 this.setError('이미 존재하는 이메일입니다.');
             } else {
@@ -42,24 +63,11 @@ class UserModify extends Component{
         }
     },300);
 
-    checkIdExists = debounce(async(id)=> {
-        const {UserPageActions} = this.props;
-        try{
-            await UserPageActions.checkIdExists(id);
-            if(this.props.result.get('issue')!== null){
-                this.setError('이미 존재하는 아이디입니다.');
-            } else {
-                this.setError(null);
-            }
-        } catch (e){
-            console.log(e);
-        }
-    },300);
 
     checkPhoneExists = debounce(async(phone) => {
-        const {UserPageActions} = this.props;
+        const {UserPageActions,username} = this.props;
         try{
-            await UserPageActions.checkPhoneExists(phone);
+            await UserPageActions.checkPhoneExists(phone,username);
             if(this.props.result.get('issue')!== null){
                 this.setError('이미 존재하는 핸드폰 번호입니다.');
             } else {
@@ -74,13 +82,6 @@ class UserModify extends Component{
         email: (value) => {
             if(!isEmail(value)){
                 this.setError('잘못된 이메일 형식 입니다.');
-                return false;
-            }
-            return true;
-        },
-            id: (value) => {
-            if(!isAlphanumeric(value) || !isLength(value, {min:9, max: 15})) {
-                this.setError('아이디는 9~15 글자의 알파벳 혹은 숫자로 이루어져야 합니다.');
                 return false;
             }
             return true;
@@ -140,10 +141,6 @@ class UserModify extends Component{
 
     }
     
-    componentWillUnmount(){
-        const {UserPageActions} = this.props;
-        UserPageActions.initializeForm('register');
-    }
 
     checkedChange = (e) =>{
         const {UserPageActions} = this.props;
@@ -151,7 +148,7 @@ class UserModify extends Component{
         UserPageActions.changeInput({
           name,
           value,
-          form: 'register'  
+          form: 'User'  
         });
     }
 
@@ -161,45 +158,31 @@ class UserModify extends Component{
         UserPageActions.changeInput({
           name,
           value,
-          form: 'register'  
+          form: 'User'  
         });
-        
     }
-    
-
-    handleFileInput(e){
-            this.setState({
-            file: e.target.files[0]
-            });
-        
-      }
     handleChange = (e) =>{
     const {UserPageActions} = this.props;
     const {name, value} = e.target;
     UserPageActions.changeInput({
       name,
       value,
-      form: 'register'  
+      form: 'User'  
     });
     const validation = this.validate[name](value);
     if(name.indexOf('password') > -1 || !validation) return;
-    const check = name === 'email' ? this.checkEmailExists : 'id' ? this.checkIdExists : this.checkPhoneExists;
-    check(value);
+    if( name.indexOf('email') > -1)
+    this.checkEmailExists(value);
+     else if(name.indexOf('phone') > -1) 
+     this.checkPhoneExists(value);
 }
 handleLocalRegister = async () => {
-    const{form, UserPageActions, error, history,UserActions} = this.props;
-    const {email, id, password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
-    const formData = new FormData();
-    if(this.state.file !== null)
-        formData.append('file',this.state.file);
-    else
-        formData.append('file',null);
-    formData.append('userId',id);
+    const{form, UserPageActions, error, history} = this.props;
+    const {email, id,password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
     const {validate} = this;
 
     if(error) return; //현재 에러 있는 상태라면 진행 x
     if(!validate['email'](email)
-    || !validate['id'](id)
     || !validate['password'](password)
     || !validate['passwordConfirm'](passwordConfirm)
     || !validate['name'](name)
@@ -212,40 +195,26 @@ handleLocalRegister = async () => {
     }
     
     try{
-        await UserPageActions.localRegister({
+        await UserPageActions.modifyUserInfo({
             email,id,password,name,comment,phone,address,gender,birthday
         });
-    } catch(e){
-        console.log(e);
-    }
-    try{
-        await UserPageActions.localRegisterImage(
-            formData
-        );
-        const loggedInfo = this.props.result.toJS();
-        storage.set('loggedInfo', loggedInfo);
-        UserActions.setLoggedInfo(loggedInfo);
-        UserActions.setValidated(true);
-        history.push('/');
-    } catch(e){
+        window.location.href = '/';
+        storage.remove('passed');
+        } catch(e){
         console.log(e);
         this.setError('알 수 없는 에러가 발생했습니다.');
     }
     }
     render(){
-        const {error,userPage,userId} = this.props;
-        const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
+        const {error,form} = this.props
+        const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} =form.toJS();
         const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this; 
-        console.log(userPage.get('pass'));
-        return(
-            <div>
-                {
-                userPage.get('pass') ?
+  
+                return(
                 <AuthContent title='마이페이지'>
                 <InputWithLabel label = "아이디" name="id" placeholder="아이디"
-                value = {id}
-                disabled
-                onChange={handleChange}/>
+                defaultValue = {id}
+                disabled/>
                 <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
                 type="password"
                 value={password} onChange={handleChange}
@@ -254,36 +223,31 @@ handleLocalRegister = async () => {
                 type="password"
                 value={passwordConfirm} onChange={handleChange}
                 />
-                <InputWithLabel label = "생년월일" name="birthday" placeholder="****-**-**"
-                type="date"
+                <InputWithLabel label = "생년월일" name="birthday" 
+                type="date" 
                 value = {birthday} onChange={defaultNullChange}
                 />
-                <InputWithLabel label = "이메일" name="email" placeholder="timeline@naver.com"
+                <InputWithLabel label = "이메일" name="email" placeholder="timeline@naver.com" 
                 type="email"
-                value = {email}
+                defaultValue = {email}
                 onChange={handleChange}/>
-                <InputWithLabel label = "핸드폰 번호" name="phone" placeholder="010-1234-1234"
-                value={phone}
+                <InputWithLabel label = "핸드폰 번호" name="phone" placeholder="010-1234-1234" 
+                defaultValue={phone}
                 onChange={handleChange}/>
-                <InputWithLabel label = "이름" name="name" placeholder="이름"
-                value = {name} onChange={handleChange}/>
+                <InputWithLabel label = "이름" name="name" placeholder="이름" 
+                defaultValue = {name} onChange={handleChange}/>
                 <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
-                value = {comment} onChange={handleChange} /> <br/>
+                defaultValue = {comment} onChange={handleChange} /> <br/>
                 <Label label = "성별"></Label>
-                <input name= "gender" type="radio" value= {gender} onChange={checkedChange} />여자
-                <input name="gender" type="radio" value ={gender}  onChange={checkedChange}/>남자
-                <input name="gender" type="radio"value={gender} onChange={checkedChange} />others
-                <InputWithLabel label ="주소" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
-                <InputWithLabel label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
+                <input name= "gender" type="radio" value = {Number('0')} defaultChecked = {Number(gender)} onChange={checkedChange} />여자
+                <input name="gender" type="radio" value = {Number('1')} defaultChecked ={Number(gender)}  onChange={checkedChange}/>남자
+                <input name="gender" type="radio" value = {Number('2')} defaultChecked ={Number(gender)} onChange={checkedChange} />others
+                <InputWithLabel label ="주소" name ="address" placeholder="서울" defaultValue = {address} onChange={defaultNullChange} />
                 {
                     error && <AuthError>{error}</AuthError>
                 }               
-                <AuthButton onClick={handleLocalRegister}>회원가입</AuthButton>
-                <RightAlignedLink to="/auth/login">로그인</RightAlignedLink>
+                <AuthButton onClick={handleLocalRegister}>확인</AuthButton>
                 </AuthContent>
-                : window.location.href='/@' + userId + '/password'
-                }
-            </div>
             );
         }
 }
@@ -293,11 +257,11 @@ export default connect(
         form: state.userPage.getIn(['User','form']),
         error: state.userPage.getIn(['User','error']),
         result: state.userPage.get('result'),
-        userId : state.user.getIn(['loggedInfo','username']),
         userPage : state.userPage
     }),
     (dispatch)=>({
         UserPageActions : bindActionCreators(userPageActions,dispatch),
-        UserActions : bindActionCreators(userActions, dispatch)
+        UserActions : bindActionCreators(userActions, dispatch),
+        AuthActions: bindActionCreators(authActions,dispatch)
     })
 )(UserModify);

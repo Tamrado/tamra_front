@@ -18,7 +18,6 @@ class HeaderContainer extends Component {
     const {visible, user} = this.props;
     const {handleThumbnailClick} = this;
     if(!visible) return null;
-
         return(
             <Header>
                 { user.get('logged')

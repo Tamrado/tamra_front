@@ -1,20 +1,17 @@
 import React, {Component} from 'react';
+
 import UserHead from 'components/User/UserHead';
 import {InputWithLabel,AuthButton,AuthContent,AuthError} from 'components/Auth';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as userPageActions from 'redux/modules/userPage';
+import storage from 'lib/storage';
 
 class UserHeadContainer extends Component {
 
 
     componentDidMount(){
         this.getUserInfo();
-    }
-
-    componentWillUnmount(){
-        const {UserPageActions} = this.props;
-        UserPageActions.initializeForm('User');
     }
 
     componentDidUpdate(prevProps, prevState){
@@ -27,9 +24,12 @@ class UserHeadContainer extends Component {
         const{UserPageActions, username} = this.props;
         try{
             await UserPageActions.getUserInfo(username);
+            const info = this.props.result.toJS();
+            await UserPageActions.setUserInfo(info);
         }catch(e){
             console.log(e);
         }
+        
     }
 
     setError = (message) => {
@@ -51,17 +51,19 @@ class UserHeadContainer extends Component {
         });
     }
     handleClick = async() => {
-        const{UserPageActions,form,username,history} = this.props;
+        const{UserPageActions,form,username} = this.props;
         const{password} = form.toJS();
         try{
             await UserPageActions.checkUserAndGetInfo({password});
-            history.push('/@' + username+'/info');
-            
-
+            const data = this.props.result.toJS();
+            await UserPageActions.setUserData({data}); 
+            storage.set('passed','true');
         } catch(e){
-             this.setError("비밀번호가 틀렸습니다. 다시 입력해주세요.");
-            
+            console.log(e);
+            return this.setError("비밀번호가 틀렸습니다. 다시 입력해주세요.");
         }
+        window.location.href =  '/@' + username+'/info';
+        
     } 
 
     render(){
@@ -76,10 +78,11 @@ class UserHeadContainer extends Component {
                 type="password"
                 value={password} onChange={handleChange}
                 />
-                <AuthButton onClick={handleClick}>확인</AuthButton>
                 {
                     error && <AuthError>{error}</AuthError>
                 }
+                <AuthButton onClick={handleClick}>확인</AuthButton>
+                
             </AuthContent>
 
         );
@@ -91,8 +94,10 @@ export default connect(
     (state) => ({
         thumbnail: state.userPage.getIn(['info','thumbnail']),
         error: state.userPage.getIn(['User','error']),
+        result : state.userPage.get('result'),
         fetched: state.pender.success['userPage/GET_USER_INFO'],
-        form : state.userPage.getIn(['User','form'])
+        form : state.userPage.getIn(['User','form']),
+        userpage : state.userPage
     }),
     (dispatch)=> ({
         UserPageActions: bindActionCreators(userPageActions, dispatch)

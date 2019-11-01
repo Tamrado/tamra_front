@@ -31,7 +31,7 @@ class Register extends Component{
     checkEmailExists = debounce(async (email) => {
         const { AuthActions } = this.props;
         try{
-            await AuthActions.checkEmailExists(email);
+            await AuthActions.checkEmailExists(email,'null');
             this.setError(null);
         }catch(e){
             if(e.response.status === 400)
@@ -54,7 +54,7 @@ class Register extends Component{
     checkPhoneExists = debounce(async(phone) => {
         const {AuthActions} = this.props;
         try{
-            await AuthActions.checkPhoneExists(phone);
+            await AuthActions.checkPhoneExists(phone,'null');
                 this.setError(null);
             
         }catch (e){
@@ -262,9 +262,9 @@ handleLocalRegister = async () => {
                 <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
                 value = {comment} onChange={handleChange} /> <br/>
                 <Label label = "성별"></Label>
-                <input name= "gender" type="radio" value= {gender} onChange={checkedChange} />여성
-                <input name="gender" type="radio" value ={gender}  onChange={checkedChange}/>남성
-                <input name="gender" type="radio"value={gender} onChange={checkedChange} />others
+                <input name= "gender" type="radio" value='0' onChange={checkedChange} />여성
+                <input name="gender" type="radio" value ={1}  onChange={checkedChange}/>남성
+                <input name="gender" type="radio"value={2} onChange={checkedChange} />others
                 <InputWithLabel label ="주소" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
                 <InputWithLabel label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
                 {
