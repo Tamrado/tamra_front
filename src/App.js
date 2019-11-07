@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Home, AuthLogin,AuthRegister, User,UserPage } from 'pages';
-import HeaderContainer from 'containers/Base/HeaderContainer';
+import { Home, AuthLogin,AuthRegister, User,UserPage } from './CommonFolder/pages';
+import HeaderContainer from './MainPage/containers/Base/HeaderContainer';
 
-import storage from 'lib/storage';
+import storage from './CommonFolder/lib/storage';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as userActions from 'redux/modules/user';
+import * as userActions from './Auth/redux/modules/user';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css' 
