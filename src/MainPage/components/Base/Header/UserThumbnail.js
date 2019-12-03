@@ -7,9 +7,11 @@ const Wrapper = styled.div`
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    
+    margin-right : 20px;
+    margin-top : 7px;
+    float: left;
     background: ${oc.cyan[5]};
-    background-image: url(${props => props.image});
+    background-image: url(${props => props.thumbnail});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -17,11 +19,17 @@ const Wrapper = styled.div`
         filter: brightness(105%);
     }
 `;
+const MenuLine = styled.div`
+height: 55px;
+border-right: 2px solid rgba(18, 184, 134, 0.1);
+margin-right : 12px;
+`;
 
 const UserThumbnail = ({thumbnail, onClick}) => (
-    <Wrapper image={thumbnail} onClick={onClick}>
-
-    </Wrapper>
+    <div>
+    <Wrapper thumbnail={thumbnail} onClick={onClick}/>
+    <MenuLine/>
+    </div>
 );
 
 export default UserThumbnail;

@@ -61,14 +61,26 @@ const GradientBorder = styled.div`
     background: linear-gradient(to right, ${oc.teal[6]}, ${oc.cyan[5]});
 `;
 
-const Header = ({children}) => {
+const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour}) => {
     return (
         <Positioner>
             <WhiteBackground>
                 <HeaderContents>
                     <Logo to="/">TIMELINE</Logo>
                     <Spacer/>
+                    <Spacer/>
+                    <Spacer/>
+                    <Spacer/>
+                    <Spacer/>
+                    <Spacer/>
                     {children}
+                    <Spacer/>
+                    {childrentwo}
+                    <Spacer/>
+                    {menuOne}
+                    {menuTwo}
+                    {menuThree}
+                    {menuFour}
                 </HeaderContents>
             </WhiteBackground>
             <GradientBorder/>
