@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import Header, {LoginButton,UserThumbnail} from '../../components/Base/Header';
+import Header, {RegisterButton,UserThumbnail,FriendSearch,Menu} from '../../components/Base/Header';
 import {connect} from 'react-redux';
 import * as userActions from '../../../Auth/redux/modules/user';
 import * as baseActions from '../../redux/modules/base';
@@ -17,15 +17,22 @@ class HeaderContainer extends Component {
     render(){
     const {visible, user} = this.props;
     const {handleThumbnailClick} = this;
+    let content,search = null;
+
     if(!visible) return null;
+
+    /*if(user.get('logged')){
+        content = <UserThumbnail thumbnail={user.getIn(['loggedInfo','thumbnail'])} onClick={handleThumbnailClick}/>;
+        search = <FriendSearch/>;
+    }
+    else{
+        content = <RegisterButton/>;
+    }*/
         return(
             <Header>
-                { user.get('logged')
-                    ?(<UserThumbnail thumbnail={user.getIn(['loggedInfo','thumbnail'])} onClick={handleThumbnailClick}/>)
-                        : <LoginButton/>
-                }
+                <FriendSearch/>
                 <UserMenuContainer eventTypes="click"/>
-                </Header>
+           </Header>
         );
     }
 }

@@ -5,8 +5,6 @@ import UserHeadContainer from '../../UserPage/containers/User/UserHeadContainer'
 
 class User extends Component {
 
-    
-    
     render() {
         const { match } = this.props;
         const { username } = match.params;

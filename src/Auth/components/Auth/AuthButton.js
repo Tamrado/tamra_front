@@ -8,10 +8,13 @@ const Wrapper = styled.div`
     padding-top: 0.6rem;
     padding-bottom: 0.5rem;
 
-    background: ${oc.teal[6]};
-    color: white;
+    background : #FFFFFF; 
+    border: 1px solid ${oc.teal[6]};
+    color: black;
 
     text-align: center;
+    letter-spacing: 2px;
+    font-family: Noto Sans KR;
     font-size: 1.25rem;
     font-weight: 500;
 

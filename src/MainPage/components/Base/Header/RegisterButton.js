@@ -29,10 +29,10 @@ const BorderedButton = styled(Link)`
 
 `;
 
-const LoginButton = () => (
-    <BorderedButton to="/auth/login">
-        로그인 / 가입
+const RegisterButton = () => (
+    <BorderedButton to="/auth/register">
+        회원 가입
     </BorderedButton>
 );
 
-export default LoginButton;
+export default RegisterButton;

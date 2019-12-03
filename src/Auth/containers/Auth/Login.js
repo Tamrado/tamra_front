@@ -52,8 +52,9 @@ class Login extends Component {
             const loggedInfo = this.props.result.toJS();
 
             UserActions.setLoggedInfo(loggedInfo);
-            history.replace('/');
             storage.set('loggedInfo', loggedInfo);
+            history.replace('/');
+            
         
         } catch(e){
             this.setError('잘못된 계정정보입니다.');

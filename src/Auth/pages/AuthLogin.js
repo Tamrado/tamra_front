@@ -8,10 +8,6 @@ import {Login} from '../containers/Auth';
 class AuthLogin extends Component {
 
     componentDidMount(){
-        this.props.BaseActions.setHeaderVisibility(false);
-    }
-
-    componentWillUnmount(){
         this.props.BaseActions.setHeaderVisibility(true);
     }
 

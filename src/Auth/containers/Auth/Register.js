@@ -34,7 +34,6 @@ class Register extends Component{
             await AuthActions.checkEmailExists(email,'null');
             this.setError(null);
         }catch(e){
-            if(e.response.status === 400)
             this.setError('이미 존재하는 이메일입니다.');
         }
     },300);
@@ -46,7 +45,6 @@ class Register extends Component{
                 this.setError(null);
             
         } catch (e){
-            if(e.response.status === 400)
             this.setError('이미 존재하는 아이디입니다.');
         }
     },300);
@@ -58,7 +56,6 @@ class Register extends Component{
                 this.setError(null);
             
         }catch (e){
-            if(e.response.status === 400)
             this.setError('이미 존재하는 핸드폰 번호입니다.');
         }
     },300);
@@ -213,7 +210,10 @@ handleLocalRegister = async () => {
             email,id,password,name,comment,phone,address,gender,birthday
         });
     } catch(e){
-        console.log(e);
+        if(e.response.status === 411)
+            this.setError('조건에 맞는 데이터를 입력해주세요.');
+        if(e.response.status === 409)
+            this.setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.');
     }
     try{
         await AuthActions.localRegisterImage(
@@ -225,8 +225,12 @@ handleLocalRegister = async () => {
         UserActions.setValidated(true);
         history.push('/');
     } catch(e){
-        console.log(e);
-        this.setError('알 수 없는 에러가 발생했습니다.');
+        if(e.response.status === 422)
+            this.setError('알 수 없는 에러가 발생했습니다.');
+        if(e.response.status === 409)
+            this.setError('다른 회원의 아이디와 동일합니다. 다시 입력해주세요.');
+        if(e.response.status === 411)
+            this.setError('조건에 맞는 데이터를 입력해주세요.');
     }
     }
     render(){
