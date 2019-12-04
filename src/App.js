@@ -16,17 +16,17 @@ class App extends Component {
     initializeUserInfo = async () => {
         const loggedInfo = storage.get('loggedInfo');
         if(!loggedInfo) return;
-
         const {UserActions} = this.props;
         UserActions.setLoggedInfo(loggedInfo);
         try{
-            await UserActions.checkStatus();
+           await UserActions.checkStatus();
         } catch(e){
             console.log(e);
             storage.remove('loggedInfo');
             
             window.location.href = '/auth/login?expired'
         }
+       
     }
     componentDidMount(){
         this.initializeUserInfo();

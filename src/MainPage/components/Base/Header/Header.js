@@ -28,6 +28,8 @@ const HeaderContents = styled.div`
     width: 1200px;
     height: 55px;
     display: flex;
+    flex: 1;
+   
     flex-direction: row;
     align-items: center;
     position: relative;
@@ -66,11 +68,8 @@ const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour}) => {
         <Positioner>
             <WhiteBackground>
                 <HeaderContents>
+                    <Spacer/>
                     <Logo to="/">TIMELINE</Logo>
-                    <Spacer/>
-                    <Spacer/>
-                    <Spacer/>
-                    <Spacer/>
                     <Spacer/>
                     <Spacer/>
                     {children}
@@ -89,6 +88,3 @@ const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour}) => {
 };
 
 export default Header;
-
-/*<Spacer/>
-                    {childrenTwo}*/

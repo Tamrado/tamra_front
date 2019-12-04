@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 yarn.lock
 node_modules
 yarn-error.log
@@ -14,7 +14,7 @@ yarn-error.log
 /coverage
 
 # production
-/build
+/src/build
 
 # misc
 .DS_Store
@@ -27,4 +27,4 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 yarn.lock
->>>>>>> d023fd1d8c0c1689133723b405187a63302f947f
+

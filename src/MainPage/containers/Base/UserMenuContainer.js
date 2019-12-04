@@ -43,7 +43,6 @@ class UserMenuContainer extends Component{
         return (
             <UserMenu>
                 <Username username={username}/>
-                <UserMenuItem onClick={handleSetUserInfo}>마이페이지</UserMenuItem>
                 <UserMenuItem onClick={handleLogout}>로그아웃</UserMenuItem>
                 </UserMenu>
         );

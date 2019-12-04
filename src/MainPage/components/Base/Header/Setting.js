@@ -12,6 +12,11 @@ background-position: center;
 background-repeat: no-repeat;
 &:hover {
     background-image: url(${props => props.hoverimg});
+    width : ${props => props.size};
+    height : ${props => props.size};
+    background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
 }
 `;
 const Setting = ({image,onclick,size,hoverimg}) => (

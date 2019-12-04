@@ -31,7 +31,7 @@ background : rgba(0,0,0);
 border : 0;
 position:absolute;
 display : inline;
-top: 34px;
+top: 30px;
 `;
 
 const FriendSearch = () => (

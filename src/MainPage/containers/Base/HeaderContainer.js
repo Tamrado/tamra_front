@@ -6,12 +6,13 @@ import * as baseActions from '../../redux/modules/base';
 import {bindActionCreators} from 'redux';
 import menuImage from '../../../build/static/images/iconmonstr-arrow-80-24.png';
 import alarmImage from '../../../build/static/images/iconmonstr-bell-thin-32.png';
-import friendRequestImage from '../../../build/static/images/group (1).png';
+import friendRequestImage from '../../../build/static/images/iconmonstr-user-29-32.png';
 import mypageImage from '../../../build/static/images/iconmonstr-gear-10-32.png';
-import hoverMenuImage from '../../../build/static/images/iconmonstr-arrow-80-24 (1).png';
+import hoverMenuImage from '../../../build/static/images/iconmonstr-arrow-80-12.png';
 import hoverAlarmImage from '../../../build/static/images/iconmonstr-bell-thin-32 (1).png';
-
-
+import hoverFriendRequestImage from '../../../build/static/images/iconmonstr-user-29-32 (1).png';
+import hoverMypageImage from '../../../build/static/images/iconmonstr-gear-10-32 (1).png';
+import UserMenuContainer from './UserMenuContainer';
 class HeaderContainer extends Component {
 
     handleThumbnailClick = () => {
@@ -43,17 +44,18 @@ class HeaderContainer extends Component {
     if(!visible) return null;
 
     if(user.get('logged')){
-        content = <UserThumbnail thumbnail={user.getIn(['loggedInfo','thumbnail'])} onClick={handleThumbnailClick}/>;
+        content = <UserThumbnail thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
         search = <FriendSearch/>;
         alarm = <Setting image = {alarmImage} size = {'30px'} onclick = {handleAlarmClick} hoverimg={hoverAlarmImage}/>;
-        friendRequest = <Setting image = {friendRequestImage} size ={'30px'} onclick = {handleFriendRequestClick}/>;
-        mypage = <Setting image = {mypageImage} size = {'30px'} onclick = {handleMyPageClick}/>;
-        menu = <Setting image = {menuImage} size = {'12px'} onclick={handleMenuClick} hoverimg = {hoverMenuImage}/>;
+        friendRequest = <Setting image = {friendRequestImage} size ={'30px'} onclick = {handleFriendRequestClick} hoverimg={hoverFriendRequestImage}/>;
+        mypage = <Setting image = {mypageImage} size = {'35px'} onclick = {handleMyPageClick} hoverimg={hoverMypageImage}/>;
+        menu = <Setting image = {menuImage} size = {'12px'}  hoverimg = {hoverMenuImage} onclick={handleThumbnailClick}/>;
     }
     else{
         content = <RegisterButton/>;
     }
         return(
+            
             <Header>
                 {search}
                 {content}
@@ -61,7 +63,10 @@ class HeaderContainer extends Component {
                 {friendRequest}
                 {mypage}
                 {menu}
+                <UserMenuContainer eventTypes="click"/>
            </Header>
+            
+        
         );
     }
 }
