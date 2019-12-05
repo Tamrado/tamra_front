@@ -67,7 +67,7 @@ class Login extends Component {
         const {error} = this.props;
 
         return (
-            <AuthContent title="로그인">
+            <AuthContent title="SIGN IN">
                 <InputWithLabel 
                     label="아이디" 
                     name="id" 

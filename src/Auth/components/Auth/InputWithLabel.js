@@ -11,6 +11,8 @@ const Wrapper = styled.div`
 
 const Label = styled.div`
     font-size: 1rem;
+    font-family: Noto Sans KR;
+    font-style: normal;
     color: ${oc.gray[6]};
     margin-bottom: 0.25rem;
 `;
@@ -23,6 +25,8 @@ const Input = styled.input`
     line-height: 2.5rem;
     font-size: 1.2rem;
     padding-left: 0.5rem;
+    font-family: Noto Sans KR;
+    font-style: normal;
     padding-right: 0.5rem;
     ::placeholder {
         color: ${oc.gray[3]};

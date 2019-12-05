@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PageWrapper from '../components/Base/PageWrapper';
 import storage from '../../CommonFolder/lib/storage';
-import {FriendList} from '../components/Base/FriendList';
+import {FriendListContainer,PostListContainer} from '../containers/Base';
 class Home extends Component {
     componentDidMount(){
         this.initializeUserInfo();
@@ -15,7 +15,8 @@ class Home extends Component {
     render() {
         return (
             <PageWrapper>
-                <FriendList></FriendList>
+                <PostListContainer/>
+                <FriendListContainer/>
             </PageWrapper>
         );
     }

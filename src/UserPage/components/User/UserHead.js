@@ -28,7 +28,7 @@ const Username = styled.div`
 
 
 
-const UserHead = ({thumbnail="static/images/default_thumbnail.png", username="username"}) => (
+const UserHead = ({thumbnail, username}) => (
     <Wrapper>
         <Thumbnail thumbnail={thumbnail}/>
         <Username>{username}</Username>

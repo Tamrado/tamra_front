@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import {ModifyWrapper,ConfirmContent} from '../components/User';
-import UserModify from '../containers/User/UserModify';
-class UserPage extends Component {
+import {UserHeadContainer} from '../containers/User';
+
+class UserPageConfirm extends Component {
 
     render() {
         const { match } = this.props;
@@ -9,11 +10,11 @@ class UserPage extends Component {
         return(
             <ModifyWrapper>
                 <ConfirmContent>
-                <UserModify username = {username}/>
+                <UserHeadContainer username = {username}/>
                 </ConfirmContent>
             </ModifyWrapper>
         );
     }
 
 }
-export default UserPage;
+export default UserPageConfirm;

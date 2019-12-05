@@ -6,6 +6,9 @@ import { shadow } from '../../../../CommonFolder/lib/styleUtils';
 
 const BorderedButton = styled(Link)`
     font-weight: 600;
+    float : right;
+    right : 0;
+    position : absolute;
     color: ${oc.cyan[6]};
     border: 1px solid ${oc.cyan[6]};
     padding: 0.5rem;
@@ -14,6 +17,7 @@ const BorderedButton = styled(Link)`
     border-radius: 2px;
     text-decoration: none;
     transition: .2s all;
+    margin-right : 160px;
 
     &:hover {
         background: ${oc.cyan[6]};

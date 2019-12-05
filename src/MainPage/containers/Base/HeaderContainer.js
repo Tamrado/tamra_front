@@ -32,13 +32,10 @@ class HeaderContainer extends Component {
         const {username} = this.props;
         window.location.href = '/@' + username+'/password';
     }
-    handleMenuClick = () => {
-
-    }
 
     render(){
     const {visible, user} = this.props;
-    const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMenuClick,handleMyPageClick} = this;
+    const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick} = this;
     let content,search,alarm,friendRequest,mypage,menu = null;
 
     if(!visible) return null;

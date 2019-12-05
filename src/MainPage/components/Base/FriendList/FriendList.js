@@ -3,17 +3,15 @@ import styled from 'styled-components';
 
 const FriendListBox = styled.div`
 position: absolute;
-width: 262px;
+width: 18%;
 height : 89%;
 right : 0;
-margin-right : 10px;
 flexDirection : column;
-top: 72px;
 background: #FFFFFF;
 `;
 const FriendListHead = styled.div`
 position: absolute;
-width: 262px;
+width: 100%;
 height: 53px;
 background: #12B886;
 `;

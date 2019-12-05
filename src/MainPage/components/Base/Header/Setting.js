@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 
 const SettingImage = styled(Link)`
 width : ${props => props.size};
+left : 0;
+float : left;
 height : ${props => props.size};
-margin-right : 10px;
+margin-right : 0.5rem;
 background-image: url(${props => props.src});
 background-size: cover;
 background-position: center;

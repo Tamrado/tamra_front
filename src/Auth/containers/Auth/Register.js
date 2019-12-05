@@ -238,7 +238,7 @@ handleLocalRegister = async () => {
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
         const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this;
         return(
-            <AuthContent title='회원가입'>
+            <AuthContent title='SIGN UP'>
                 <InputWithLabel label = "아이디" name="id" placeholder="아이디"
                 value = {id}
                 onChange={handleChange}/>

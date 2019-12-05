@@ -6,6 +6,7 @@ const Positioner = styled.div`
     position : absolute;
     right: 0;
     top: 40px;
+    margin-right : 100px;
 `;
 
 // 흰색 메뉴박스 

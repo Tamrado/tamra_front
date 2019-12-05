@@ -29,12 +29,11 @@ const HeaderContents = styled.div`
     height: 55px;
     display: flex;
     flex: 1;
-   
     flex-direction: row;
     align-items: center;
     position: relative;
-    padding-right: 1rem;
-    padding-left: 1rem;
+    padding-right: 10rem;
+    padding-left: 10rem;
     ${media.wide`
         width: 992px;
     `}
@@ -53,9 +52,7 @@ const Logo = styled(Link)`
 `;
 
 // 중간 여백
-const Spacer = styled.div`
-    flex-grow: 1;
-`;
+
 
 // 하단 그래디언트 테두리
 const GradientBorder = styled.div`
@@ -68,14 +65,9 @@ const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour}) => {
         <Positioner>
             <WhiteBackground>
                 <HeaderContents>
-                    <Spacer/>
                     <Logo to="/">TIMELINE</Logo>
-                    <Spacer/>
-                    <Spacer/>
                     {children}
-                    <Spacer/>
                     {childrentwo}
-                    <Spacer/>
                     {menuOne}
                     {menuTwo}
                     {menuThree}

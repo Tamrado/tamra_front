@@ -211,9 +211,9 @@ handleLocalRegister = async () => {
         const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this; 
   
                 return(
-                <AuthContent title='마이페이지'>
+                <AuthContent title='MY PAGE'>
                 <InputWithLabel label = "아이디" name="id" placeholder="아이디"
-                defaultValue = {id}
+                value = {id}
                 disabled/>
                 <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
                 type="password"

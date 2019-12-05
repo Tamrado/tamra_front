@@ -7,8 +7,9 @@ const Wrapper = styled.div`
     margin-top: 58px;
     padding: 1rem;
     width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
+    position : relative;
+    margin-left: 1%;
+    margin-right: 1%;
     ${media.wide`
         width: 992px;
     `}

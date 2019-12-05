@@ -72,7 +72,7 @@ class UserHeadContainer extends Component {
         const {handleChange,handleClick} = this;
         if(!fetched) return null;
         return (
-            <AuthContent title='마이페이지'>
+            <AuthContent title='MY PAGE'>
             <UserHead username={username} thumbnail={thumbnail}/>
             <InputWithLabel label = "비밀번호 입력" name="password" placeholder="비밀번호"
                 type="password"

@@ -5,6 +5,7 @@ import oc from 'open-color';
 const Wrapper = styled.div`
     width: 40px;
     height: 40px;
+    left : 0;
     border-radius: 50%;
     cursor: pointer;
     margin-right : 20px;
