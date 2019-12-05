@@ -4,6 +4,7 @@ import oc from 'open-color';
 
 const NicknameBox = styled.div`
 position: absolute;
+overflow: auto;
 width: 197.46px;
 flexDirection : column;
 background: #ffffff;

@@ -3,17 +3,20 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 const Box = styled(Link)`
 position: absolute;
-width: 100%;
+width: 80%;
 height: 153px;
-left: 15px;
+z-index : 1;
 background: #FFFFFF;
+float : left;
+top : 100%;
+display : block;
 `;
 const TextBox = styled.div`
 position: absolute;
 width: 392.95px;
 height: 52.85px;
 left: 39.56px;
-
+float : left;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;

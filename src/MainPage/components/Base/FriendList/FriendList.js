@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 
 const FriendListBox = styled.div`
-position: absolute;
+position: sticky;
 width: 18%;
-height : 89%;
-right : 0;
-flexDirection : column;
+padding-left : 10px;
+left : 100%;
+height : 100%;
 background: #FFFFFF;
 `;
 const FriendListHead = styled.div`

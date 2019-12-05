@@ -6,15 +6,15 @@ import { media } from '../../../CommonFolder/lib/styleUtils';
 const Wrapper = styled.div`
     margin-top: 58px;
     padding: 1rem;
-    width: 1200px;
+    width: 100%;
+    height : 100%;
     position : relative;
-    margin-left: 1%;
-    margin-right: 1%;
+    display: flex;
+    flex-direction: row;
+    
+    
     ${media.wide`
         width: 992px;
-    `}
-    ${media.desktop`
-        width: 100%;
     `}
 `;
 
