@@ -7,9 +7,8 @@ const Box = styled.div`
 width: 80%;
 height: 500px;
 background-color : #ffffff;
-overflow : auto;
-float : left;
 position: absolute;
+top : 180px;
 border-collapse :separate;
 `;
 const NickNameBox = styled.div`
@@ -118,7 +117,7 @@ const FeedSubMenu = styled.div`
 position: absolute;
 width: 300px;
 height: 32px;
-left: 900px;
+right: 0;
 top: 460px;
 `;
 const LikeNumber = styled.div`

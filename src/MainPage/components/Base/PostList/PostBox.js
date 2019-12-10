@@ -5,11 +5,7 @@ const Box = styled(Link)`
 position: absolute;
 width: 80%;
 height: 153px;
-z-index : 1;
 background: #FFFFFF;
-float : left;
-top : 100%;
-display : block;
 `;
 const TextBox = styled.div`
 position: absolute;

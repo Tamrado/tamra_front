@@ -10,6 +10,7 @@ flexDirection : column;
 background: #ffffff;
 right : 0;
 left : 0;
+height : 100%;
 margin-left:auto;
 margin-right:auto;
 padding-top: 0.5rem;
