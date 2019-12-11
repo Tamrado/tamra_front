@@ -11,14 +11,17 @@ export const getFeedInformation = createAction(GET_FEED_INFORMATION,PostAPI.getF
 
 const initialState = Map({
     feed : List(),
-    nextFeed : List(),
-    result : []
+    nextFeed : List()
 });
 
 export default handleActions({
-    [SET_FEED_INFORMATION] : (state,action) => state.set('feed',action.payload),
+    [SET_FEED_INFORMATION] : (state,action) =>{
+        console.log(state.get('nextFeed'));
+        const nextData = state.get('nextFeed'); 
+        state.update('feed',feed => feed.concat(nextData));
+},
     ...pender({
         type: GET_FEED_INFORMATION,
-        onSuccess: (state,action) => state.set('result',Map(action.payload.data))
-    })
+        onSuccess: (state,action) =>{ return state.set('feed',fromJS(action.payload.data.content));}
+})
     }, initialState);

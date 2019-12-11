@@ -1,26 +1,18 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {PostBox,FeedListBox} from '../../components/Base/PostList';
-import totalImage from '../../../build/static/images/iconmonstr-globe-5-32.png';
-import friendImage from '../../../build/static/images/iconmonstr-user-31-32.png';
-import myImage from '../../../build/static/images/iconmonstr-user-1-32.png';
+import {FeedList} from '../../components/Base/PostList';
 import {bindActionCreators} from 'redux';
 import * as postActions from '../../redux/modules/post';
+import storage from '../../../CommonFolder/lib/storage';
 class PostListContainer extends Component{
-    static defaultProps = {
-        data : []
-    }
 
     componentDidMount(){
         this.getFeedList();
     }
     getFeedList = async() => {
-        const{PostActions,username} = this.props;
+        const{PostActions,name} = this.props;
         try{
-            console.log(username);
-            await PostActions.getFeedInformation(username);
-            const info = this.props.result.toJS();
-            await PostActions.setFeedInformation(info);
+            await PostActions.getFeedInformation(name);
         }catch(e){
             console.log(e);
         }
@@ -28,22 +20,17 @@ class PostListContainer extends Component{
     }
 
     render(){
-        const {username,data} = this.props;
-        const feedList = data.map(
-            info => (<FeedListBox thumbnail={info.thumbnail} name= {info.author}/>)
-        );
+        const {data,name} = this.props;
         return(
-            <div>
-            <PostBox username = {username}/>
-            {feedList}
-            </div>
+            <FeedList feeds={data} name = {name}/>
         );
     }
 }
 
 export default connect(
     (state) => ({
-        data : state.post.get('feed')
+        data : state.post.get('feed'),
+        name : storage.get("loggedInfo").username
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch)

@@ -3,13 +3,18 @@ import styled from 'styled-components';
 import oc from 'open-color';
 import like from '../../../../build/static/images/iconmonstr-smiley-thin-32.png';
 import clickLike from '../../../../build/static/images/iconmonstr-smiley-8-32.png';
+import scuize from '../../../../CommonFolder/lib/scuize';
+
+import publicImage from '../../../../build/static/images/public.png';
+import friendImage from '../../../../build/static/images/friend.png';
+import privateImage from '../../../../build/static/images/private.png';
 const Box = styled.div`
-width: 80%;
+width: 100%;
 height: 500px;
-background-color : #ffffff;
-position: absolute;
+background : #ffffff;
+position: relative;
 top : 180px;
-border-collapse :separate;
+margin-bottom : 1rem;
 `;
 const NickNameBox = styled.div`
 width: 356px;
@@ -19,7 +24,7 @@ margin-left : 70px;
 top: 5px; 
 `;
 const NickName = styled.div`
-position: absolute;
+position : absolute;
 width: 91px;
 height: 48px;
 left: 60px;
@@ -39,14 +44,14 @@ color: #000000;
 
 `;
 const ViewBox = styled.div`
-position: absolute;
+position : absolute;
 width : 150px;
 height: 32px;
 left : 60px;
 top : 42px;
 `;
 const Time = styled.div`
-position: absolute;
+position : absolute;
 width: 104px;
 height: 32px;
 
@@ -63,19 +68,21 @@ letter-spacing: 0.05em;
 color: #515250;
 `;
 const ViewPhase = styled.div`
-    position: absolute;
-    width: 32px;
-    height: 32px;
+position : absolute;
+    width: 24px;
+    height: 24px;
     right : 0;
-    background: ${oc.cyan[5]};
-    background-image: url(${props => props.view});
+    top : 5px;
+    
+    background-image: url(${props => props.showLevel});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     cursor: pointer;
 `;
 const Profile = styled.div`
-    background: ${oc.cyan[5]};
+position : absolute;
+
     background-image: url(${props => props.thumbnail});
     background-size: cover;
     background-position: center;
@@ -86,10 +93,10 @@ const Profile = styled.div`
     width: 55px;
     height: 55px;
     top: 15px;
-    position : absolute;
+    
 `;
 const FeedLine = styled.div`
-position: absolute;
+position : absolute;
 width: 100%;
 top: 91px;
 
@@ -97,7 +104,7 @@ border: 2px solid #12B886;
 `;
 
 const Feed = styled.div`
-position: absolute;
+position : absolute;
 width: 100%;
 padding-left : 5rem;
 padding-right : 5rem;
@@ -114,14 +121,14 @@ text-align: center;
 letter-spacing: 0.05em;
 `;
 const FeedSubMenu = styled.div`
-position: absolute;
+position : absolute;
 width: 300px;
 height: 32px;
 right: 0;
 top: 460px;
 `;
 const LikeNumber = styled.div`
-position: absolute;
+position : absolute;
 width: 74px;
 height: 25px;
 left : 35px;
@@ -136,7 +143,7 @@ align-items: center;
 color: #000000;
 `;
 const LikeImage = styled.div`
-position: absolute;
+position : absolute;
 width: 32px;
 height: 32px;
 left : 0;
@@ -152,7 +159,7 @@ background-repeat: no-repeat;
 }
 `;
 const Comment = styled.div`
-position: absolute;
+position : absolute;
 width: 160px;
 height: 25px;
 right : 0;
@@ -161,7 +168,6 @@ font-style: normal;
 font-weight: normal;
 font-size: 20px;
 line-height: 28px;
-display: flex;
 align-items: center;
 text-align: center;
 
@@ -170,14 +176,32 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedListBox = ({thumbnail,view,name,time,content,comment,number}) => (
+const FeedBox = ({feed}) => {
+    const {
+        postId,
+        thumbnail,
+        author,
+        lastUpdate,
+        showLevel,
+        content,
+        comment,
+        number
+    } = feed.toJS();
+  
+    /*const toggleLike = () => onToggleLike({
+        feedId : postId,
+        liked
+    });
+    const commentClick = () => onCommentClick(postId);*/
+ 
+return(
     <Box>
         <NickNameBox>
             <Profile thumbnail = {thumbnail}/>
-            <NickName>{name}</NickName>
+            <NickName>{author}</NickName>
             <ViewBox>
-            <Time>{time}</Time>
-            <ViewPhase>{view}</ViewPhase>
+            <Time>{lastUpdate}</Time>
+            <ViewPhase showLevel = {`${showLevel}Image`} />
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
@@ -188,6 +212,8 @@ const FeedListBox = ({thumbnail,view,name,time,content,comment,number}) => (
             <Comment>댓글 {comment}</Comment>
         </FeedSubMenu>
     </Box>
-    
-);
-export default FeedListBox;
+    )
+}
+export default scuize(FeedBox, function(nextProps, nextState){
+    return this.props.feed !== nextProps.feed;
+});

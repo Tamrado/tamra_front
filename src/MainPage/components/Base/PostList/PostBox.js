@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 const Box = styled(Link)`
 position: absolute;
-width: 80%;
+width: 100%;
 height: 153px;
 background: #FFFFFF;
 `;

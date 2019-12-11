@@ -2,10 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 
 const FriendListBox = styled.div`
-position: sticky;
+position : fixed;
 width: 18%;
-padding-left : 10px;
-left : 100%;
+
+right : 0;
 height : 100%;
 background: #FFFFFF;
 `;
@@ -17,6 +17,7 @@ background: #12B886;
 `;
 const FriendListHeaderLogo = styled.div`
 font-family: Noto Sans KR;
+widhth: 100%;
 font-style: normal;
 font-weight: 500;
 font-size: 24px;
