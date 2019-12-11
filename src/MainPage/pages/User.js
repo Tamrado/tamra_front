@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PageWrapper from '../components/Base/PageWrapper';
-import UserHeadContainer from '../../UserPage/containers/User/UserHeadContainer';
+import {UserHeadContainer} from '../../UserPage/containers/User';
 
 
 class User extends Component {

@@ -13,9 +13,11 @@ class Home extends Component {
         }
     }
     render() {
+        const { match } = this.props;
+        const { username } = match.params;
         return (
             <PageWrapper>
-                <PostListContainer/>
+                <PostListContainer username = {username}/>
                 <FriendListContainer/>
             </PageWrapper>
         );

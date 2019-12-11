@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import searchButtonImage from '../../../../build/static/images/iconmonstr-magnifier-6-32.png';
 
 const FriendBox = styled.div`
@@ -19,11 +20,15 @@ padding-top : 5px;
 width : 90%;
 
 `;
-const SearchButton = styled.img`
+const SearchButton = styled(Link)`
 margin-top : 10px;
 position : absolute;
 width: 32px;
-hieght: 32px;
+height: 32px;
+background-image: url(${searchButtonImage});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
 `;
 const SearchlineRectangle = styled.div`
 min-width: 144px;
@@ -52,7 +57,7 @@ const FriendSearch = () => (
                 <SearchLine/>
                 </SearchlineRectangle>
         </SearchBox>
-        <SearchButton src = {searchButtonImage}/>
+        <SearchButton to = "/search"/>
     </FriendBox>
 );
 export default FriendSearch;
