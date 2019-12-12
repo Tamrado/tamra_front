@@ -8,7 +8,7 @@ position : absolute;
 width : 80%;
 
 `;
-const FeedList = ({feeds,name}) => {
+const FeedList = ({feeds,username}) => {
     const feedList = feeds.map(
         (feed) => (
             <FeedBox key = {feed.get('postId')}  feed={feed}/>
@@ -16,7 +16,7 @@ const FeedList = ({feeds,name}) => {
     )
     return(
         <Box>
-            <PostBox username = {name}/>
+            <PostBox username = {username}/>
             {feedList}
         </Box>
     );

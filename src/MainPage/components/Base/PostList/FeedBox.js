@@ -4,10 +4,10 @@ import oc from 'open-color';
 import like from '../../../../build/static/images/iconmonstr-smiley-thin-32.png';
 import clickLike from '../../../../build/static/images/iconmonstr-smiley-8-32.png';
 import scuize from '../../../../CommonFolder/lib/scuize';
-
 import publicImage from '../../../../build/static/images/public.png';
 import friendImage from '../../../../build/static/images/friend.png';
 import privateImage from '../../../../build/static/images/private.png';
+
 const Box = styled.div`
 width: 100%;
 height: 500px;
@@ -201,7 +201,9 @@ return(
             <NickName>{author}</NickName>
             <ViewBox>
             <Time>{lastUpdate}</Time>
-            <ViewPhase showLevel = {`${showLevel}Image`} />
+           { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
+           { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
+           { `${showLevel}` === 'friend' && <ViewPhase showLevel ={friendImage} />}
             </ViewBox>
         </NickNameBox>
         <FeedLine/>

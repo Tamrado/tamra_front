@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as baseActions from '../../MainPage/redux/modules/base';
 import {AuthWrapper} from '../components/Auth';
+import {Route} from 'react-router-dom';
 import {Login} from '../containers/Auth';
 class AuthLogin extends Component {
 
@@ -13,7 +14,7 @@ class AuthLogin extends Component {
     render() {
         return (        
             <AuthWrapper>
-            <Login/>
+            <Route path="/auth/Login" component={Login}/>
             </AuthWrapper>
         );
     }

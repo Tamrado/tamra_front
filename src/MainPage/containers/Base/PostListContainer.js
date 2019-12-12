@@ -9,10 +9,12 @@ class PostListContainer extends Component{
     componentDidMount(){
         this.getFeedList();
     }
+    
     getFeedList = async() => {
-        const{PostActions,name} = this.props;
+        const{PostActions} = this.props;
+        const username = storage.get('loggedInfo').username;
         try{
-            await PostActions.getFeedInformation(name);
+            await PostActions.getFeedInformation(username);
         }catch(e){
             console.log(e);
         }
@@ -20,17 +22,21 @@ class PostListContainer extends Component{
     }
 
     render(){
-        const {data,name} = this.props;
+        const {data} = this.props;
+        if(!storage.get('loggedInfo')) {
+            window.location.href = '/auth/Login';
+            return;
+        }
+        const username = storage.get('loggedInfo').username;
         return(
-            <FeedList feeds={data} name = {name}/>
+            <FeedList feeds={data} username = {username}/>
         );
     }
 }
 
 export default connect(
     (state) => ({
-        data : state.post.get('feed'),
-        name : storage.get("loggedInfo").username
+        data : state.post.get('feed')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch)

@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import * as baseActions from '../../MainPage/redux/modules/base';
 import {AuthWrapperRegister} from '../components/Auth';
 import {Register} from '../containers/Auth';
+import {Route} from 'react-router-dom';
 class AuthRegister extends Component {
 
     componentDidMount(){
@@ -17,7 +18,7 @@ class AuthRegister extends Component {
     render() {
         return (        
             <AuthWrapperRegister>
-            <Register/>
+             <Route path="/auth/Register" component={Register}/>
             </AuthWrapperRegister>
         );
     }
