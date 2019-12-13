@@ -1,7 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import searchButtonImage from '../../../../build/static/images/iconmonstr-magnifier-6-32.png';
+import searchButtonImage from '../../../../build/static/images/iconmonstr-magnifier-1-32.png';
+import hoversearchButtonImage from '../../../../build/static/images/iconmonstr-magnifier-1-32 (1).png';
 
 const FriendBox = styled.div`
 min-width: 150px;
@@ -29,33 +30,43 @@ background-image: url(${searchButtonImage});
 background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
+&:hover {
+    background-image: url(${hoversearchButtonImage});
+}
+&:active {
+    /* 마우스 클릭시 아래로 미세하게 움직임 */
+    transform: translateY(3px);
+}
 `;
-const SearchlineRectangle = styled.div`
+const SearchlineRectangle = styled.input`
 min-width: 144px;
 width : 100%;
+outline: none;
+border : none;
 position : relative;
 height: 49px;
 margin-right : 10px;
 background: rgba(18, 184, 134, 0.05);
 border-radius: 23px;
-`;
-const SearchLine = styled.hr`
-min-width: 144px;
-width : 100%;
-height: 1.5px;
-background : rgba(0,0,0);
-border : 0;
-position : absolute;
-display : inline;
-top: 30px;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: 300;
+font-size: 22.4px;
+line-height: 32px;
+display: flex;
+align-items: center;
+letter-spacing: 2px;
+::placeholder {
+    color: rgba(0, 0, 0, 0.3);
+}
+color: rgba(0, 0, 0);
 `;
 
-const FriendSearch = () => (
+
+const FriendSearch = ({...content}) => (
     <FriendBox>
         <SearchBox>
-            <SearchlineRectangle>
-                <SearchLine/>
-                </SearchlineRectangle>
+            <SearchlineRectangle{...content}/>
         </SearchBox>
         <SearchButton to = "/search"/>
     </FriendBox>

@@ -6,12 +6,12 @@ import * as baseActions from '../../redux/modules/base';
 import * as userActions from '../../../Auth/redux/modules/user';
 import PropTypes from 'prop-types';
 import storage from '../../../CommonFolder/lib/storage';
-
 class UserMenuContainer extends Component{
 
     static contextTypes = {
         router: PropTypes.object
     }
+
 
     handleSetUserInfo = async() => {
         const {username} = this.props;

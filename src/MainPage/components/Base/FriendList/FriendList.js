@@ -3,8 +3,8 @@ import styled from 'styled-components';
 
 const FriendListBox = styled.div`
 position : fixed;
-width: 18%;
-
+width: 17%;
+margin-right : 10px;
 right : 0;
 height : 100%;
 background: #FFFFFF;

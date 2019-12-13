@@ -1,22 +1,29 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {FriendList,NicknameList} from '../../components/Base/FriendList';
-
+import {bindActionCreators} from 'redux';
+import * as friendActions from '../../redux/modules/friend';
 
 class FriendListContainer extends Component{
-    static defaultProps = {
-        data : []
+
+    componentDidMount(){
+        this.getFriendList();
+    }
+    
+    getFriendList = async() => {
+        const{FriendActions} = this.props;
+        try{
+            await FriendActions.getFriendListInfo();
+        }catch(e){
+            console.log(e);
+        }
+        
     }
 
     render(){
-        const {data} = this.props;
-        const nicknameList = data.map(
-            info => (<NicknameList image={info.image} name= {info.name}/>)
-        );
+        const {friendData} = this.props;
         return(
-            <FriendList>
-                {nicknameList}
-                </FriendList>
+            <NicknameList friends = {friendData} />
             );
     }
 
@@ -24,9 +31,9 @@ class FriendListContainer extends Component{
 
 export default connect(
     (state) => ({
-        friendData : state.friendData
+        friendData : state.friend.get('friend')
     }),
     (dispatch) => ({
-
+        FriendActions: bindActionCreators(friendActions, dispatch)
     })
 )(FriendListContainer);
