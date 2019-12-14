@@ -8,6 +8,7 @@ margin-right : 10px;
 right : 0;
 height : 100%;
 background: #FFFFFF;
+overflow : auto;
 `;
 const FriendListHead = styled.div`
 position: absolute;

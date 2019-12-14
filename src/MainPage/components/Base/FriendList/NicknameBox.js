@@ -4,17 +4,16 @@ import oc from 'open-color';
 import scuize from '../../../../CommonFolder/lib/scuize';
 
 const Box = styled.div`
-position: absolute;
-overflow: auto;
+position: relative;
 top : 60px;
 width: 197.46px;
 flexDirection : column;
 background: #ffffff;
 right : 0;
 left : 0;
-height : 100%;
 margin-left:auto;
 margin-right:auto;
+margin-bottom : 1rem;
 padding-top: 0.5rem;
 padding-bottom: 0.5rem;
 `;

@@ -5,7 +5,7 @@ import FriendList from './FriendList';
 const NicknameList = ({friends}) => {
     const nicknameList = friends.map(
         (friend) => (
-            <NicknameBox  friend={friend}  />
+            <NicknameBox key = {friend.get('username')} friend={friend}  />
         )
     )
     return(
