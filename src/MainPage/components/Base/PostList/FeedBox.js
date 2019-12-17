@@ -9,7 +9,7 @@ import friendImage from '../../../../build/static/images/friend.png';
 import privateImage from '../../../../build/static/images/private.png';
 
 const Box = styled.div`
-width: 100%;
+width: 90%;
 height: 500px;
 background : #ffffff;
 position: relative;

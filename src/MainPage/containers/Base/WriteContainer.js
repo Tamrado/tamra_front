@@ -5,9 +5,28 @@ import {bindActionCreators} from 'redux';
 import * as postActions from '../../redux/modules/post';
 import storage from '../../../CommonFolder/lib/storage';
 class WriteContainer extends Component{
+    
+    state  = {
+        opacity : 1
+    };
+    componentDidMount() {
+        window.addEventListener("scroll", this.handleScroll);
+      }
+      handleScroll = (e) => {
+        const scrollTop =e.srcElement.scrollingElement.scrollTop;
+        this.setState({
+            opacity : 1 - scrollTop / 200
+        });
+        console.log(this.state.opacity);
+        if(this.state.opacity < 0){
+            window.location.href='/';
+        }
 
+        }
+      
+    
     handleWrite = () => {
-        
+
     }
     render(){
         if(!storage.get('loggedInfo')) {
@@ -17,7 +36,7 @@ class WriteContainer extends Component{
         const username = storage.get('loggedInfo').nickname;
         const {handleWrite} = this;
         return (
-            <WriteBox username = {username} onclick = {handleWrite}/>
+            <WriteBox username = {username} onclick = {handleWrite} opacity = {this.state.opacity}/>
         );
     };
 }
