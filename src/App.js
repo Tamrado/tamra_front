@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Home, AuthLogin,AuthRegister, User,UserPage,Post } from './CommonFolder/pages';
-import HeaderContainer from './MainPage/containers/Base/HeaderContainer';
+import { Home, AuthLogin,AuthRegister, User,UserPage,Post ,PostFriendTag} from './pages';
+import HeaderContainer from './containers/Base/HeaderContainer';
 
-import storage from './CommonFolder/lib/storage';
+import storage from './lib/storage';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as userActions from './Auth/redux/modules/user';
+import * as userActions from './redux/modules/user';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css' 
@@ -42,6 +42,7 @@ class App extends Component {
                 <Route path="/@:username/password" component={User}/>
                 <Route path="/@:username/info"component={UserPage}/>
                 <Route path="/post" component={Post}/>
+                <Route path="/post/friendtag" component={PostFriendTag}/>
                 <ToastContainer style={{zIndex: 20}} hideProgressBar={true} position="bottom-right"/>
             </div>
         );
