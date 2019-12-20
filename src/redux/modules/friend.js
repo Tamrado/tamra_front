@@ -12,6 +12,7 @@ export const getFriendAlarmInfo = createAction(GET_FRIEND_ALARM_INFO,FriendAPI.g
 export const getFriendListInfo = createAction(GET_FRIENDLIST_INFO,FriendAPI.getFriendListInfo);
 export const deleteFriendAlarmNotification = createAction(DELETE_FRIEND_ALARM_NOTIFICATION,FriendAPI.deleteFriendAlarmNotification);
 
+
 const initialState = Map({
     friend : List(),
     alarm : List()

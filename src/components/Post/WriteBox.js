@@ -11,6 +11,7 @@ left : 0;
 right : 0;
 z-index: 10;
 display : ${props=>props.display};
+
 `;
 const Fixed = styled.div`
 top: 0;
@@ -171,7 +172,28 @@ background-repeat: no-repeat;
     transform: translateY(3px);
 }
 `;
-const WriteBox = ({username,onclick,opacity,click,display,close}) => (
+const WithBox = styled.div`
+position: absolute;
+width: 349px;
+height: 61px;
+top : 400px;
+right : 0;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+font-size: 24px;
+line-height: 35px;
+display: ${props => props.withdisplay};
+align-items: center;
+text-align: center;
+&:active {
+    /* 마우스 클릭시 아래로 미세하게 움직임 */
+    transform: translateY(3px);
+}
+color: #515250;
+`;
+const WriteBox = ({username,onclick,opacity,click,display,close,withclick,friend,withdisplay}) => {
+    return (
     <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
         <Box>
@@ -187,9 +209,11 @@ const WriteBox = ({username,onclick,opacity,click,display,close}) => (
         <CancelButton onClick = {close} />
         <Button>나만 보기</Button>
         <WriteButton onClick={onclick}>글쓰기</WriteButton>
+        <WithBox withdisplay= {withdisplay} onClick={withclick}>{friend}</WithBox>
         </Box>
         </Fixed>
         </Wrapper>
-);
+    )
+}
 
 export default WriteBox;

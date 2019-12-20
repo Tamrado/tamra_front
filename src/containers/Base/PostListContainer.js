@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import PageWrapper from '../../components/PageWrapper';
 import {FeedList} from '../../components/PostList';
-import {WriteBox,TagList} from '../../components/Post';
+import {WriteBox,TagList,WithList} from '../../components/Post';
 import {bindActionCreators} from 'redux';
 import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
@@ -12,7 +12,10 @@ class PostListContainer extends Component{
     state  = {
         display : 'none',
         writeDisplay : 'none',
-        opacity : 1
+        opacity : 1,
+        withfriend : null,
+        withdisplay : 'none',
+        withfriendDisplay : 'none'
     };
   
     openModal = () => {
@@ -23,6 +26,11 @@ class PostListContainer extends Component{
     openWriteModal = () => {
         this.setState({
             writeDisplay : 'block'
+        })
+    }
+    handleWithBox = () => {
+        this.setState({
+            withfriendDisplay: 'block'
         })
     }
   
@@ -36,6 +44,11 @@ class PostListContainer extends Component{
             writeDisplay : 'none' 
           }); 
       }
+      closeWithBox = () => {
+          this.setState({
+              withfriendDisplay : 'none'
+          });
+      }
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
         this.getFeedList();
@@ -47,6 +60,8 @@ class PostListContainer extends Component{
         });
         if(this.state.opacity < 0){
            this.closeWriteModal();
+           this.closeModal();
+           this.closeWithBox();
         }
 
         }
@@ -54,28 +69,65 @@ class PostListContainer extends Component{
     handleWrite = () => {
 
     }
-    handleFriendInfo = (e) => {
+    handleFriendInfo = async(e) => {
         const{PostActions} = this.props;
         const {id} = e.target;
-        PostActions.setFriendInfo({'id':id,'nickname': e.target.getAttribute('data')});
+        let count = 0;
+        await PostActions.setFriendInfo({'id':id,'nickname': e.target.getAttribute('data-nickname'), 'thumbnail' : e.target.getAttribute('data-thumbnail')});
+        this.setState({
+            withdisplay : 'block'
+        });
+        const{withData} = this.props;
+        console.log(withData.toJS());
+        await withData.toJS().forEach(item => count++);
+       
+        if(count > 1){
+            this.setState({
+                withfriend : withData.toJS()[0].nickname+'님 외 '+String(count-1)+'명과 함께' 
+            });
+        }
+        else{
+            this.setState({
+                withfriend : withData.toJS()[0].nickname+'님과 함께' 
+            });
+        }
         this.closeModal();
     }
     
-    getFeedList = async() => {
+    getFeedList = () => {
         const{PostActions} = this.props;
         const username = storage.get('loggedInfo').username;
         try{
-            await PostActions.getFeedInformation(username);
+            PostActions.getFeedInformation(username);
         }catch(e){
             console.log(e);
         }
         
     }
-
-    handleFriendCancel = () => {
+    
+    handleFriendCancel = async(e) => {
         const{PostActions} = this.props;
         const {id} = e.target;
-        PostActions.removeFriend(id);
+        let count = 0;
+        await PostActions.removeFriend(id);
+        const{withData} = this.props;
+        console.log(withData.toJS());
+        await withData.toJS().forEach(item => count++);
+       
+        if(count > 1){
+            this.setState({
+                withfriend : withData.toJS()[0].nickname+'님 외 '+String(count-1)+'명과 함께' 
+            });
+        }
+        else if(count > 0){
+            this.setState({
+                withfriend : withData.toJS()[0].nickname+'님과 함께' 
+            });
+        }
+        else this.setState({
+            withdisplay : 'none',
+            withfriendDisplay : 'none'
+        });
     }
 
     render(){
@@ -85,15 +137,19 @@ class PostListContainer extends Component{
             return;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {friendData} = this.props;
-        const {opacity,display,writeDisplay} = this.state;
-        const {handleWrite,handleFriendInfo,openModal,closeModal,openWriteModal,closeWriteModal} = this;
+        const {friendData,withData} = this.props;
+        const {opacity,display,writeDisplay,withdisplay,withfriend,withfriendDisplay} = this.state;
+        const {closeWithBox,handleWrite,handleFriendInfo,openModal,closeModal,openWriteModal,closeWriteModal,handleFriendCancel,handleWithBox} = this;
         return(
             <div>
-            <WriteBox username = {username} onclick = {handleWrite} opacity = {opacity} click={openModal} display = {writeDisplay} close = {closeWriteModal}/>
-            <TagList opacity = {opacity} friends = {friendData} onclick = {handleFriendInfo} close={closeModal} display = {display}/>
+            <WriteBox withdisplay = {withdisplay}  withclick = {handleWithBox} friend = {withfriend} username = {username} 
+            onclick = {handleWrite} opacity = {opacity} click={openModal} display = {writeDisplay} close = {closeWriteModal}/>
+            <WithList friend = {withData} opacity = {opacity} display = {withfriendDisplay}
+             cancel = {handleFriendCancel} close={closeWithBox} />
+            <TagList opacity = {opacity} friends = {friendData} onclick = {handleFriendInfo} close={closeModal}
+             display = {display} cancel = {handleFriendCancel}/>
             <PageWrapper>
-            <FeedList feeds={data} username = {username} onclick = {openWriteModal} cancel = {handleFriendCancel} />
+            <FeedList feeds={data} username = {username} onclick = {openWriteModal}  />
             </PageWrapper>
             </div>
         );
@@ -103,6 +159,7 @@ class PostListContainer extends Component{
 export default connect(
     (state) => ({
         data : state.post.get('feed'),
+        withData : state.post.get('friendInfo'),
         friendData : state.friend.get('friend')
     }),
     (dispatch) => ({

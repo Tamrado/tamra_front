@@ -6,21 +6,23 @@ position: absolute;
 width: 90%;
 height: 153px;
 background: #FFFFFF;
+
 `;
 const TextBox = styled.div`
 position: absolute;
-width: 392.95px;
-height: 52.85px;
+width: 90%;
+height: 153px;
 left: 39.56px;
 float : left;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
 font-size: 20px;
-line-height: 35px;
-display: flex;
-align-items: center;
-
+line-height: 50px;
+&:hover {
+    /* 마우스 클릭시 아래로 미세하게 움직임 */
+    transform: translateY(3px);
+}
 color: #515250;
 `; 
 

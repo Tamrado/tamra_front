@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import scuize from '../../lib/scuize';
 
-
 const Box = styled.div`
 position : relative;
 width: 319px;
@@ -52,19 +51,7 @@ background-repeat: no-repeat;
     filter: brightness(105%);
 }
 `; 
-const FriendCancel = styled.div`
-position : absolute;
-width : 19px;
-height : 19px;
-right : 0;
-margin-right : 10%;
-display : none;
-&:hover&:active{
-    display : block;
-}
-
-`;
-const FriendBox = ({friend,onclick,cancel}) => {
+const FriendBox = ({friend,onclick}) => {
     const {
         username,
         nickname,
@@ -72,10 +59,9 @@ const FriendBox = ({friend,onclick,cancel}) => {
     } = friend.toJS();
 
     return (
-        <Box onClick={onclick} data={nickname} id ={username} >
-        <UserImage  id ={username} data={nickname} image = {thumbnail}/>
-        <Nickname  id ={username} data={nickname}>{nickname}</Nickname>
-        <FriendCancel onClick = {cancel}/>
+        <Box onClick={onclick} data-thumbnail = {thumbnail} data-nickname={nickname} id ={username} >
+        <UserImage  id ={username} data-thumbnail = {thumbnail} data-nickname={nickname} image = {thumbnail}/>
+        <Nickname  id ={username} data-thumbnail = {thumbnail} data-nickname={nickname}>{nickname}</Nickname>
     </Box> 
     )
 }

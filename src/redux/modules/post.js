@@ -2,10 +2,12 @@ import { Map,List,fromJS } from 'immutable';
 import { handleActions, createAction } from 'redux-actions';
 import {pender} from 'redux-pender';
 import * as PostAPI from '../../lib/api/post';
+
 const GET_FEED_INFORMATION = 'post/GET_FEED_INFORMATION';
 const SET_FEED_INFORMATION = 'post/SET_FEED_INFORMATION';
 const SET_FRIEND_INFO = 'post/SET_FRIEND_INFO';
 const REMOVE_FRIEND = 'post/REMOVE_FRIEND';
+
 export const removeFriend = createAction(REMOVE_FRIEND);
 export const setFeedInformation = createAction(SET_FEED_INFORMATION);
 export const setFriendInfo = createAction(SET_FRIEND_INFO);
@@ -19,19 +21,26 @@ const initialState = Map({
 });
 
 export default handleActions({
-    [SET_FRIEND_INFO]: (state,action) => 
-        state.update('friendInfo',friendInfo => 
-        friendInfo.push(
-            Map({
-            id : action.payload.id,
-            nickname : action.payload.nickname
-        })
-        )
-    ),
+    [SET_FRIEND_INFO]: (state,action) =>{
+        const index = state.get('friendInfo')
+        .findIndex(item => item.get('id')===action.payload.id);
+        if(index < 0){
+            return state.update('friendInfo',friendInfo => 
+            friendInfo.push(
+                Map({
+                    id : action.payload.id,
+                    nickname : action.payload.nickname,
+                    thumbnail : action.payload.thumbnail
+                })
+            )
+        );
+        }
+        return state.set('friendInfo',state.get('friendInfo'));
+            },
     [REMOVE_FRIEND]:(state,action)=>{
         const index = state.get('friendInfo')
         .findIndex(item => item.get('id')===action.payload.id);
-        state.deleteIn(['friendInfo',index]);
+        return state.deleteIn(['friendInfo',index]);
     },
     [SET_FEED_INFORMATION] : (state,action) =>{
         console.log(state.get('nextFeed'));

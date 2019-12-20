@@ -10,10 +10,10 @@ class FriendListContainer extends Component{
         this.getFriendList();
     }
     
-    getFriendList = async() => {
+    getFriendList = () => {
         const{FriendActions} = this.props;
         try{
-            await FriendActions.getFriendListInfo();
+            FriendActions.getFriendListInfo();
         }catch(e){
             console.log(e);
         }
