@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import oc from 'open-color';
 
 const Wrapper = styled.div`
-    background: ${oc.gray[1]};
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
     border-bottom: 1px solid ${oc.gray[3]};
-    padding-right: 1rem;
-    padding-left: 1rem;
+    text-align: center;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     color: ${oc.gray[9]};

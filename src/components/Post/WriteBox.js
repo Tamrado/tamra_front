@@ -41,7 +41,6 @@ max-height : 300px;
 background: rgba(18,184,134,0.05);
 top: 80px;
 outline: none;
-overflow-y: auto;
 user-select: text;
 white-space: pre-wrap;
 overflow-wrap: break-word;
@@ -64,37 +63,26 @@ border : none;
     content : attr(aria-label);
     color : #90949c;
 }
+overflow-y: auto;
+&::-webkit-scrollbar-track
+{
+	border-radius: 20px;
+	background-color: #FFFFFF;
+}
+&::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #FFFFFF;
+}
 
-`;
-const PhotoBox = styled.div`
-position: absolute;
-width : 200px;
-height: 200px;
-top: 80px;
-left: 100px;
-background: rgba(18, 184, 134, 0.05);
-`
-const PhotoText = styled.div`
-position: absolute;
-width : 100%;
-height: 100%;
- text-align:center;
- line-height: 7.5;
- margin : auto;
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 24px;
-align-items: center;
-color: #000000;
-`;
-const Photo = styled.input`
-position: absolute;
-overflow: hidden;
-width : 100%;
-height: 100%;
-opacity : 0;
-`
+&::-webkit-scrollbar-thumb
+{
+	border-radius: 20px;
+	background-color : rgba(18, 184, 134, 0.1);
+}
+
+}`;
+
 const FriendButton = styled(Link)`
 position: absolute;
 width: 172px;
@@ -192,17 +180,12 @@ text-align: center;
 }
 color: #515250;
 `;
-const WriteBox = ({username,onclick,opacity,click,display,close,withclick,friend,withdisplay}) => {
+const WriteBox = ({username,onclick,opacity,click,display,close,withclick,friend,withdisplay,children}) => {
     return (
     <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
         <Box>
-            <PhotoBox>
-                <PhotoText>
-                +
-                </PhotoText>
-        <Photo type = "file"/>
-        </PhotoBox>
+            {children}
         <Text role = "textbox" spellcheck = "true" aria-autocomplete="list" data-content = "true"
         contentEditable = "true" aria-multiline="true" aria-label = {`${username}님 무슨 일이 있으셨나요?`}></Text>
         <FriendButton onClick = {click}>친구 태그하기</FriendButton>

@@ -6,8 +6,10 @@ const MenuItem = styled.div`
     & + & {
         border-top: 1px solid ${oc.gray[3]};
     }
+    font-family: Noto Sans KR;
+font-style: normal;
+text-align: center;
     
-    padding-left: 1rem;
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     color: ${oc.gray[7]};

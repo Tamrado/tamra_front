@@ -14,10 +14,12 @@ import hoverFriendRequestImage from '../../build/static/images/iconmonstr-user-2
 import hoverMypageImage from '../../build/static/images/iconmonstr-gear-10-32 (1).png';
 import UserMenuContainer from './UserMenuContainer';
 class HeaderContainer extends Component {
-
     handleThumbnailClick = () => {
         const {BaseActions,menuvisible} = this.props;
-        if(!menuvisible)BaseActions.setUserMenuVisibility(true);
+        
+        if(!menuvisible)
+            BaseActions.setUserMenuVisibility(true);
+        
         else BaseActions.setUserMenuVisibility(false);
     }
 

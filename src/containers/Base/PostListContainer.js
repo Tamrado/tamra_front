@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
+import { List } from 'immutable';
 import {connect} from 'react-redux';
 import PageWrapper from '../../components/PageWrapper';
 import {FeedList} from '../../components/PostList';
-import {WriteBox,TagList,WithList} from '../../components/Post';
+import {WriteBox,TagList,WithList,ImageList} from '../../components/Post';
 import {bindActionCreators} from 'redux';
 import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
@@ -15,7 +16,8 @@ class PostListContainer extends Component{
         opacity : 1,
         withfriend : null,
         withdisplay : 'none',
-        withfriendDisplay : 'none'
+        withfriendDisplay : 'none',
+        filelist : List()
     };
   
     openModal = () => {
@@ -104,6 +106,11 @@ class PostListContainer extends Component{
         }
         
     }
+    handleImageCancel = (e) => {
+        const{PostActions} = this.props;
+        const {id} = e.target;
+        PostActions.removeImage(id);
+    }
     
     handleFriendCancel = async(e) => {
         const{PostActions} = this.props;
@@ -130,6 +137,22 @@ class PostListContainer extends Component{
         });
     }
 
+    handleImageChange = (e) => {
+        e.preventDefault();
+        const {PostActions} = this.props;
+        let reader = new FileReader();
+        let file = e.target.files[0];
+        reader.onloadend = () => {
+            const {filelist} = this.state;
+            PostActions.setImage({'url' : reader.result});
+            console.log(filelist);
+            this.setState({
+                filelist : filelist.concat({file})
+            });
+        }
+        reader.readAsDataURL(file);
+      }
+
     render(){
         const {data} = this.props;
         if(!storage.get('loggedInfo')) {
@@ -137,13 +160,17 @@ class PostListContainer extends Component{
             return;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {friendData,withData} = this.props;
+        const {friendData,withData,images} = this.props;
         const {opacity,display,writeDisplay,withdisplay,withfriend,withfriendDisplay} = this.state;
-        const {closeWithBox,handleWrite,handleFriendInfo,openModal,closeModal,openWriteModal,closeWriteModal,handleFriendCancel,handleWithBox} = this;
+        const {handleImageChange,closeWithBox,handleWrite,handleFriendInfo,openModal,closeModal,openWriteModal,
+            closeWriteModal,handleFriendCancel,handleWithBox,handleImageCancel} = this;
         return(
             <div>
             <WriteBox withdisplay = {withdisplay}  withclick = {handleWithBox} friend = {withfriend} username = {username} 
-            onclick = {handleWrite} opacity = {opacity} click={openModal} display = {writeDisplay} close = {closeWriteModal}/>
+            onclick = {handleWrite} opacity = {opacity} click={openModal} display = {writeDisplay} close = {closeWriteModal}>
+                <ImageList image = {images} cancel = {handleImageCancel} change = {handleImageChange}/>
+                </WriteBox>
+            
             <WithList friend = {withData} opacity = {opacity} display = {withfriendDisplay}
              cancel = {handleFriendCancel} close={closeWithBox} />
             <TagList opacity = {opacity} friends = {friendData} onclick = {handleFriendInfo} close={closeModal}
@@ -160,7 +187,8 @@ export default connect(
     (state) => ({
         data : state.post.get('feed'),
         withData : state.post.get('friendInfo'),
-        friendData : state.friend.get('friend')
+        friendData : state.friend.get('friend'),
+        images : state.post.get('image')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch),
