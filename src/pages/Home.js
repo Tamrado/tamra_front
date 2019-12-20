@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PageWrapper from '../components/PageWrapper';
 import storage from '../lib/storage';
-import {FriendListContainer,PostListContainer} from '../containers/Base';
+import {FriendListContainer,PostListContainer,WriteContainer} from '../containers/Base';
 class Home extends Component {
 
     componentDidMount(){
@@ -16,10 +16,10 @@ class Home extends Component {
     }
     render() {
         return (
-            <PageWrapper>
+            <div>
                 <PostListContainer/>
                 <FriendListContainer/>
-            </PageWrapper>
+            </div>
         );
     }
 }

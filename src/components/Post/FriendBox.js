@@ -52,8 +52,19 @@ background-repeat: no-repeat;
     filter: brightness(105%);
 }
 `; 
+const FriendCancel = styled.div`
+position : absolute;
+width : 19px;
+height : 19px;
+right : 0;
+margin-right : 10%;
+display : none;
+&:hover&:active{
+    display : block;
+}
 
-const FriendBox = ({friend,onClick}) => {
+`;
+const FriendBox = ({friend,onclick,cancel}) => {
     const {
         username,
         nickname,
@@ -61,9 +72,10 @@ const FriendBox = ({friend,onClick}) => {
     } = friend.toJS();
 
     return (
-        <Box onClick={onClick}>
-        <UserImage image = {thumbnail}/>
-        <Nickname>{nickname}</Nickname>
+        <Box onClick={onclick} data={nickname} id ={username} >
+        <UserImage  id ={username} data={nickname} image = {thumbnail}/>
+        <Nickname  id ={username} data={nickname}>{nickname}</Nickname>
+        <FriendCancel onClick = {cancel}/>
     </Box> 
     )
 }

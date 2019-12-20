@@ -5,6 +5,7 @@ const FriendListBox = styled.div`
 position : fixed;
 width: 180px;
 margin-right : 10px;
+top: 74.112px;
 right : 0;
 height : 100%;
 background: #FFFFFF;

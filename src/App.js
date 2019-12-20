@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Home, AuthLogin,AuthRegister, User,UserPage,Post ,PostFriendTag} from './pages';
+import { Home, AuthLogin,AuthRegister, User,UserPage} from './pages';
 import HeaderContainer from './containers/Base/HeaderContainer';
 
 import storage from './lib/storage';
@@ -41,8 +41,6 @@ class App extends Component {
                 <Route path="/auth/Register" component={AuthRegister}/>
                 <Route path="/@:username/password" component={User}/>
                 <Route path="/@:username/info"component={UserPage}/>
-                <Route path="/post" component={Post}/>
-                <Route path="/post/friendtag" component={PostFriendTag}/>
                 <ToastContainer style={{zIndex: 20}} hideProgressBar={true} position="bottom-right"/>
             </div>
         );

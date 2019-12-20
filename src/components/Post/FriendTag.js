@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import searchButton from '../../build/static/images/iconmonstr-magnifier-1-32.png';
+import cancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24 (1).png';
+import hoverCancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24.png';
+import hoverSearchButton from '../../build/static/images/iconmonstr-magnifier-1-32 (1).png';
 const Wrapper = styled.div`
 position: absolute;
 left: 20px;
@@ -8,6 +11,7 @@ top: 72px;
 bottom : 0%;
 right : 0;
 z-index: 20;
+display : ${props=>props.display};
 `;
 const Fixed = styled.div`
 width: 1100px;
@@ -68,24 +72,52 @@ font-size: 24px;
 line-height: 38px;
 font-style: normal;
 `;
-const SearchButton = styled.img`
+const SearchButton = styled.div`
 position: absolute;
 width: 32px;
 height: 32px;
 right : 10px;
 margin-right : 30px;
 top: 51px;
+background-image: url(${searchButton});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+&:hover {
+    background-image: url(${hoverSearchButton});
+}
+&:active {
+    /* 마우스 클릭시 아래로 미세하게 움직임 */
+    transform: translateY(3px);
+}
 `;
+const CancelButton = styled.div`
+width: 20px;
+height: 20px;
+top : 10px;
+z-index : 20;
+right : 30px;
+position : absolute;
+background-image: url(${cancelButton});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
 
-const FriendTag = ({opacity,children}) => (
-    <Wrapper>
+&:active {
+    /* 마우스 클릭시 아래로 미세하게 움직임 */
+    transform: translateY(3px);
+}
+`;
+const FriendTag = ({opacity,children,close,display}) => (
+    <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
             <TagBox>
+                <CancelButton  onClick = {close}/>
                 <Header>
                     <HeaderText>친구 검색</HeaderText>
                     <SearchBox spellcheck = "true" aria-autocomplete="list" data-content = "true"
                      contentEditable = "true"/>
-                    <SearchButton src = {searchButton} />
+                    <SearchButton  />
                 </Header>
                 {children}
             </TagBox>

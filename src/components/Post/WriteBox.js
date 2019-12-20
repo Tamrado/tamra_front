@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import cancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24 (1).png';
 import { Link } from 'react-router-dom';
+import cancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24 (1).png';
 import hoverCancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24.png';
 const Wrapper = styled.div`
 position: absolute;
@@ -10,6 +10,7 @@ bottom : 0%;
 left : 0;
 right : 0;
 z-index: 10;
+display : ${props=>props.display};
 `;
 const Fixed = styled.div`
 top: 0;
@@ -152,7 +153,7 @@ background: #FFFFFF;
 border: 2px solid #0CA678;
 box-sizing: border-box;
 `;
-const CancelButton = styled(Link)`
+const CancelButton = styled.div`
 width: 20px;
 height: 20px;
 top : 26px;
@@ -170,8 +171,8 @@ background-repeat: no-repeat;
     transform: translateY(3px);
 }
 `;
-const WriteBox = ({username,onclick,opacity}) => (
-    <Wrapper>
+const WriteBox = ({username,onclick,opacity,click,display,close}) => (
+    <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
         <Box>
             <PhotoBox>
@@ -182,8 +183,8 @@ const WriteBox = ({username,onclick,opacity}) => (
         </PhotoBox>
         <Text role = "textbox" spellcheck = "true" aria-autocomplete="list" data-content = "true"
         contentEditable = "true" aria-multiline="true" aria-label = {`${username}님 무슨 일이 있으셨나요?`}></Text>
-        <FriendButton to = "/post/friendtag">친구 태그하기</FriendButton>
-        <CancelButton to = "/"/>
+        <FriendButton onClick = {click}>친구 태그하기</FriendButton>
+        <CancelButton onClick = {close} />
         <Button>나만 보기</Button>
         <WriteButton onClick={onclick}>글쓰기</WriteButton>
         </Box>

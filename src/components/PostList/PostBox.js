@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-const Box = styled(Link)`
+const Box = styled.div`
 position: absolute;
 width: 90%;
 height: 153px;
@@ -24,9 +24,9 @@ align-items: center;
 color: #515250;
 `; 
 
-const PostBox = ({username}) => (
-    <Box to="/post">
-        <TextBox>{username}님, 무슨 일이 있으셨나요?</TextBox>
+const PostBox = ({username,onclick}) => (
+    <Box onClick={onclick}>
+        <TextBox >{username}님, 무슨 일이 있으셨나요?</TextBox>
     </Box>
 );
 export default PostBox;

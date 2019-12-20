@@ -2,13 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import FeedBox from './FeedBox';
 import PostBox from './PostBox';
-
 const Box = styled.div`
 position : absolute;
 width : 80%;
 
 `;
-const FeedList = ({feeds,username}) => {
+const FeedList = ({feeds,username,onclick}) => {
     const feedList = feeds.map(
         (feed) => (
             <FeedBox key = {feed.get('postId')}  feed={feed}/>
@@ -16,7 +15,7 @@ const FeedList = ({feeds,username}) => {
     )
     return(
         <Box>
-            <PostBox username = {username}/>
+            <PostBox username = {username} onclick = {onclick} />
             {feedList}
         </Box>
     );
