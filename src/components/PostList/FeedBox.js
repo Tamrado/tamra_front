@@ -179,12 +179,12 @@ color: #000000;
 const FeedBox = ({feed}) => {
     const {
         postId,
-        thumbnail,
+        profile,
         author,
-        lastUpdate,
+        timestamp,
         showLevel,
         content,
-        comment,
+        totalComment,
         number
     } = feed.toJS();
   
@@ -197,13 +197,13 @@ const FeedBox = ({feed}) => {
 return(
     <Box>
         <NickNameBox>
-            <Profile thumbnail = {thumbnail}/>
+            <Profile thumbnail = {profile}/>
             <NickName>{author}</NickName>
             <ViewBox>
-            <Time>{lastUpdate}</Time>
+            <Time>{timestamp}</Time>
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
            { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
-           { `${showLevel}` === 'friend' && <ViewPhase showLevel ={friendImage} />}
+           { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
@@ -211,7 +211,7 @@ return(
         </Feed>
         <FeedSubMenu>
             <LikeImage/><LikeNumber> {number}</LikeNumber>
-            <Comment>댓글 {comment}</Comment>
+            <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
     )

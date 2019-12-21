@@ -8,8 +8,8 @@ import {bindActionCreators} from 'redux';
 import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
 import storage from '../../lib/storage';
+import ShowLevelMenu from '../../components/Post/ShowLevelMenu';
 class PostListContainer extends Component{
-
     state  = {
         display : 'none',
         writeDisplay : 'none',
@@ -17,7 +17,9 @@ class PostListContainer extends Component{
         withfriend : null,
         withdisplay : 'none',
         withfriendDisplay : 'none',
-        filelist : List()
+        filelist : List(),
+        showLevelDisplay : 'none',
+        level : '전체 공개'
     };
   
     openModal = () => {
@@ -33,6 +35,11 @@ class PostListContainer extends Component{
     handleWithBox = () => {
         this.setState({
             withfriendDisplay: 'block'
+        })
+    }
+    openShowLevel = () => {
+        this.setState({
+            showLevelDisplay : 'block'
         })
     }
   
@@ -51,12 +58,20 @@ class PostListContainer extends Component{
               withfriendDisplay : 'none'
           });
       }
+      closeShowLevel = () => {
+        this.setState({
+            showLevelDisplay : 'none'
+        })
+    }
+     
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
         this.getFeedList();
       }
       handleScroll = (e) => {
         const scrollTop =e.srcElement.scrollingElement.scrollTop;
+        const { innerHeight } = window;
+      const { scrollHeight } = document.body;
         this.setState({
             opacity : 1 - scrollTop / 400
         });
@@ -65,11 +80,16 @@ class PostListContainer extends Component{
            this.closeModal();
            this.closeWithBox();
         }
-
+      if ((innerHeight + scrollTop) > scrollHeight) {
+        this.getFeedList();
         }
+      }
     
-    handleWrite = () => {
-
+    handleWriteBox = (e) => {
+        const {PostActions} = this.props;
+        const {innerText} = e.target;
+        
+        PostActions.setWrittenData(innerText);
     }
     handleFriendInfo = async(e) => {
         const{PostActions} = this.props;
@@ -80,7 +100,6 @@ class PostListContainer extends Component{
             withdisplay : 'block'
         });
         const{withData} = this.props;
-        console.log(withData.toJS());
         await withData.toJS().forEach(item => count++);
        
         if(count > 1){
@@ -96,13 +115,18 @@ class PostListContainer extends Component{
         this.closeModal();
     }
     
-    getFeedList = () => {
-        const{PostActions} = this.props;
-        const username = storage.get('loggedInfo').username;
-        try{
-            PostActions.getFeedInformation(username);
-        }catch(e){
-            console.log(e);
+    getFeedList = async() => {
+        const{PostActions,page,isTruePost} = this.props;
+        if(isTruePost){
+            const username = storage.get('loggedInfo').username;
+            try{
+                await PostActions.getFeedInformation(username,page);
+                await PostActions.addPage();
+            }catch(e){
+                console.log(e);
+               await PostActions.setFalsePost();
+                return;
+            }
         }
         
     }
@@ -153,30 +177,60 @@ class PostListContainer extends Component{
         reader.readAsDataURL(file);
       }
 
+      handleShowClick = () => {
+          const {showLevelDisplay} = this.state;
+          if(showLevelDisplay === 'none')this.openShowLevel();
+          else this.closeShowLevel();
+      }
+
+      handleLevelClick = (e) => {
+          const {id} = e.target;
+          const {PostActions} = this.props;
+          PostActions.setShowLevel({showLevel : id});
+          if(id === 'public') this.setState({
+              level : '전체 공개'
+          });
+          else if(id === 'private') this.setState({
+              level : '나만 보기'
+          });
+          else this.setState({
+              level : '친구 공개'
+          })
+          this.closeShowLevel();
+      }
+
     render(){
         const {data} = this.props;
+        const style = {
+            lineHeight: '160%'
+        };
         if(!storage.get('loggedInfo')) {
             window.location.href = '/auth/Login';
             return;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {friendData,withData,images} = this.props;
-        const {opacity,display,writeDisplay,withdisplay,withfriend,withfriendDisplay} = this.state;
-        const {handleImageChange,closeWithBox,handleWrite,handleFriendInfo,openModal,closeModal,openWriteModal,
-            closeWriteModal,handleFriendCancel,handleWithBox,handleImageCancel} = this;
+        const {friendData,withData,images,writtenData} = this.props;
+        const {opacity,display,writeDisplay,withdisplay,withfriend,withfriendDisplay,showLevelDisplay,level} = this.state;
+        const {handleImageChange,closeWithBox,handleWriteBox,handleFriendInfo,openModal,closeModal,openWriteModal,
+            closeWriteModal,handleFriendCancel,handleWithBox,handleImageCancel,handleLevelClick,handleShowClick} = this;
         return(
             <div>
             <WriteBox withdisplay = {withdisplay}  withclick = {handleWithBox} friend = {withfriend} username = {username} 
-            onclick = {handleWrite} opacity = {opacity} click={openModal} display = {writeDisplay} close = {closeWriteModal}>
+            onclick = {handleWriteBox} opacity = {opacity} click={openModal} display = {writeDisplay} 
+            close = {closeWriteModal} showClick = {handleShowClick} showLevel={level} >
+                <ShowLevelMenu showDisplay = {showLevelDisplay} onclick = {handleLevelClick}/>
                 <ImageList image = {images} cancel = {handleImageCancel} change = {handleImageChange}/>
                 </WriteBox>
-            
             <WithList friend = {withData} opacity = {opacity} display = {withfriendDisplay}
              cancel = {handleFriendCancel} close={closeWithBox} />
             <TagList opacity = {opacity} friends = {friendData} onclick = {handleFriendInfo} close={closeModal}
              display = {display} cancel = {handleFriendCancel}/>
             <PageWrapper>
-            <FeedList feeds={data} username = {username} onclick = {openWriteModal}  />
+            <FeedList feeds={data} username = {username} onclick = {openWriteModal} content ={
+                writtenData.split('\n').map( line => {
+            return (<div style={style} >{line}<br/></div>)
+          })
+        } />
             </PageWrapper>
             </div>
         );
@@ -188,7 +242,11 @@ export default connect(
         data : state.post.get('feed'),
         withData : state.post.get('friendInfo'),
         friendData : state.friend.get('friend'),
-        images : state.post.get('image')
+        images : state.post.get('image'),
+        writtenData : state.post.get('writtenData'),
+        page : state.post.get('page'),
+        isTruePost : state.post.get('isTruePost'),
+        showLevel : state.post.get('showLevel')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch),

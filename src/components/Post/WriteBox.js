@@ -102,7 +102,7 @@ border: 2px solid rgba(196, 196, 196, 0.75);
 box-sizing: border-box;
 border-radius: 10px;
 &:hover{
-    border: 2px solid #12B886;
+    border: 2px solid #15AABF;
 }
 `;
 const Button = styled.div`
@@ -122,7 +122,8 @@ border: 2px solid rgba(196, 196, 196, 0.75);
 box-sizing: border-box;
 border-radius: 10px;
 &:hover{
-    border: 2px solid #12B886;
+    border: 2px solid #15AABF;
+    color : #15AABF;
 }
 `;
 const WriteButton = styled.div`
@@ -180,18 +181,18 @@ text-align: center;
 }
 color: #515250;
 `;
-const WriteBox = ({username,onclick,opacity,click,display,close,withclick,friend,withdisplay,children}) => {
+const WriteBox = ({showLevel,username,onclick,opacity,click,display,close,withclick,friend,withdisplay,children,showClick}) => {
     return (
     <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
         <Box>
             {children}
         <Text role = "textbox" spellcheck = "true" aria-autocomplete="list" data-content = "true"
-        contentEditable = "true" aria-multiline="true" aria-label = {`${username}님 무슨 일이 있으셨나요?`}></Text>
+        contentEditable = "true" aria-multiline="true" aria-label = {`${username}님 무슨 일이 있으셨나요?`} onInput={onclick}></Text>
         <FriendButton onClick = {click}>친구 태그하기</FriendButton>
         <CancelButton onClick = {close} />
-        <Button>나만 보기</Button>
-        <WriteButton onClick={onclick}>글쓰기</WriteButton>
+        <Button onClick = {showClick}>{showLevel}</Button>
+        <WriteButton >글쓰기</WriteButton>
         <WithBox withdisplay= {withdisplay} onClick={withclick}>{friend}</WithBox>
         </Box>
         </Fixed>

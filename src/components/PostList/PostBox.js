@@ -11,8 +11,9 @@ background: #FFFFFF;
 const TextBox = styled.div`
 position: absolute;
 width: 90%;
-height: 153px;
+max-height: 153px;
 left: 39.56px;
+overflow : hidden;
 float : left;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -24,11 +25,12 @@ line-height: 50px;
     transform: translateY(3px);
 }
 color: #515250;
+content : attr(placeholder);
 `; 
 
-const PostBox = ({username,onclick}) => (
+const PostBox = ({content,username,onclick}) => (
     <Box onClick={onclick}>
-        <TextBox >{username}님, 무슨 일이 있으셨나요?</TextBox>
+        <TextBox placeholder = {`${username}님, 무슨 일이 있으셨나요?`} >{content}</TextBox>
     </Box>
 );
 export default PostBox;

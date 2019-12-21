@@ -7,15 +7,15 @@ position : absolute;
 width : 80%;
 
 `;
-const FeedList = ({feeds,username,onclick}) => {
+const FeedList = ({feeds,username,onclick,content}) => {
     const feedList = feeds.map(
         (feed) => (
-            <FeedBox key = {feed.get('postId')}  feed={feed}/>
+            feed && <FeedBox key = {feed.get('postId')}  feed={feed}/>
         )
     )
     return(
         <Box>
-            <PostBox username = {username} onclick = {onclick} />
+            <PostBox username = {username} onclick = {onclick} content={content}/>
             {feedList}
         </Box>
     );
