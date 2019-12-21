@@ -34,6 +34,10 @@ text-align: center;
 letter-spacing: 0.05em;
 background : #ffffff;
 color: #000000;
+&:hover{
+    border: 2px solid #15AABF;
+    color : #15AABF;
+}
 
 `;
 const ShowLevelMenu = ({onclick,showDisplay}) => (

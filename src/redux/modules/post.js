@@ -25,21 +25,17 @@ export const setImage = createAction(SET_IMAGE);
 export const removeImage = createAction(REMOVE_IMAGE);
 export const getFeedInformation = createAction(GET_FEED_INFORMATION,PostAPI.getFeedInformation);
 
-if(!storage.get('loggedInfo'))
-    window.location.href = '/auth/Login';
-
-const nickname = storage.get('loggedInfo').nickname;
-
 const initialState = Map({
     friendInfo: List(),
     feed : List(),
     page : 1,
     isTruePost : true,
     image : List(),
-    writtenData : nickname + '님 무슨 일이 있었나요?',
+    writtenData : '',
     showLevel : ''
     
 });
+
 
 export default handleActions({
     [SET_SHOW_LEVEL] : (state,action) => state.set('showLevel',action.payload.showLevel),

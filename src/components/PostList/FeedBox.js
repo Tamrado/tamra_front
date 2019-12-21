@@ -102,7 +102,25 @@ top: 91px;
 
 border: 2px solid #12B886;
 `;
-
+const FeedImage = styled.div`
+position : absolute;
+width: 100%;
+display : flex;
+flex-direction: row;
+padding-left : 5rem;
+padding-right : 5rem;
+height: 330px;
+top : 120px;
+word-break: normal;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+font-size: 20px;
+line-height: 28px;
+align-items: center;
+text-align: center;
+letter-spacing: 0.05em;
+`;
 const Feed = styled.div`
 position : absolute;
 width: 100%;
@@ -119,6 +137,38 @@ line-height: 28px;
 align-items: center;
 text-align: center;
 letter-spacing: 0.05em;
+`;
+const Image = styled.div`
+position: relative;
+overflow: hidden;
+width : 290px;
+height : 290px;
+display : block;
+background-image : url(${props => props.src});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+& + & {
+    margin-left: 10px;
+}
+`;
+const ImageCount = styled.div`
+position : absolute;
+overflow: hidden;
+width : 290px;
+height : 290px;
+display : block;
+background: rgba(196, 196, 196, 0.75);
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 96px;
+line-height: 270px;
+
+align-items: center;
+text-align: center;
+
+color: #FFFFFF;
 `;
 const FeedSubMenu = styled.div`
 position : absolute;
@@ -153,9 +203,6 @@ background-position: center;
 background-repeat: no-repeat;
 &:hover {
     background-image: url(${clickLike});
-    background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
 }
 `;
 const Comment = styled.div`
@@ -176,7 +223,7 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({feed}) => {
+const FeedBox = ({feed,count}) => {
     const {
         postId,
         profile,
@@ -185,6 +232,7 @@ const FeedBox = ({feed}) => {
         showLevel,
         content,
         totalComment,
+        files,
         number
     } = feed.toJS();
   
@@ -207,8 +255,22 @@ return(
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
-        <Feed>{content}
-        </Feed>
+        { !`${files}` &&<Feed>{content}</Feed>}
+        {`${files}` && count > 3 && <FeedImage>
+            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}>
+                <ImageCount>
+                   +{`${count}` - 3}
+                </ImageCount></Image>
+            </FeedImage>}
+        {`${files}` && count == 3 && <FeedImage>
+            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}/>
+            </FeedImage>}
+            {`${files}` && count === 2 && <FeedImage>
+            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/>
+            </FeedImage>}
+            {`${files}` && count === 1 && <FeedImage>
+            <Image src={files[0].thumbnail}/>
+            </FeedImage>}
         <FeedSubMenu>
             <LikeImage/><LikeNumber> {number}</LikeNumber>
             <Comment>댓글 {totalComment}</Comment>

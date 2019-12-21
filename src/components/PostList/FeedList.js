@@ -9,9 +9,9 @@ width : 80%;
 `;
 const FeedList = ({feeds,username,onclick,content}) => {
     const feedList = feeds.map(
-        (feed) => (
-            feed && <FeedBox key = {feed.get('postId')}  feed={feed}/>
-        )
+        (feed) => {
+            return feed && <FeedBox key = {feed.get('postId')} count = {feed.get('files').size} feed={feed}/>
+        }
     )
     return(
         <Box>
