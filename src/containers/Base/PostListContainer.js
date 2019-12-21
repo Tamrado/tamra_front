@@ -170,7 +170,6 @@ class PostListContainer extends Component{
         reader.onloadend = () => {
             const {filelist} = this.state;
             PostActions.setImage({'url' : reader.result});
-            console.log(filelist);
             this.setState({
                 filelist : filelist.concat({file})
             });

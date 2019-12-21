@@ -30,7 +30,7 @@ class UserMenuContainer extends Component{
         }
 
         storage.remove('loggedInfo');
-        window.location.href='/';
+        window.location.href='/auth/Login';
     }
 
     render(){

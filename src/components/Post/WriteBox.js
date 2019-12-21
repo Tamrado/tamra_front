@@ -103,14 +103,17 @@ box-sizing: border-box;
 border-radius: 10px;
 &:hover{
     border: 2px solid #15AABF;
+    color : #15AABF;
 }
 `;
-const Button = styled.div`
+const Button = styled(Link)`
 position: absolute;
 width: 152px;
 height: 26px;
 font-size: 15px;
+text-decoration:none;
 display: block;
+color: #000000;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;

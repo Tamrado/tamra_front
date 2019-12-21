@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import oc from 'open-color';
 import like from '../../build/static/images/iconmonstr-smiley-thin-32.png';
 import clickLike from '../../build/static/images/iconmonstr-smiley-8-32.png';
 import scuize from '../../lib/scuize';
@@ -150,6 +149,9 @@ background-position: center;
 background-repeat: no-repeat;
 & + & {
     margin-left: 10px;
+}
+&:hover {
+    filter: brightness(105%);
 }
 `;
 const ImageCount = styled.div`

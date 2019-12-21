@@ -18,12 +18,24 @@ background-repeat: no-repeat;
 &:active {
     background-image: url(${props => props.hoverimg});
 }
-
-
 `;
-const Setting = ({image,onclick,size,hoverimg}) => (
+const AlarmNum = styled.div`
+position: absolute;
+    width: 15px;
+    align-items: center;
+    text-align: center;
+    height: 15px;
+    top: 7px;
+    border-radius: 50%;
+    background: #FF0404;
+    line-height: 15px;
+    margin-left : 15px;
+    display : ${props => props.visible};
+`;
+const Setting = ({image,onclick,size,hoverimg,alarmNum,resultvisible}) => (
     <div>
-    <SettingImage src = {image} size = {size} onClick = {onclick} hoverimg={hoverimg} />
+    <SettingImage src = {image} size = {size} onClick = {onclick} hoverimg={hoverimg}/>
+    <AlarmNum visible = {resultvisible}>{alarmNum}</AlarmNum>
     </div>
 );
 

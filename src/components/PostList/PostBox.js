@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-const Box = styled.div`
+const Box = styled(Link)`
 position: absolute;
 width: 90%;
 height: 153px;
@@ -12,6 +12,7 @@ const TextBox = styled.div`
 position: absolute;
 width: 90%;
 max-height: 153px;
+height: 153px;
 left: 39.56px;
 overflow : hidden;
 float : left;
@@ -19,7 +20,7 @@ font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
 font-size: 20px;
-line-height: 50px;
+line-height: 153px;
 &:hover {
     /* 마우스 클릭시 아래로 미세하게 움직임 */
     transform: translateY(3px);

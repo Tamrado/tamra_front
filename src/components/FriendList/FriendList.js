@@ -7,13 +7,27 @@ width: 180px;
 margin-right : 10px;
 top: 74.112px;
 right : 0;
-height : 100%;
+height : 88%;
 background: #FFFFFF;
-overflow : auto;
--ms-overflow-style: none; // IE에서 스크롤바 감춤
-  &::-webkit-scrollbar { 
-    display: none !important; // 윈도우 크롬 등
-  }
+
+overflow-y: auto;
+
+&::-webkit-scrollbar-track
+{
+	border-radius: 20px;
+	background-color: #FFFFFF;
+}
+&::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #FFFFFF;
+}
+
+&::-webkit-scrollbar-thumb
+{
+	border-radius: 20px;
+	background-color : rgba(18, 184, 134, 0.1);
+}
 `;
 const FriendListHead = styled.div`
 position: fixed;
