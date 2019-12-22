@@ -13,6 +13,10 @@ background: #ffffff;
 margin-bottom : 1rem;
 padding-top: 0.5rem;
 padding-bottom: 0.5rem;
+&:hover{
+    background:rgba(196, 196, 196,0.8);
+}
+
 `;
 const Nickname = styled.div`
 position : absolute;
@@ -52,7 +56,7 @@ background-repeat: no-repeat;
 `; 
 
 
-const NicknameBox = ({friend}) => {
+const NicknameBox = ({friend,onclick}) => {
     const {
         username,
         nickname,
@@ -60,9 +64,9 @@ const NicknameBox = ({friend}) => {
     } = friend.toJS();
 
 return(
-    <Box>
-        <UserImage image = {thumbnail}/>
-        <Nickname>{nickname}</Nickname>
+    <Box onClick = {onclick} id = {username} >
+        <UserImage id = {username} image = {thumbnail}/>
+        <Nickname id = {username}>{nickname}</Nickname>
     </Box>
     )
 }

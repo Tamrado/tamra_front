@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
+import { shadow } from '../../lib/styleUtils';
 const Box = styled.div`
 position: absolute;
-width: 932px;
+width: 782px;
 height: 500px;
 right: 16%;
 top: 70px;
 display : ${props => props.visible};
 background: #FFFFFF;
+${shadow(1)};
 `;
 const Triangle = styled.div`
 max-width: 16px;
@@ -44,7 +46,7 @@ color: #000000;
 `;
 const Line = styled.div`
 position: absolute;
-width: 932px;
+width: 782px;
 height: 0px;
 left: 0px;
 top: 64px;
@@ -54,26 +56,7 @@ const Alarm = styled(Link)`
 position: absolute;
 width: 100px;
 height: 45px;
-left: 706px;
-top: 15px;
-text-decoration:none;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 15px;
-line-height: 29px;
-display: flex;
-align-items: center;
-text-align: center;
-letter-spacing: 2px;
-
-color: #000000;
-`;
-const Setting = styled(Link)`
-position: absolute;
-width: 100px;
-height: 45px;
-left: 854px;
+left: 670px;
 top: 15px;
 text-decoration:none;
 font-family: Noto Sans KR;
@@ -118,8 +101,8 @@ const NonFriendText = styled.div`
 position: absolute;
 width: 329px;
 height: 45px;
-left: 327px;
-top: 132px;
+left: 226px;
+top: 145px;
 display : ${props=>props.result};
 font-family: Noto Sans KR;
 font-style: normal;
@@ -140,7 +123,6 @@ const FollowMenuBox = ({alarm,children,visible,result,fvisible}) => (
         <Line/>
         <Title>FRIEND</Title>
         <Alarm>알람끄기</Alarm>
-        <Setting>설정</Setting>
         <FriendBox>
         {children}
         <NonFriendText result={fvisible}>새로운 친구 요청이 없습니다.</NonFriendText>

@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {Route} from 'react-router-dom';
 import * as baseActions from '../redux/modules/base';
 import {AuthWrapperRegister} from '../components/Auth';
 import {Register} from '../containers/Auth';
-import {Route} from 'react-router-dom';
+
 class AuthRegister extends Component {
 
     componentDidMount(){

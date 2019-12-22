@@ -14,7 +14,7 @@ class Login extends Component {
         const query = queryString.parse(location.search);
 
         if(query.expired !== undefined){
-            this.setError('세션에 만료되었습니다. 다시 로그인하세요.')
+            this.setError('로그인 후 이용바랍니다.')
         }
     }
 

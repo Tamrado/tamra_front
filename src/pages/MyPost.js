@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import storage from '../lib/storage';
-import PageWrapper from '../components/PageWrapper';
-import {FriendListContainer,PostListContainer,WriteContainer} from '../containers/Base';
-class Home extends Component {
+import {ModifyWrapper,ConfirmContent} from '../components/User';
+class MyPost extends Component {
     componentDidMount(){
         this.initializeUserInfo();
     }
@@ -15,12 +14,8 @@ class Home extends Component {
     }
     render() {
         return (
-            <div>
-                <PostListContainer/>
-                <FriendListContainer/>
-            </div>
-        );
+            <ModifyWrapper></ModifyWrapper>
+        )
     }
 }
-
-export default Home;
+export default MyPost;

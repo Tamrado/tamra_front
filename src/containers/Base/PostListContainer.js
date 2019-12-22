@@ -66,6 +66,7 @@ class PostListContainer extends Component{
      
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
+        if(!storage.get('loggedInfo')) return ;
         this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
         this.getFeedList();
       }
@@ -205,8 +206,8 @@ class PostListContainer extends Component{
             lineHeight: '160%'
         };
         if(!storage.get('loggedInfo')) {
-            window.location.href = '/auth/login?expired';
-            return;
+            
+            return null;
         }
         const username = storage.get('loggedInfo').nickname;
         const {friendData,withData,images,writtenData} = this.props;

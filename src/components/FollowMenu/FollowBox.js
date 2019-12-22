@@ -13,15 +13,17 @@ background: #FFFFFF;
 `;
 const Button = styled(Link)`
 position: absolute;
-width: 138px;
-height: 38px;
-left: 491px;
-top: 27px;
+left: 54.35%;
+right: 28.01%;
+top: 28%;
+bottom: 34%;
+width : 138px;
 text-decoration:none;
 background: rgba(18, 184, 134, 0.1);
 border-radius: 10px;
+
 & + & {
-    margin-left: 200px;
+    margin-left: 170px;
 }
 font-family: Noto Sans KR;
 font-style: normal;
@@ -37,10 +39,10 @@ color: #000000;
 `;
 const Thumbnail = styled.div`
 position: absolute;
-left: 9.16%;
-right: 84.73%;
-top: 15%;
-bottom: 25%;
+left: 5.63%;
+right: 87.98%;
+top: 17%;
+bottom: 33%;
 border-radius: 50%;
 background-image: url(${props => props.image});
 background-size: cover;
@@ -50,10 +52,10 @@ background-repeat: no-repeat;
 const Name = styled.div`
 
 position: absolute;
-left: 15.27%;
-right: 76.17%;
-top: 4%;
-bottom: 69%;
+left: 12.02%;
+right: 77.24%;
+top: 5%;
+bottom: 68%;
 
 font-family: Noto Sans KR;
 font-style: normal;
@@ -70,11 +72,13 @@ color: #000000;
 const Comment = styled.div`
 
 position: absolute;
-min-width: 193px;
+
 text-overflow: ellipsis;
-height: 43px;
-left: 163px;
-top: 36px;
+left: 14.71%;
+right: 60.61%;
+top: 32%;
+bottom: 25%;
+
 
 background: rgba(241, 241, 245, 0.5);
 border-radius: 30px;
@@ -99,8 +103,8 @@ const FollowBox = ({friend,deleteclick,follow}) => {
     } = friend.toJS();
     return(
         <Box>
-            <Button onClick = {deleteclick}>삭제</Button>
             <Button onClick = {follow} id = {username}>팔로우</Button>
+            <Button onClick = {deleteclick} id = {username}>삭제</Button>
             <Name>{nickname}</Name>
             <Thumbnail image = {thumbnail}/>
             <Comment>{comment}</Comment>

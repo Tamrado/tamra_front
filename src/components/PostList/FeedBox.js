@@ -8,7 +8,8 @@ import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
 
 const Box = styled.div`
-width: 90%;
+width: 70%;
+left : 15%;
 height: 500px;
 background : #ffffff;
 position: relative;
@@ -126,8 +127,10 @@ width: 100%;
 padding-left : 5rem;
 padding-right : 5rem;
 height: 330px;
+white-space:normal;
 top : 120px;
-word-break: normal;
+white-space:normal;
+word-break: break-all;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
@@ -140,8 +143,8 @@ letter-spacing: 0.05em;
 const Image = styled.div`
 position: relative;
 overflow: hidden;
-width : 290px;
-height : 290px;
+width : 330px;
+height : 330px;
 display : block;
 background-image : url(${props => props.src});
 background-size: cover;
@@ -157,15 +160,15 @@ background-repeat: no-repeat;
 const ImageCount = styled.div`
 position : absolute;
 overflow: hidden;
-width : 290px;
-height : 290px;
+width : 330px;
+height : 330px;
 display : block;
 background: rgba(196, 196, 196, 0.75);
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;
 font-size: 96px;
-line-height: 270px;
+line-height: 310px;
 
 align-items: center;
 text-align: center;
@@ -274,7 +277,7 @@ return(
             <Image src={files[0].thumbnail}/>
             </FeedImage>}
         <FeedSubMenu>
-            <LikeImage/><LikeNumber> {number}</LikeNumber>
+            <LikeImage/><LikeNumber>{number}</LikeNumber>
             <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>

@@ -52,11 +52,13 @@ class HeaderContainer extends Component {
         const {FriendActions} = this.props;
         const {id} = e.target;
         try{
-            await FriendActions.deleteFriendAlarmNotification(id);
+            console.log(id);
+            await FriendActions.deleteFriendAlarmNotification({'userId' : id});
             this.handleFriendRequestClick();
-            await this.getFollowRequest();
+            this.getFollowRequest();
             
         }catch(e){
+            console.log(e);
             return;
         }
     }

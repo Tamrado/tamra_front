@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 const Box = styled(Link)`
 position: absolute;
-width: 90%;
+width: 70%;
+left : 15%;
 height: 153px;
 background: #FFFFFF;
 
@@ -16,6 +17,8 @@ height: 153px;
 left: 39.56px;
 overflow : hidden;
 float : left;
+white-space:normal;
+word-break: break-all;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;

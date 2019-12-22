@@ -29,7 +29,8 @@ export default handleActions({
     ...pender({
         type: GET_FRIEND_ALARM_INFO,
         onSuccess: (state,action) => state.set('alarm',fromJS(action.payload.data))
-        .set('friendRequestNum',fromJS(action.payload.data).size)
+        .set('friendRequestNum',fromJS(action.payload.data).size),
+        onFailure : (state,action) => state.set('alarm',List()).set('friendRequestNum',0)
     }),
     ...pender({
         type: GET_FRIENDLIST_INFO,
