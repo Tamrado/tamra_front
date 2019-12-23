@@ -29,7 +29,7 @@ height: 546px;
 left: 515px;
 top: 31px;
 z-index : 30;
-background: #F1F1F5;
+background : #ffffff;
 border-radius: 20px;
 `;
 const Header = styled.div`
@@ -106,6 +106,31 @@ background-repeat: no-repeat;
     transform: translateY(3px);
 }
 `;
+const FriendBox = styled.div`
+top : 110px;
+position : absolute;
+width : 319px;
+height : 420px;
+background : #ffffff;
+
+overflow-y: auto;
+&::-webkit-scrollbar-track
+{
+	border-radius: 20px;
+	background-color: #FFFFFF;
+}
+&::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #FFFFFF;
+}
+
+&::-webkit-scrollbar-thumb
+{
+	border-radius: 20px;
+	background-color : rgba(18, 184, 134, 0.1);
+}
+`;
 const FriendTag = ({opacity,children,close,display}) => (
     <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
@@ -117,7 +142,9 @@ const FriendTag = ({opacity,children,close,display}) => (
                      contentEditable = "true"/>
                     <SearchButton  />
                 </Header>
+                <FriendBox>
                 {children}
+                </FriendBox>
             </TagBox>
         </Fixed>
         </Wrapper>
