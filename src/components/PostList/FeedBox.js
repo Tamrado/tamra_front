@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import like from '../../build/static/images/iconmonstr-smiley-thin-32.png';
 import clickLike from '../../build/static/images/iconmonstr-smiley-8-32.png';
+import hash from '../../build/static/images/iconmonstr-hashtag-1-24.png';
+import clickhash from '../../build/static/images/iconmonstr-hashtag-1-24 (1).png'
 import scuize from '../../lib/scuize';
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
@@ -184,37 +186,9 @@ top: 460px;
 `;
 const LikeNumber = styled.div`
 position : absolute;
-width: 74px;
+width: 30px;
 height: 25px;
-left : 35px;
-font-family: Roboto;
-font-style: normal;
-font-weight: normal;
-font-size: 24px;
-line-height: 28px;
-display: flex;
-align-items: center;
-
-color: #000000;
-`;
-const LikeImage = styled.div`
-position : absolute;
-width: 32px;
-height: 32px;
-left : 0;
-background-image : url(${like});
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-&:hover {
-    background-image: url(${clickLike});
-}
-`;
-const Comment = styled.div`
-position : absolute;
-width: 160px;
-height: 25px;
-right : 0;
+left : 140px;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
@@ -225,14 +199,90 @@ text-align: center;
 
 color: #000000;
 &:hover {
+    color : #FF0404;
+}
+`;
+const LikeImage = styled.div`
+position : absolute;
+width: 32px;
+height: 32px;
+left : 105px;
+background-image : url(${like});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+&:hover {
+    background-image: url(${clickLike});
+}
+`;
+const HashImage = styled.div`
+position : absolute;
+width: 24px;
+height: 24px;
+top : 3px;
+left : 0;
+background-image : url(${hash});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+&:hover{
+    background-image: url(${clickhash});
+
+}
+`;
+const HashNum = styled.div`
+    display : ${props=>props.hashdisplay};
+    position: absolute;
+    width: 100px;
+    padding: 8px;
+    right: 230px;
+    top: 410px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    background: #333;
+    color: #fff;
+    font-size: 14px;
+  &:after{
+    position: absolute;
+    top: 80%;
+    width: 0;
+    height: 0;
+    margin-left: 10px;
+    border: solid transparent;
+    border-color: rgba(51,51,51,0);
+    border-top: solid 20px #333;
+    border-left: solid 20px transparent;
+    border-right: solid 20px transparent;
+    content: " ";
+    width: 30px;
+    height: 30px;
+  }
+`;
+const Comment = styled.div`
+position : absolute;
+width: 100px;
+height: 25px;
+right : 0;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+font-size: 20px;
+line-height: 28px;
+align-items: center;
+text-align: center;
+
+
+color: #000000;
+&:hover {
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({feed,count}) => {
+const FeedBox = ({feed,count,children,hashdisplay,hover}) => {
     const {
         postId,
         profile,
-        author,
+        totalLike,
         timestamp,
         showLevel,
         content,
@@ -250,8 +300,8 @@ const FeedBox = ({feed,count}) => {
 return(
     <Box>
         <NickNameBox>
-            <Profile thumbnail = {profile}/>
-            <NickName>{author}</NickName>
+            <Profile thumbnail = {profile.profile}/>
+            <NickName>{profile.name}</NickName>
             <ViewBox>
             <Time>{timestamp}</Time>
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
@@ -276,8 +326,10 @@ return(
             {`${files}` && count === 1 && <FeedImage>
             <Image src={files[0].thumbnail}/>
             </FeedImage>}
+            <HashNum hashdisplay = {hashdisplay}>1</HashNum>
         <FeedSubMenu>
-            <LikeImage/><LikeNumber>{number}</LikeNumber>
+            <HashImage onMouseLeave = {hover}/>
+            <LikeImage/><LikeNumber>{totalLike}</LikeNumber>
             <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>

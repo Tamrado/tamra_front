@@ -4,7 +4,7 @@ import scuize from '../../lib/scuize';
 
 const Box = styled.div`
 position : relative;
-width: 315px;
+width: 300px;
 height: 63px;
 top : 0px;
 flexDirection : column;

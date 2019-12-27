@@ -60,12 +60,14 @@ width: 200px;
 height: 40px;
 top: 50px;
 outline : none;
+overflow : hidden;
+text-overflow : ellipsis;
 margin-left : 30px;
 background: #0CA678;
-border-radius: 30px;
+border-radius: 10px;
 font-family: Noto Sans KR;
 align-items: center;
-text-align: center;
+
 color: rgb(0, 0, 0);
 font-weight: normal;
 font-size: 24px;
@@ -131,7 +133,7 @@ overflow-y: auto;
 	background-color : rgba(18, 184, 134, 0.1);
 }
 `;
-const FriendTag = ({opacity,children,close,display}) => (
+const FriendTag = ({opacity,children,close,display,search,handlecontent,enter}) => (
     <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
             <TagBox>
@@ -139,8 +141,8 @@ const FriendTag = ({opacity,children,close,display}) => (
                 <Header>
                     <HeaderText>친구 검색</HeaderText>
                     <SearchBox spellcheck = "true" aria-autocomplete="list" data-content = "true"
-                     contentEditable = "true"/>
-                    <SearchButton  />
+                     contentEditable = "true" onInput = {handlecontent} id = "^^content" onKeyUp={enter}/>
+                    <SearchButton onClick = {search}/>
                 </Header>
                 <FriendBox>
                 {children}

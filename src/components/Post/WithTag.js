@@ -20,9 +20,37 @@ z-index: 20;
 background:rgba(196, 196, 196,0.8);
 opacity : ${props=>props.opacity};
 `;
+const WithBox = styled.div`
+width: 378px;
+    max-height: 500px;
+    overflow-y: auto;
+    
+    top: 70px;
+    background: rgb(256,256,256);
+    position: absolute;
+}
+
+&::-webkit-scrollbar-track
+{
+	border-radius: 20px;
+	background-color: #FFFFFF;
+}
+&::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #FFFFFF;
+}
+
+&::-webkit-scrollbar-thumb
+{
+	border-radius: 20px;
+	background-color : rgba(18, 184, 134, 0.1);
+}
+`;
 const Box = styled.div`
 position: absolute;
 width: 378px;
+
 height: 603px;
 left: 511px;
 top: 2px;
@@ -75,7 +103,9 @@ const WithTag = ({opacity,display,children,close}) =>(
             <Title>
                 WITH
             </Title>
+            <WithBox>
             {children}
+            </WithBox>
         </Box>
         </Fixed>
     </Wrapper>

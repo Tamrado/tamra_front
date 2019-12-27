@@ -2,7 +2,7 @@ import { Map,List,fromJS } from 'immutable';
 import { handleActions, createAction } from 'redux-actions';
 import {pender} from 'redux-pender';
 import * as PostAPI from '../../lib/api/post';
-import storage from '../../lib/storage';
+
 const GET_FEED_INFORMATION = 'post/GET_FEED_INFORMATION';
 const SET_FEED_INFORMATION = 'post/SET_FEED_INFORMATION';
 const SET_FRIEND_INFO = 'post/SET_FRIEND_INFO';
@@ -32,8 +32,7 @@ const initialState = Map({
     isTruePost : true,
     image : List(),
     writtenData : '',
-    showLevel : ''
-    
+    showLevel : ''   
 });
 
 

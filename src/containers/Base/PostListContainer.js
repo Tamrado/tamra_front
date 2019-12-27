@@ -7,6 +7,7 @@ import {WriteBox,TagList,WithList,ImageList} from '../../components/Post';
 import {bindActionCreators} from 'redux';
 import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
+import * as searchActions from '../../redux/modules/search';
 import storage from '../../lib/storage';
 import ShowLevelMenu from '../../components/Post/ShowLevelMenu';
 class PostListContainer extends Component{
@@ -26,6 +27,7 @@ class PostListContainer extends Component{
       this.setState({ 
         display : 'block'
         });
+        this.props.SearchActions.setFriendList(this.props.friendData);
     }
     openWriteModal = () => {
         this.setState({
@@ -47,6 +49,8 @@ class PostListContainer extends Component{
       this.setState({ 
         display : 'none' 
         }); 
+        this.props.SearchActions.setFriendContent('');
+        document.getElementById('^^content').textContent = '';
     }
     closeWriteModal = () => {
         this.setState({ 
@@ -200,6 +204,23 @@ class PostListContainer extends Component{
           this.closeShowLevel();
       }
 
+      handleSearch = () => {
+          const{SearchActions,friendContent} = this.props;
+          SearchActions.searchInFriendlist(friendContent);
+          
+      }
+      handleSearchContent = (e) => {
+        const {SearchActions} = this.props;
+        const {innerText} = e.target;
+        
+        SearchActions.setFriendContent(innerText);
+      }
+      
+      enterSearch = () => {
+          if(window.event.keyCode === 13)
+            this.handleSearch();
+      }
+
     render(){
         const {data} = this.props;
         const style = {
@@ -210,10 +231,11 @@ class PostListContainer extends Component{
             return null;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {friendData,withData,images,writtenData} = this.props;
+        const {friendList,withData,images,writtenData,friendContent} = this.props;
         const {opacity,display,writeDisplay,withdisplay,withfriend,withfriendDisplay,showLevelDisplay,level} = this.state;
         const {handleImageChange,closeWithBox,handleWriteBox,handleFriendInfo,openModal,closeModal,openWriteModal,
-            closeWriteModal,handleFriendCancel,handleWithBox,handleImageCancel,handleLevelClick,handleShowClick} = this;
+            closeWriteModal,handleFriendCancel,handleWithBox,handleImageCancel,handleLevelClick,handleShowClick
+        ,handleSearch,handleSearchContent,enterSearch} = this;
         return(
             <div>
             <WriteBox withdisplay = {withdisplay}  withclick = {handleWithBox} friend = {withfriend} username = {username} 
@@ -224,8 +246,8 @@ class PostListContainer extends Component{
                 </WriteBox>
             <WithList friend = {withData} opacity = {opacity} display = {withfriendDisplay}
              cancel = {handleFriendCancel} close={closeWithBox} />
-            <TagList opacity = {opacity} friends = {friendData} onclick = {handleFriendInfo} close={closeModal}
-             display = {display} cancel = {handleFriendCancel}/>
+            <TagList opacity = {opacity} friends = {friendList} search = {handleSearch} onclick = {handleFriendInfo} close={closeModal}
+             display = {display} cancel = {handleFriendCancel} handlecontent = {handleSearchContent} content = {friendContent} enter = {enterSearch}/>
             <PageWrapper>
             <FeedList feeds={data} username = {username} onclick = {openWriteModal} content ={
                 writtenData.split('\n').map( line => {
@@ -247,11 +269,14 @@ export default connect(
         writtenData : state.post.get('writtenData'),
         page : state.post.get('page'),
         isTruePost : state.post.get('isTruePost'),
-        showLevel : state.post.get('showLevel')
+        showLevel : state.post.get('showLevel'),
+        friendContent : state.search.get('friendContent'),
+        friendList : state.search.get('friendList')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch),
-        FriendActions: bindActionCreators(friendActions, dispatch)
+        FriendActions: bindActionCreators(friendActions, dispatch),
+        SearchActions : bindActionCreators(searchActions,dispatch)
 
     })
 )(PostListContainer);

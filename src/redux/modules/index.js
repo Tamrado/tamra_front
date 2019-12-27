@@ -5,6 +5,7 @@ import user from './user';
 import userPage from './userPage';
 import post from './post';
 import friend from './friend';
+import search from './search';
 import {penderReducer} from 'redux-pender';
 
 export default combineReducers({
@@ -14,5 +15,6 @@ export default combineReducers({
     userPage,
     post,
     friend,
+    search,
     pender: penderReducer
 });
