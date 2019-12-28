@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import {FriendList,NicknameList} from '../../components/FriendList';
 import {bindActionCreators} from 'redux';
+import {FriendList,NicknameList} from '../../components/FriendList';
+
 import PageWrapper from '../../components/PageWrapper';
 import * as friendActions from '../../redux/modules/friend';
 class FriendListContainer extends Component{

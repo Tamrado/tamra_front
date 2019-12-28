@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+
 
 const SettingImage = styled.a`
 width : ${props => props.size};

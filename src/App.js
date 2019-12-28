@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
-import { Home, AuthLogin,AuthRegister, UserPageConfirm,UserPage} from './pages';
+import { Home, AuthLogin,AuthRegister, UserPageConfirm,UserPage,Timeline} from './pages';
 import HeaderContainer from './containers/Base/HeaderContainer';
 
 import storage from './lib/storage';
@@ -43,6 +43,7 @@ class App extends Component {
                 <Route path="/auth/Register" component={AuthRegister}/>
                 <Route path="/@:username/password" component={UserPageConfirm}/>
                 <Route path="/@:username/info"component={UserPage}/>
+                <Route path="/@:username"component={Timeline}/>
             </div>
         );
     }

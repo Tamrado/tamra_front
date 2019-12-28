@@ -6,6 +6,7 @@ import userPage from './userPage';
 import post from './post';
 import friend from './friend';
 import search from './search';
+import timeline from './timeline';
 import {penderReducer} from 'redux-pender';
 
 export default combineReducers({
@@ -16,5 +17,6 @@ export default combineReducers({
     post,
     friend,
     search,
+    timeline,
     pender: penderReducer
 });

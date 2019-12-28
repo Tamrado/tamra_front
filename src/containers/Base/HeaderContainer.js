@@ -111,7 +111,7 @@ class HeaderContainer extends Component {
     if(!visible) return null;
 
     if(user.get('logged')){
-        content = <UserThumbnail thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
+        content = <UserThumbnail username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
         search = <FriendSearch/>;
         alarm = <Setting resultvisible = {alarmVisble} image = {alarmImage} size = {'30px'}
          onclick = {handleAlarmClick} hoverimg={hoverAlarmImage}/>;

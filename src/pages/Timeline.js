@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import storage from '../lib/storage';
-import {ModifyWrapper,ConfirmContent} from '../components/User';
+import PageWrapper from '../components/PageWrapper';
+import {TimelineContainer} from '../containers/Timeline';
 class MyPost extends Component {
     componentDidMount(){
         this.initializeUserInfo();
@@ -13,8 +14,11 @@ class MyPost extends Component {
         }
     }
     render() {
+        const { match } = this.props;
+        const { username } = match.params;
         return (
-            <ModifyWrapper></ModifyWrapper>
+            <TimelineContainer userid={username}/>
+         
         )
     }
 }
