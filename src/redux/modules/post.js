@@ -13,7 +13,21 @@ const SET_WRITTEN_DATA = 'post/SET_WRITTEN_DATA';
 const ADD_PAGE = 'post/ADD_PAGE';
 const SET_FALSE_POST = 'post/SET_FALSE_POST';
 const SET_SHOW_LEVEL = 'post/SET_SHOW_LEVEL';
+const SET_WITH_FRIEND = 'post/SET_WITH_FRIEND';
+const SET_WITH_DISPLAY = 'post/SET_WITH_DISPLAY';
+const SET_WITH_FRIEND_DISPLAY = 'post/SET_WITH_FRIEND_DISPLAY';
+const SET_DISPLAY = 'post/SET_DISPLAY';
+const SET_WRITE_DISPLAY = 'post/SET_WRITE_DISPLAY';
+const SET_HASH_DISPLAY = 'post/SET_HASH_DISPLAY';
+const SET_KEY = 'post/SET_KEY';
 
+export const setKey = createAction(SET_KEY);
+export const setHashDisplay = createAction(SET_HASH_DISPLAY);
+export const setWriteDisplay = createAction(SET_WRITE_DISPLAY);
+export const setDisplay = createAction(SET_DISPLAY);
+export const setWithFriendDisplay = createAction(SET_WITH_FRIEND_DISPLAY);
+export const setWithDisplay = createAction(SET_WITH_DISPLAY);
+export const setWithFriend = createAction(SET_WITH_FRIEND);
 export const setShowLevel = createAction(SET_SHOW_LEVEL);
 export const setFalsePost = createAction(SET_FALSE_POST);
 export const addPage = createAction(ADD_PAGE);
@@ -32,11 +46,25 @@ const initialState = Map({
     isTruePost : true,
     image : List(),
     writtenData : '',
-    showLevel : ''   
+    showLevel : '',
+    withFriend : '',
+    withDisplay : 'none',
+    withFriendDisplay : 'none',
+    display : 'none',
+    writeDisplay : 'none',
+    hashdisplay : 'none',
+    keyid : -1
 });
 
 
 export default handleActions({
+    [SET_KEY] : (state,action) => state.set('keyid',parseInt(action.payload)),
+    [SET_HASH_DISPLAY] : (state,action) => state.set('hashdisplay',action.payload),
+    [SET_WRITE_DISPLAY]: (state,action) => state.set('writeDisplay', action.payload),
+    [SET_DISPLAY] : (state,action) => state.set('display',action.payload),
+    [SET_WITH_FRIEND_DISPLAY] :(state,action) => state.set('withFriendDisplay',action.payload),
+    [SET_WITH_DISPLAY] : (state,action) => state.set('withDisplay',action.payload),
+    [SET_WITH_FRIEND] : (state,action) => state.set('withFriend',action.payload),
     [SET_SHOW_LEVEL] : (state,action) => state.set('showLevel',action.payload.showLevel),
     [ADD_PAGE] : (state,action) => state.set('page', state.get('page') + 1),
     [SET_FALSE_POST]: (state,action) => state.set('isTruePost',false),

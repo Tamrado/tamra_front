@@ -20,8 +20,7 @@ width: 100%;
 min-width : 1130px;
 height : 200%;
 z-index: 10;
-background:rgba(196, 196, 196,0.8);
-opacity : ${props=>props.opacity};
+background:rgba(196, 196, 196,${props=>props.opacity});
 `;
 const Box = styled.div`
 position: absolute;

@@ -4,7 +4,7 @@ import scuize from '../../lib/scuize';
 
 const Box = styled.div`
 position : relative;
-width: 300px;
+width: 100%;
 height: 63px;
 top : 0px;
 flexDirection : column;
@@ -35,7 +35,7 @@ const UserImage = styled.div`
 position : absolute;
 width: 40px;
 height: 40px;
-left : 0;
+left : 20px;
 border-radius: 50%;
 cursor: pointer;
 margin-left : 2rem;

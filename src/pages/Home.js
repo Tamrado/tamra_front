@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import storage from '../lib/storage';
 import PageWrapper from '../components/PageWrapper';
-import {FriendListContainer,PostListContainer,WriteContainer} from '../containers/Base';
+import {FriendListContainer,PostListContainer,WriteBoxContainer,TagListContainer,WithListContainer} from '../containers/Base';
 class Home extends Component {
     componentDidMount(){
         this.initializeUserInfo();
@@ -17,6 +17,9 @@ class Home extends Component {
         return (
             <div>
                 <PostListContainer/>
+                <WithListContainer/>
+                <WriteBoxContainer/>
+                <TagListContainer/>
                 <FriendListContainer/>
             </div>
         );

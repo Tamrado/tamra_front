@@ -17,8 +17,7 @@ height: 550px;
 left: 20px;
 top: 72px;
 z-index: 20;
-background:rgba(196, 196, 196,0.8);
-opacity : ${props=>props.opacity};
+background:rgba(196, 196, 196,${props=>props.opacity});
 `;
 const WithBox = styled.div`
 width: 378px;
@@ -62,7 +61,7 @@ position: absolute;
 width: 146px;
 height: 28px;
 left: 50px;
-top: 25px;
+top: 15px;
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;

@@ -4,7 +4,6 @@ import like from '../../build/static/images/iconmonstr-smiley-thin-32.png';
 import clickLike from '../../build/static/images/iconmonstr-smiley-8-32.png';
 import hash from '../../build/static/images/iconmonstr-hashtag-1-24.png';
 import clickhash from '../../build/static/images/iconmonstr-hashtag-1-24 (1).png'
-import scuize from '../../lib/scuize';
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
@@ -109,8 +108,8 @@ position : absolute;
 width: 100%;
 display : flex;
 flex-direction: row;
-padding-left : 5rem;
-padding-right : 5rem;
+padding-left : 3rem;
+padding-right : 3rem;
 height: 330px;
 top : 120px;
 word-break: normal;
@@ -145,8 +144,8 @@ letter-spacing: 0.05em;
 const Image = styled.div`
 position: relative;
 overflow: hidden;
-width : 330px;
-height : 330px;
+width : 250px;
+height : 250px;
 display : block;
 background-image : url(${props => props.src});
 background-size: cover;
@@ -216,6 +215,7 @@ background-repeat: no-repeat;
 }
 `;
 const HashImage = styled.div`
+
 position : absolute;
 width: 24px;
 height: 24px;
@@ -231,12 +231,17 @@ background-repeat: no-repeat;
 }
 `;
 const HashNum = styled.div`
-    display : ${props=>props.hashdisplay};
+display : ${props=> props.display};
     position: absolute;
     width: 100px;
     padding: 8px;
     right: 230px;
-    top: 410px;
+    bottom: 10%;
+    align-items: center;
+text-align: center;
+    font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
@@ -245,18 +250,18 @@ const HashNum = styled.div`
     font-size: 14px;
   &:after{
     position: absolute;
-    top: 80%;
+    top : 100%;
     width: 0;
     height: 0;
-    margin-left: 10px;
+    margin-left: -20px;
     border: solid transparent;
     border-color: rgba(51,51,51,0);
-    border-top: solid 20px #333;
-    border-left: solid 20px transparent;
-    border-right: solid 20px transparent;
+    border-top: solid 7.5px #333;
+    border-left: solid 7.5px transparent;
+    border-right: solid 7.5px transparent;
     content: " ";
-    width: 30px;
-    height: 30px;
+    width: 15px;
+    height: 15px;
   }
 `;
 const Comment = styled.div`
@@ -278,7 +283,8 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({feed,count,children,hashdisplay,hover}) => {
+const FeedBox = ({feed,count,children,hover,nothover,hashdisplay}) => {
+    
     const {
         postId,
         profile,
@@ -296,7 +302,6 @@ const FeedBox = ({feed,count,children,hashdisplay,hover}) => {
         liked
     });
     const commentClick = () => onCommentClick(postId);*/
- 
 return(
     <Box>
         <NickNameBox>
@@ -326,15 +331,13 @@ return(
             {`${files}` && count === 1 && <FeedImage>
             <Image src={files[0].thumbnail}/>
             </FeedImage>}
-            <HashNum hashdisplay = {hashdisplay}>1</HashNum>
+            <HashNum id={postId} display={hashdisplay}>{children}</HashNum>
         <FeedSubMenu>
-            <HashImage onMouseLeave = {hover}/>
+            <HashImage id={postId} onMouseOver={hover} onMouseOut={nothover}/>
             <LikeImage/><LikeNumber>{totalLike}</LikeNumber>
             <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
     )
 }
-export default scuize(FeedBox, function(nextProps, nextState){
-    return this.props.feed !== nextProps.feed;
-});
+export default FeedBox;
