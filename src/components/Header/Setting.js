@@ -15,7 +15,7 @@ background-image: url(${props => props.src});
 background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
-&:active {
+&:hover {
     background-image: url(${props => props.hoverimg});
 }
 `;

@@ -17,14 +17,17 @@ class PostListContainer extends Component{
       const { scrollHeight } = document.body;
     
       if (scrollTop+innerHeight >scrollHeight ) {
-        this.getFeedList();
+        setTimeout(this.getFeedList(),2000);
+        setTimeout(this.props.PostActions.addPage(),2000);
         }
-      }
+    }
+
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
         if(!storage.get('loggedInfo')) return ;
         this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
         this.getFeedList();
+        setTimeout(this.props.PostActions.addPage(),2000);
       }
     
       getFeedList = async() => {
@@ -33,7 +36,7 @@ class PostListContainer extends Component{
             const username = storage.get('loggedInfo').username;
             try{
                 await PostActions.getFeedInformation(username,page);
-                await PostActions.addPage();
+                
                 return;
             }catch(e){
                 console.log(e);

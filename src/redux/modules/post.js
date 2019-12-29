@@ -109,7 +109,7 @@ export default handleActions({
 },
     ...pender({
         type: GET_FEED_INFORMATION,
-        onSuccess: (state,action) =>state.update('feed',feed => feed.concat(fromJS(action.payload.data.contentlist))), 
-        onFailure : (state,action) => state.set('feed',state.get('feed'))
+        onSuccess: (state,action) =>state.update('feed',feed => feed.concat(fromJS(action.payload.data.contentlist))) 
+        
     })
     }, initialState);

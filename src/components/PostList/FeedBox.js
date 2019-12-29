@@ -7,7 +7,7 @@ import clickhash from '../../build/static/images/iconmonstr-hashtag-1-24 (1).png
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
-
+import scuize from '../../lib/scuize';
 const Box = styled.div`
 width: 70%;
 left : 15%;
@@ -253,7 +253,7 @@ font-weight: normal;
     top : 100%;
     width: 0;
     height: 0;
-    margin-left: -20px;
+    margin-left: -10px;
     border: solid transparent;
     border-color: rgba(51,51,51,0);
     border-top: solid 7.5px #333;
@@ -340,4 +340,6 @@ return(
     </Box>
     )
 }
-export default FeedBox;
+export default scuize(FeedBox, function(nextProps, nextState){
+    return this.props.feed !== nextProps.feed || this.props.hashdisplay !== nextProps.hashdisplay;
+});
