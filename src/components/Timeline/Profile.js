@@ -1,32 +1,37 @@
 import React from 'react';
 import styled from 'styled-components';
-
+import scuize from '../../lib/scuize';
 const Box = styled.div`
 
-position: absolute;
-width: 1008px;
-height: 183px;
-left: 215px;
+position: relative;
+width: 60%;
+height: 150px;
+left: 20%;
+background: #FFFFFF;
+border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+`;
+const FollowBox = styled.div`
+position : relative;
+width : 60%;
+height : 100px;
+left : 20%;
 
 background: #FFFFFF;
-border-bottom: 1px solid #515250;
+border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 `;
-
 const ProfileBox = styled.div`
 position: absolute;
-width: 347px;
-height: 93px;
-left: 60px;
-top: 20px;
-
+width: 300px;
+height: 150px;
+top : 15px;
+left:20%;
 `;
 
 const UserThumbnail = styled.div`
 position: absolute;
-width: 80px;
-height: 80px;
-left: 60px;
-top: 24px;
+width: 100px;
+top : 10px;
+height: 100px;
 border-radius: 50%;
     cursor: pointer;
 background-image: url(${props => props.thumbnail});
@@ -34,21 +39,25 @@ background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
 &:hover {
-    filter: brightness(105%);
+    filter: brightness(150%);
 }
 `;
 const Nickname = styled.div`
 
 position: absolute;
-width: 92px;
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+width : 30%
+max-width: 35%;
 height: 29px;
-left: 170px;
+left: 140px;
 top: 20px;
-
+margin-right : 10px;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
-font-size: 20px;
+font-size: 1.4rem;
 line-height: 29px;
 /* identical to box height */
 
@@ -61,18 +70,17 @@ color: #000000;
 
 const Comment = styled.div`
 position: absolute;
-width: 237px;
-height: 50px;
-left: 170px;
+max-width: 237px;
+max-height: 80px;
+left: 140px;
 top: 63px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
-font-size: 20px;
-line-height: 29px;
-display: flex;
-align-items: center;
+font-size: 1.3rem;
 letter-spacing: 0.05em;
 
 color: #000000;
@@ -80,54 +88,63 @@ color: #000000;
 
 const Column = styled.div`
 position: absolute;
-width: 306px;
-height: 37px;
-left: 407px;
-top: 36px;
+width: 50%;
+min-height : 37px;
+max-height: 37px;
+
+left: 25%;
+top: 10px;
 
 background: #FFFFFF;
 `;
 const NumColumn = styled.div`
 position: absolute;
-width: 306px;
-height: 37px;
-left: 407px;
-top: 91px;
+width: 50%;
+min-height : 37px;
+max-height: 37px;
+
+left: 25%;
+top: 50px;
 
 background: #FFFFFF;
 `;
 const Following = styled.div`
 position: absolute;
-width: 77px;
+width: 30%;
 height: 37px;
-left: 229px;
+right: 0;
 top: 0px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;
-font-size: 22px;
+font-size: 1.3rem;
 line-height: 32px;
-display: flex;
+
 align-items: center;
 text-align: center;
 letter-spacing: 2px;
 
 color: #000000;
 `;
+
 const Follower = styled.div`
 position: absolute;
-width: 77px;
-height: 37px;
-left: 115px;
+width: 30%;
+max-height: 37px;
+left: 34%;
 top: 0px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;
-font-size: 22px;
+font-size: 1.3rem;
 line-height: 32px;
-display: flex;
+
 align-items: center;
 text-align: center;
 letter-spacing: 2px;
@@ -137,17 +154,19 @@ color: #000000;
 
 const Posting = styled.div`
 position: absolute;
-width: 77px;
-height: 37px;
-left: 0px;
+width: 30%;
+max-height: 37px;
+left: 0;
 top: 0px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;
-font-size: 22px;
+font-size: 1.3rem;
 line-height: 32px;
-display: flex;
+
 align-items: center;
 text-align: center;
 letter-spacing: 2px;
@@ -157,15 +176,17 @@ color: #000000;
 
 const FollowerNum = styled.div`
 position: absolute;
-width: 77px;
+width: 30%;
 height: 37px;
-left: 115px;
+left: 34%;
 top: 0px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;
-font-size: 21px;
+font-size: 1.3rem;
 line-height: 30px;
 align-items: center;
 text-align: center;
@@ -175,15 +196,17 @@ color: #000000;
 `;
 const FollowingNum = styled.div`
 position: absolute;
-width: 77px;
+width: 30%;
 height: 37px;
-left: 229px;
+right: 0;
 top: 0px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;
-font-size: 21px;
+font-size: 1.3rem;
 line-height: 30px;
 
 align-items: center;
@@ -194,15 +217,17 @@ color: #000000;
 `;
 const PostingNum = styled.div`
 position: absolute;
-width: 77px;
+width: 30%;
 height: 37px;
 left: 0px;
 top: 0px;
-
+overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;
-font-size: 21px;
+font-size: 1.3rem;
 line-height: 30px;
 
 align-items: center;
@@ -214,23 +239,57 @@ color: #000000;
 const FollowButton = styled.div`
 display : ${props=>props.display};
 position: absolute;
-width: 154px;
+width: 13%;
 height: 45px;
-left: calc(50% - 154px/2 + 339px);
-top: 59px;
+right: 20%;
+top: 50px;
+color : #515250;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: 500;
+font-size: 1.3rem;
+line-height: 40px;
 
+align-items: center;
+text-align: center;
+letter-spacing: 2px;
 background: rgba(18, 184, 134, 0.1);
 border-radius: 10px;
 `;
+const SettingButton = styled.div`
+display : ${props=>props.display};
+position: absolute;
+width: 13%;
+height: 45px;
+right: 20%;
+top: 50px;
+color : #515250;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: 500;
+font-size: 1.3rem;
+line-height: 40px;
 
-const Profile = ({followclick,postingNum,followerNum,followNum,comment,nickname,username,thumbnail,followdisplay}) => (
+align-items: center;
+text-align: center;
+letter-spacing: 2px;
+background: rgba(18, 184, 134, 0.1);
+border-radius: 10px;
+`;
+const Profile = ({followclick,postNum,followerNum,followNum,comment,nickname,username,thumbnail
+    ,followdisplay,isfollow}) => (
+    <div>
     <Box>
         <ProfileBox>
             <UserThumbnail id = {username} thumbnail ={thumbnail}/>
             <Nickname>{nickname}</Nickname>
             <Comment>{comment}</Comment>
         </ProfileBox>
-        <Column>
+        
+        <FollowButton onClick={followclick} display={followdisplay}>{isfollow}</FollowButton>
+    </Box>
+    <FollowBox>
+    <Column>
             <Following>팔로잉</Following>
             <Follower>팔로워</Follower>
             <Posting>포스팅</Posting>
@@ -238,10 +297,9 @@ const Profile = ({followclick,postingNum,followerNum,followNum,comment,nickname,
         <NumColumn>
             <FollowerNum>{followerNum}</FollowerNum>
             <FollowingNum>{followNum}</FollowingNum>
-            <PostingNum>{postingNum}</PostingNum>
+            <PostingNum>{postNum}</PostingNum>
         </NumColumn>
-        <FollowButton onClick={followclick} display={followdisplay}/>
-    </Box>
-
+    </FollowBox>
+    </div>
 );
 export default Profile;

@@ -10,3 +10,4 @@ export const localRegisterImage = (formData) => axios.post('http://localhost:808
 
 export const checkStatus = () => axios.get('http://localhost:8080/api/auth/token/id', {withCredentials: true});
 export const logout = () => axios.get('http://localhost:8080/api/member/auth/token', {withCredentials: true});
+export const getUserInfo = (userId) => axios.get(`http://localhost:8080/api/auth/friend/${userId}`,{withCredentials:true});

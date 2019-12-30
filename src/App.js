@@ -30,7 +30,6 @@ class App extends Component {
        
     }
     componentDidMount(){
-        console.log('dgdsgdg');
         this.initializeUserInfo();
     }
 
@@ -43,7 +42,7 @@ class App extends Component {
                 <Route path="/auth/Register" component={AuthRegister}/>
                 <Route path="/@:username/password" component={UserPageConfirm}/>
                 <Route path="/@:username/info"component={UserPage}/>
-                <Route path="/@:username"component={Timeline}/>
+                <Route exact path="/@:username"component={Timeline}/>
             </div>
         );
     }

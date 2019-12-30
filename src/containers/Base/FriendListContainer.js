@@ -20,12 +20,16 @@ class FriendListContainer extends Component{
         }
         
     }
+    handleNickname = (e) => {
+        window.location.href =`/@:${e.target.id}`;
+    }
 
     render(){
         const {friendData} = this.props;
+        const {handleNickname} = this;
         return(
             <PageWrapper>
-            <NicknameList friends = {friendData} />
+            <NicknameList friends = {friendData} onclick={handleNickname} />
           </PageWrapper>
             );
     }

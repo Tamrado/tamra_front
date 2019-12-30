@@ -21,7 +21,7 @@ class WithListContainer extends Component{
         const scrollTop =e.srcElement.scrollingElement.scrollTop;
         
         this.setState({
-            opacity : 0.8 - scrollTop / 1000
+            opacity : 0.8 - scrollTop / 800
         });
         if(this.state.opacity < 0){
            this.closeWithBox();

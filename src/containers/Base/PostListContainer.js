@@ -5,56 +5,70 @@ import {FeedList} from '../../components/PostList';
 import {bindActionCreators} from 'redux';
 import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
+import * as timelineActions from '../../redux/modules/timeline';
 import * as searchActions from '../../redux/modules/search';
 import storage from '../../lib/storage';
 class PostListContainer extends Component{
     openWriteModal = () => {
         this.props.PostActions.setWriteDisplay('block');
     }
-    handleScroll = (e) => {
+    handleScroll = async(e) => {
         const scrollTop =e.srcElement.scrollingElement.scrollTop;
         const { innerHeight } = window;
       const { scrollHeight } = document.body;
     
-      if (scrollTop+innerHeight >scrollHeight ) {
-        setTimeout(this.getFeedList(),2000);
-        setTimeout(this.props.PostActions.addPage(),2000);
+      if (scrollTop+innerHeight >scrollHeight & this.props.isTruePost) {
+        this.getFeedList();
+        await this.props.TimelineActions.addPage();
         }
     }
 
-    componentDidMount() {
+    componentDidMount= async() =>{
+        this.props.TimelineActions.setKey(-1);
+        this.props.TimelineActions.setMainfeed();
+        this.props.TimelineActions.setIsTruePost();
+        await this.props.TimelineActions.setPage();
         window.addEventListener("scroll", this.handleScroll);
         if(!storage.get('loggedInfo')) return ;
         this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
-        this.getFeedList();
-        setTimeout(this.props.PostActions.addPage(),2000);
+         this.getFeedList();
+        await this.props.TimelineActions.addPage();
       }
+
+   
     
       getFeedList = async() => {
-        const{PostActions,page,isTruePost} = this.props;
+        const{TimelineActions,page,isTruePost} = this.props;
         if(isTruePost){
-            const username = storage.get('loggedInfo').username;
             try{
-                await PostActions.getFeedInformation(username,page);
+                await TimelineActions.getMainInformation(page);
                 
-                return;
             }catch(e){
-                console.log(e);
-               await PostActions.setFalsePost();
-                return;
+               
+                await TimelineActions.setFalsePost();
+                
             }
             
         }
     }
     overHashTag = (e) =>{
-        const {PostActions} = this.props;
-        PostActions.setHashDisplay('block');
-        PostActions.setKey(e.target.id);
+        const {TimelineActions} = this.props;
+        TimelineActions.setHashDisplay('block');
+        TimelineActions.setKey(e.target.id);
+        TimelineActions.setCategoryId(e.target.dataset.category);
+        TimelineActions.setSenderId(e.target.dataset.sender);
     }
     outHashTag = (e) =>{
-        const {PostActions} = this.props;
-        PostActions.setHashDisplay('none');
-        PostActions.setKey(e.target.id);
+        const {TimelineActions} = this.props;
+        TimelineActions.setHashDisplay('none');
+        
+        
+    }
+    handleStateClick = (e) =>{
+        window.location.href =`/@:${e.target.id}`;
+    }
+    handleLikeClick = (e) =>{
+        
     }
     render(){
         
@@ -67,16 +81,17 @@ class PostListContainer extends Component{
             return null;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {writtenData,hashdisplay,keyid} = this.props;
-        const {openWriteModal,overHashTag,outHashTag} = this;
-       
+        const {writtenData,hashdisplay,keyid,category,sender} = this.props;
+        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick} = this;
+        
         return(
             <PageWrapper>
-            <FeedList feeds={data} username = {username} onclick = {openWriteModal} content ={
+            <FeedList mainfeed={data} username = {username} onclick = {openWriteModal} stateclick={handleStateClick} content ={
                 writtenData.split('\n').map( line => {
             return (<div style={style} >{line}<br/></div>)
           })
-        } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} />
+        } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
+         category = {category} sender = {sender} />
             </PageWrapper>
         );
     }
@@ -85,16 +100,19 @@ class PostListContainer extends Component{
 export default connect(
     (state) => ({
         writtenData : state.post.get('writtenData'),
-        data : state.post.get('feed'),
-        page : state.post.get('page'),
-        isTruePost : state.post.get('isTruePost'),
-        hashdisplay : state.post.get('hashdisplay'),
-        keyid : state.post.get('keyid')
+        data : state.timeline.get('mainfeed'),
+        page : state.timeline.get('page'),
+        isTruePost : state.timeline.get('isTruePost'),
+        hashdisplay : state.timeline.get('hashdisplay'),
+        keyid : state.timeline.get('keyid'),
+        category : state.timeline.get('categoryid'),
+        sender : state.timeline.get('senderid')
     }),
     (dispatch) => ({
-        PostActions: bindActionCreators(postActions, dispatch),
+        TimelineActions: bindActionCreators(timelineActions, dispatch),
         FriendActions: bindActionCreators(friendActions, dispatch),
-        SearchActions : bindActionCreators(searchActions,dispatch)
+        SearchActions : bindActionCreators(searchActions,dispatch),
+        PostActions : bindActionCreators(postActions,dispatch)
 
     })
 )(PostListContainer);
