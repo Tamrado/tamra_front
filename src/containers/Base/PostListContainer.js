@@ -7,6 +7,7 @@ import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
 import * as timelineActions from '../../redux/modules/timeline';
 import * as searchActions from '../../redux/modules/search';
+import * as likeActions from '../../redux/modules/like';
 import storage from '../../lib/storage';
 class PostListContainer extends Component{
     openWriteModal = () => {
@@ -68,7 +69,14 @@ class PostListContainer extends Component{
         window.location.href =`/@:${e.target.id}`;
     }
     handleLikeClick = (e) =>{
-        
+        const {likedisplay,LikeActions,TimelineActions} = this.props;
+        TimelineActions.setKey(e.target.id);
+        if(likedisplay === 'none'){
+            LikeActions.clickLike(e.target.id);
+        }
+        else{
+            LikeActions.cancelLike(e.target.id);
+        }
     }
     render(){
         
@@ -81,7 +89,7 @@ class PostListContainer extends Component{
             return null;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {writtenData,hashdisplay,keyid,category,sender} = this.props;
+        const {writtenData,hashdisplay,keyid,category,sender,likedisplay} = this.props;
         const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick} = this;
         
         return(
@@ -91,7 +99,7 @@ class PostListContainer extends Component{
             return (<div style={style} >{line}<br/></div>)
           })
         } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
-         category = {category} sender = {sender} />
+         category = {category} sender = {sender} likedisplay={likedisplay}/>
             </PageWrapper>
         );
     }
@@ -106,13 +114,15 @@ export default connect(
         hashdisplay : state.timeline.get('hashdisplay'),
         keyid : state.timeline.get('keyid'),
         category : state.timeline.get('categoryid'),
-        sender : state.timeline.get('senderid')
+        sender : state.timeline.get('senderid'),
+        likedisplay : state.like.get('likedisplay')
     }),
     (dispatch) => ({
         TimelineActions: bindActionCreators(timelineActions, dispatch),
         FriendActions: bindActionCreators(friendActions, dispatch),
         SearchActions : bindActionCreators(searchActions,dispatch),
-        PostActions : bindActionCreators(postActions,dispatch)
+        PostActions : bindActionCreators(postActions,dispatch),
+        LikeActions : bindActionCreators(likeActions,dispatch)
 
     })
 )(PostListContainer);

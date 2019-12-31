@@ -161,8 +161,9 @@ letter-spacing: 0.05em;
 const Image = styled.div`
 position: relative;
 overflow: hidden;
-width : 250px;
-height : 250px;
+width : ${props=>props.size};
+height : ${props=>props.size};
+left : ${props=>props.left};
 display : block;
 background-image : url(${props => props.src});
 background-size: cover;
@@ -197,7 +198,7 @@ const FeedSubMenu = styled.div`
 position : absolute;
 width: 300px;
 height: 32px;
-right: 0;
+right: 5%;
 top: 460px;
 `;
 const LikeNumber = styled.div`
@@ -223,6 +224,7 @@ position : absolute;
 width: 32px;
 height: 32px;
 left : 105px;
+display : ${props=>props.like};
 background-image : url(${like});
 background-size: cover;
 background-position: center;
@@ -230,6 +232,16 @@ background-repeat: no-repeat;
 &:hover {
     background-image: url(${clickLike});
 }
+`;
+const LikedImage = styled.div`
+position : absolute;
+width: 32px;
+height: 32px;
+left : 105px;
+background-image : url(${clickLike});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
 `;
 const HashImage = styled.div`
 
@@ -252,7 +264,7 @@ display : ${props=> props.display};
     position: absolute;
     width: 100px;
     padding: 8px;
-    right: 230px;
+    right: 265px;
     bottom: 10%;
     align-items: center;
 text-align: center;
@@ -300,7 +312,7 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like}) => {
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,likedisplay}) => {
     
     const {
         feed,
@@ -339,18 +351,20 @@ return(
                 </ImageCount></Image>
             </FeedImage>}
         {`${feed.files}` && count === 3 && <FeedImage>
-            <Image src={feed.files[0].thumbnail}/><Image src={feed.files[1].thumbnail}/><Image src={feed.files[2].thumbnail}/>
+            <Image src={feed.files[0].thumbnail} size ={'250px'}/><Image size ={'250px'} src={feed.files[1].thumbnail}/><Image size ={'250px'} src={feed.files[2].thumbnail}/>
             </FeedImage>}
             {`${feed.files}` && count === 2 && <FeedImage>
-            <Image src={feed.files[0].thumbnail}/><Image src={feed.files[1].thumbnail}/>
+            <Image src={feed.files[0].thumbnail} left = {`5%`} size ={'320px'}/><Image left = {`5%`} size ={'320px'} src={feed.files[1].thumbnail}/>
             </FeedImage>}
             {`${feed.files}` && count === 1 && <FeedImage>
-            <Image src={feed.files[0].thumbnail}/>
+            <Image left={`26%`} size ={'320px'} src={feed.files[0].thumbnail}/>
             </FeedImage>}
             <HashNum id={feed.postId} display={hashdisplay}>{feed.totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
             <HashImage id={feed.postId} data-category={category} data-sender={sender.username} onMouseOver={hover} onMouseOut={nothover}/>
-            <LikeImage id = {feed.postId} data-category={category} data-sender={sender.username} onClick = {like}/><LikeNumber>{feed.totalLike}</LikeNumber>
+            <LikeImage id = {feed.postId} onClick = {like} like = {likedisplay}/>
+            <LikeNumber>{feed.totalLike}</LikeNumber>
+            {likedisplay === 'none' &&<LikedImage id = {feed.postId} onClick = {like} />}
             <Comment>댓글 {feed.totalComment}</Comment>
         </FeedSubMenu>
     </Box>
@@ -358,5 +372,6 @@ return(
     )
 }
 export default scuize(FeedBox, function(nextProps, nextState){
-    return this.props.feed !== nextProps.feed || this.props.hashdisplay !== nextProps.hashdisplay;
+    return this.props.feed !== nextProps.feed || this.props.hashdisplay !== nextProps.hashdisplay || 
+    this.props.likedisplay !== nextProps.likedisplay;
 });

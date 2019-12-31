@@ -24,7 +24,7 @@ position: absolute;
 width: 300px;
 height: 150px;
 top : 15px;
-left:20%;
+right:${props => props.right};
 `;
 
 const UserThumbnail = styled.div`
@@ -280,12 +280,16 @@ const Profile = ({followclick,postNum,followerNum,followNum,comment,nickname,use
     ,followdisplay,isfollow}) => (
     <div>
     <Box>
-        <ProfileBox>
+        {followdisplay === 'none' &&<ProfileBox right = {'33%'}>
             <UserThumbnail id = {username} thumbnail ={thumbnail}/>
             <Nickname>{nickname}</Nickname>
             <Comment>{comment}</Comment>
-        </ProfileBox>
-        
+        </ProfileBox>}
+        {followdisplay === 'block' &&<ProfileBox right = {'49%'}>
+            <UserThumbnail id = {username} thumbnail ={thumbnail}/>
+            <Nickname>{nickname}</Nickname>
+            <Comment>{comment}</Comment>
+        </ProfileBox>}
         <FollowButton onClick={followclick} display={followdisplay}>{isfollow}</FollowButton>
     </Box>
     <FollowBox>

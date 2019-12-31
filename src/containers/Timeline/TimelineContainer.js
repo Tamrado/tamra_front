@@ -107,14 +107,14 @@ class TimelineContainer extends Component{
             handleOtherTimeline();
         }
     }
-    handleFollowClick =()=>{
+    handleFollowClick =async()=>{
         const {FriendActions,isfollow,userid} = this.props;
         const id = userid.substr(1);
         if(isfollow === '팔로우')
-            FriendActions.follow(id);
+            await FriendActions.follow(id);
         else
-            FriendActions.unfollow({'friendId': id});
-        
+            await FriendActions.unfollow({'friendId': id});
+        await FriendActions.getOtherInfoNum(id);
     }
     handleLikeClick = (e) =>{
         

@@ -3,7 +3,6 @@ import { handleActions, createAction } from 'redux-actions';
 import {pender} from 'redux-pender';
 import * as PostAPI from '../../lib/api/post';
 
-const GET_FEED_INFORMATION = 'post/GET_FEED_INFORMATION';
 const SET_FRIEND_INFO = 'post/SET_FRIEND_INFO';
 const REMOVE_FRIEND = 'post/REMOVE_FRIEND';
 const REMOVE_IMAGE = 'post/REMOVE_IMAGE';

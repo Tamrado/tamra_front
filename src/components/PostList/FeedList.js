@@ -8,7 +8,7 @@ position : absolute;
 width : 80%;
 
 `;
-const FeedList = ({like,mainfeed,username,onclick,content,hashdisplay,hover,nothover,keyid,category,sender,stateclick}) => {
+const FeedList = ({likedisplay,like,mainfeed,username,onclick,content,hashdisplay,hover,nothover,keyid,category,sender,stateclick}) => {
     const feedList = mainfeed.map(
         (feeds,index) => {
             if(feeds && keyid === feeds.getIn(['feed','postId']) && sender === feeds.getIn(['sender','username']) && category === feeds.get('category')){
@@ -21,19 +21,20 @@ const FeedList = ({like,mainfeed,username,onclick,content,hashdisplay,hover,noth
                      );
                      return <FeedBox key = {(parseInt(feeds.getIn(['feed','postId']))+index).toString()+feeds.get('category')+feeds.getIn(['sender','username'])} 
                      count = {feeds.getIn(['feed','files']).size} mainfeed={feeds} stateclick={stateclick}
-                hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} like={like} >{hashTagList}</FeedBox>
+                hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} like={like}
+                 likedisplay = {likedisplay}>{hashTagList}</FeedBox>
                 }
                 else{
                     return <FeedBox key = {(parseInt(feeds.getIn(['feed','postId']))+index).toString()+feeds.get('category')+feeds.getIn(['sender','username'])} 
                     count = {feeds.getIn(['feed','files']).size} mainfeed={feeds} stateclick={stateclick}
-                hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover}like={like} >
+                hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover}like={like} likedisplay = {likedisplay} >
                     <div key = {parseInt(feeds.getIn(['feed','postId']))+'gdg'}>태그된 사람이 없습니다.<br/></div></FeedBox>
                 }   
             }
             else if(feeds){ 
             return <FeedBox key = {(parseInt(feeds.getIn(['feed','postId']))+index).toString()+feeds.get('category')+feeds.getIn(['sender','username'])} 
             count = {feeds.getIn(['feed','files'])&&feeds.getIn(['feed','files']).size} mainfeed={feeds} stateclick={stateclick}
-            hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like}/>
+            hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like}likedisplay = {likedisplay} />
             }
         }
     )

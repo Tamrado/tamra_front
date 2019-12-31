@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import Header, {RegisterButton,UserThumbnail,FriendSearch,Setting} from '../../components/Header';
+import Header, {RegisterButton,UserThumbnail,SearchList,Setting} from '../../components/Header';
 import {FollowList} from '../../components/FollowMenu';
 import {connect} from 'react-redux';
 import * as userActions from '../../redux/modules/user';
 import * as baseActions from '../../redux/modules/base';
 import * as friendActions from '../../redux/modules/friend';
+import * as searchActions from '../../redux/modules/search';
 import {bindActionCreators} from 'redux';
 import menuImage from '../../build/static/images/iconmonstr-arrow-80-24.png';
 import alarmImage from '../../build/static/images/iconmonstr-bell-thin-32.png';
@@ -100,19 +101,44 @@ class HeaderContainer extends Component {
         }
     }
 
+    handleSearchBox = async(e) => {
+        const {SearchActions} = this.props;
+        const {innerText} = e.target;
+        
+        await SearchActions.setHeaderContent(innerText);
+        const {headerContent} = this.props;
+        try{
+        await SearchActions.searchInHeader(headerContent,1,5);
+        }catch(e){
+            SearchActions.setEmptyUserlist();
+        }
+        await SearchActions.setHeaderVisible('block');
+    }
+
+    handleSearchClick = async() => {
+        const {SearchActions,page,headerContent} = this.props;
+        await SearchActions.searchInHeader(headerContent,page,10);
+        await SearchActions.setAddPage();
+    }
+
+    handleUserClick = async(e) => {
+        window.location.href = `/@:${e.target.id}`;
+    }
+
     render(){
-    const {visible, user,followRequest,friendRequestNum,alarmRequestNum} = this.props;
+    const {visible, user,followRequest,friendRequestNum,alarmRequestNum,headerVisible,userList,headerContent} = this.props;
     const{friendRequestVisible,alarmVisble,alarmMenuVisible,
         followMenuVisible,mypageVisible,mVisible,noFriendAddVisible} = this.state;
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
-        ,follow,setFollowNotificationUnavailable} = this;
+        ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick} = this;
     let content,search,alarm,friendRequest,mypage,menu = null;
 
     if(!visible) return null;
 
     if(user.get('logged')){
         content = <UserThumbnail username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
-        search = <FriendSearch/>;
+        search = <SearchList userclick = {handleUserClick}
+         onclick = {handleSearchBox} visible={headerVisible} users={userList} nickname={headerContent}/>;
         alarm = <Setting resultvisible = {alarmVisble} image = {alarmImage} size = {'30px'}
          onclick = {handleAlarmClick} hoverimg={hoverAlarmImage}/>;
         
@@ -150,12 +176,15 @@ export default connect(
         username: state.user.getIn(['loggedInfo','username']),
         user: state.user,
         followRequest : state.friend.get('alarm'),
-        friendRequestNum : state.friend.get('friendRequestNum')
-        
+        friendRequestNum : state.friend.get('friendRequestNum'),
+        headerContent : state.search.get('headerContent'),
+        userList : state.search.get('userList'),
+        headerVisble : state.search.get('headervisible')
     }),
     (dispatch) => ({
         UserActions: bindActionCreators(userActions, dispatch),
         BaseActions: bindActionCreators(baseActions,dispatch),
-        FriendActions : bindActionCreators(friendActions,dispatch)
+        FriendActions : bindActionCreators(friendActions,dispatch),
+        SearchActions : bindActionCreators(searchActions,dispatch)
     })
 ) (HeaderContainer);

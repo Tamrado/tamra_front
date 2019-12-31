@@ -149,9 +149,10 @@ letter-spacing: 0.05em;
 const Image = styled.div`
 position: relative;
 overflow: hidden;
-width : 250px;
-height : 250px;
+width : ${props => props.size};
+height : ${props => props.size};
 display : block;
+left : ${props => props.left};
 background-image : url(${props => props.src});
 background-size: cover;
 background-position: center;
@@ -185,7 +186,7 @@ const FeedSubMenu = styled.div`
 position : absolute;
 width: 300px;
 height: 32px;
-right: 0;
+right: 5%;
 top: 460px;
 `;
 const LikeNumber = styled.div`
@@ -240,7 +241,7 @@ display : ${props=> props.display};
     position: absolute;
     width: 100px;
     padding: 8px;
-    right: 230px;
+    right: 267px;
     bottom: 10%;
     align-items: center;
 text-align: center;
@@ -334,10 +335,10 @@ return(
             <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/>
+            <Image left = {`5%`} size ={'320px'} src={files[0].thumbnail}/><Image left = {`5%`} size ={'320px'} src={files[1].thumbnail}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image src={files[0].thumbnail}/>
+            <Image left={`26%`} size ={'320px'} src={files[0].thumbnail}/>
             </FeedImage>}
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>

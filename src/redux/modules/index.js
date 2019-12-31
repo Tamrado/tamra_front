@@ -8,6 +8,7 @@ import friend from './friend';
 import search from './search';
 import timeline from './timeline';
 import {penderReducer} from 'redux-pender';
+import like from './like';
 
 export default combineReducers({
     base,
@@ -18,5 +19,6 @@ export default combineReducers({
     friend,
     search,
     timeline,
+    like,
     pender: penderReducer
 });
