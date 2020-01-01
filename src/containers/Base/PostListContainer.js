@@ -68,15 +68,21 @@ class PostListContainer extends Component{
     handleStateClick = (e) =>{
         window.location.href =`/@:${e.target.id}`;
     }
-    handleLikeClick = (e) =>{
-        const {likedisplay,LikeActions,TimelineActions} = this.props;
-        TimelineActions.setKey(e.target.id);
-        if(likedisplay === 'none'){
-            LikeActions.clickLike(e.target.id);
-        }
-        else{
-            LikeActions.cancelLike(e.target.id);
-        }
+    handleLikeClick = async(e) =>{
+        const {LikeActions,TimelineActions} = this.props;
+        const id = e.target.id;
+        await LikeActions.setLikeKey(id);
+        await LikeActions.clickLike(id);
+        await LikeActions.getLikeAndUserList(id,1);
+        
+       
+    }
+    handleCancelClick =async(e) => {
+        const {LikeActions,TimelineActions} = this.props;
+        const id = e.target.id;
+        await LikeActions.setLikeKey(id);
+        await LikeActions.cancelLike(id);
+        await LikeActions.getLikeAndUserList(id,1);
     }
     render(){
         
@@ -89,8 +95,8 @@ class PostListContainer extends Component{
             return null;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {writtenData,hashdisplay,keyid,category,sender,likedisplay} = this.props;
-        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick} = this;
+        const {writtenData,hashdisplay,keyid,category,sender,totalNum,likeKey,likedisplay} = this.props;
+        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,handleCancelClick} = this;
         
         return(
             <PageWrapper>
@@ -99,7 +105,9 @@ class PostListContainer extends Component{
             return (<div style={style} >{line}<br/></div>)
           })
         } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
-         category = {category} sender = {sender} likedisplay={likedisplay}/>
+         category = {category} sender = {sender} cancel={handleCancelClick} totalNum={totalNum} likeKey={likeKey}
+         likedisplay = {likedisplay} />
+         
             </PageWrapper>
         );
     }
@@ -115,6 +123,8 @@ export default connect(
         keyid : state.timeline.get('keyid'),
         category : state.timeline.get('categoryid'),
         sender : state.timeline.get('senderid'),
+        totalNum : state.like.get('totalNum'),
+        likeKey : state.like.get('likeKey'),
         likedisplay : state.like.get('likedisplay')
     }),
     (dispatch) => ({

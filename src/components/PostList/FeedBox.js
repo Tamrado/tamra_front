@@ -312,8 +312,8 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,likedisplay}) => {
-    
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,likedisplay,cancel,likenum}) => {
+    console.log(likedisplay);
     const {
         feed,
         category,
@@ -322,50 +322,58 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,
         profileId
     } = mainfeed.toJS();
   
-    /*const toggleLike = () => onToggleLike({
-        feedId : postId,
-        liked
-    });
-    const commentClick = () => onCommentClick(postId);*/
+   const {
+    postId,
+    content,
+    showLevel,
+    timestamp,
+    totalTag,
+    totalComment,
+    totalLike,
+    profile,
+    files,
+    loggedInUserLikeIt,
+    tags
+   } = feed;
     if(!profileId) return null;
 return(
     <div>
     {`${message}`&&<PostStateBox onClick = {stateclick} id = {sender.username}>{message}</PostStateBox>}
     <Box>
         <NickNameBox>
-            <Profile id = {profileId} thumbnail = {feed.profile.profile}/>
-            <NickName id = {profileId}>{feed.profile.name}</NickName>
+            <Profile id = {profileId} thumbnail = {profile.profile}/>
+            <NickName id = {profileId}>{profile.name}</NickName>
             <ViewBox>
-            <Time>{feed.timestamp}</Time>
-           { `${feed.showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
-           { `${feed.showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
-           { `${feed.showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
+            <Time>{timestamp}</Time>
+           { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
+           { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
+           { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
-        { !`${feed.files}` &&<Feed>{feed.content}</Feed>}
-        {`${feed.files}` && count > 3 && <FeedImage>
-            <Image src={feed.files[0].thumbnail}/><Image src={feed.files[1].thumbnail}/><Image src={feed.files[2].thumbnail}>
+        { !`${files}` &&<Feed>{feed.content}</Feed>}
+        {`${files}` && count > 3 && <FeedImage>
+            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
-        {`${feed.files}` && count === 3 && <FeedImage>
-            <Image src={feed.files[0].thumbnail} size ={'250px'}/><Image size ={'250px'} src={feed.files[1].thumbnail}/><Image size ={'250px'} src={feed.files[2].thumbnail}/>
+        {`${files}` && count === 3 && <FeedImage>
+            <Image src={files[0].thumbnail} size ={'250px'}/><Image size ={'250px'} src={files[1].thumbnail}/><Image size ={'250px'} src={files[2].thumbnail}/>
             </FeedImage>}
-            {`${feed.files}` && count === 2 && <FeedImage>
-            <Image src={feed.files[0].thumbnail} left = {`5%`} size ={'320px'}/><Image left = {`5%`} size ={'320px'} src={feed.files[1].thumbnail}/>
+            {`${files}` && count === 2 && <FeedImage>
+            <Image src={files[0].thumbnail} left = {`5%`} size ={'320px'}/><Image left = {`5%`} size ={'320px'} src={files[1].thumbnail}/>
             </FeedImage>}
-            {`${feed.files}` && count === 1 && <FeedImage>
-            <Image left={`26%`} size ={'320px'} src={feed.files[0].thumbnail}/>
+            {`${files}` && count === 1 && <FeedImage>
+            <Image left={`26%`} size ={'320px'} src={files[0].thumbnail}/>
             </FeedImage>}
-            <HashNum id={feed.postId} display={hashdisplay}>{feed.totalTag}명<br/>{children}</HashNum>
+            <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
-            <HashImage id={feed.postId} data-category={category} data-sender={sender.username} onMouseOver={hover} onMouseOut={nothover}/>
-            <LikeImage id = {feed.postId} onClick = {like} like = {likedisplay}/>
-            <LikeNumber>{feed.totalLike}</LikeNumber>
-            {likedisplay === 'none' &&<LikedImage id = {feed.postId} onClick = {like} />}
-            <Comment>댓글 {feed.totalComment}</Comment>
+            <HashImage id={postId} data-category={category} data-sender={sender.username} onMouseOver={hover} onMouseOut={nothover}/>
+            <LikeImage id = {postId} onClick = {like} like = {likedisplay}/>
+            <LikeNumber>{likenum}</LikeNumber>
+            {likedisplay === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
+            <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
     </div>
@@ -373,5 +381,5 @@ return(
 }
 export default scuize(FeedBox, function(nextProps, nextState){
     return this.props.feed !== nextProps.feed || this.props.hashdisplay !== nextProps.hashdisplay || 
-    this.props.likedisplay !== nextProps.likedisplay;
+    this.props.loggedInUserLikeIt !== nextProps.loggedInUserLikeIt;
 });

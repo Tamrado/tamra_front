@@ -301,6 +301,7 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,li
         totalLike,
         profile,
         files,
+        loggedInUserLikeIt,
         tags
     } = mainfeed.toJS();
   
