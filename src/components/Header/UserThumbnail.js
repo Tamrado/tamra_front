@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
-import { Link } from 'react-router-dom';
 
-const Wrapper = styled(Link)`
+const Wrapper = styled.div`
     width: 40px;
     height: 40px;
     left : 0;
@@ -28,9 +27,9 @@ border-right: 2px solid rgba(18, 184, 134, 0.1);
 margin-right : 12px;
 `;
 
-const UserThumbnail = ({thumbnail, onClick,username}) => (
+const UserThumbnail = ({thumbnail,profileClick}) => (
     <div>
-    <Wrapper to={`/@:${username}`} thumbnail={thumbnail} onClick={onClick}/>
+    <Wrapper onClick={profileClick} thumbnail={thumbnail}/>
     <MenuLine/>
     </div>
 );

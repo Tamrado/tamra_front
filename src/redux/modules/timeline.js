@@ -21,7 +21,17 @@ const SET_FOLLOW_DISPLAY = 'post/SET_FOLLOW_DISPLAY';
 const SET_MAINFEED = 'post/SET_MAINFEED';
 const SET_ISTRUE_POST = 'post/SET_ISTRUE_POST';
 const SET_PAGE = 'post/SET_PAGE';
+const SET_LIKE_KEY = 'post/SET_LIKE_KEY';
+const SET_LIKE = 'post/SET_LIKE';
+const SET_LIKE_NUM = 'post/SET_LIKE_NUM';
+const SET_TIMELINE_LIKE = 'post/SET_TIMELINE_LIKE';
+const SET_TIMELINE_LIKE_NUM = 'post/SET_TIMELINE_LIKE_NUM';
 
+export const setTimelineLike = createAction(SET_TIMELINE_LIKE);
+export const setTimelineLikeNum = createAction(SET_TIMELINE_LIKE_NUM);
+export const setLikeNum = createAction(SET_LIKE_NUM);
+export const setLike = createAction(SET_LIKE);
+export const setLikeKey = createAction(SET_LIKE_KEY);
 export const setPage = createAction(SET_PAGE);
 export const setIsTruePost = createAction(SET_ISTRUE_POST);
 export const setMainfeed= createAction(SET_MAINFEED);
@@ -53,10 +63,21 @@ const initialState = Map({
     keyid : -1,
     categoryid : '',
     senderid : '',
-    followdisplay : 'none'
+    followdisplay : 'none',
+    likeNum : -1,
+    totalNum : 0
 });
 
 export default handleActions({
+    [SET_LIKE_NUM] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('likeKey')))
+        return state.setIn(['mainfeed',index,'feed','totalLike'],action.payload);
+    },
+    [SET_TIMELINE_LIKE_NUM] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(state.get('likeKey')))
+        return state.setIn(['mainfeed',index,'totalLike'],action.payload);
+    },
+    [SET_LIKE_KEY] : (state,action) => state.set('likeKey',action.payload),
     [SET_PAGE]:(state,action) => state.set('page',1),
     [SET_ISTRUE_POST] :(state,action) => state.set('isTruePost',true),
     [SET_MAINFEED] : (state,action) => state.set('mainfeed',List()),
@@ -71,6 +92,14 @@ export default handleActions({
     [SET_HASH_DISPLAY] : (state,action) => state.set('hashdisplay',action.payload),
     [ADD_PAGE] : (state,action) => state.set('page', state.get('page') + 1),
     [SET_FALSE_POST]: (state,action) => state.set('isTruePost',false),
+    [SET_LIKE] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('likeKey')))
+        return state.setIn(['mainfeed',index,'feed','islike'],action.payload);
+    },
+    [SET_TIMELINE_LIKE] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(state.get('likeKey')))
+        return state.setIn(['mainfeed',index,'islike'],action.payload);
+    },
     ...pender({
         type: GET_MAIN_INFORMATION,
         onSuccess: (state,action) =>state.update('mainfeed',feed => feed.concat(fromJS(action.payload.data.contentlist))) 
@@ -84,5 +113,5 @@ export default handleActions({
         type: GET_TIMELINE_INFORMATION,
         onSuccess: (state,action) =>state.update('mainfeed',feed => feed.concat(fromJS(action.payload.data.contentlist))) 
         
-    }),
+    })
     }, initialState);

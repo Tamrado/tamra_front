@@ -1,35 +1,37 @@
 import React from 'react';
-import styled from 'styled-components';
 import FeedBox from './FeedBox';
 import Profile from './Profile';
 
 const FeedList = ({followclick,postNum,followerNum,followNum,comment,nickname,username,thumbnail
-    ,followdisplay,isfollow,mainfeed,hover,nothover,hashdisplay,keyid,like}) => {
+    ,followdisplay,isfollow,mainfeed,hover,nothover,hashdisplay,keyid,cancel,like}) => {
+        
     const feedList = mainfeed.map(
-        (feeds,index) => {
+        (feeds) => {
+           
             if(feeds && keyid === feeds.get('postId')){
                
                 if(feeds.get('tags').size > 0){
                     const hashTagList = feeds.get('tags').map(
-                         (hash,index1) => {
-                             return <div key = {parseInt(feeds.get('postId')+index1).toString()}>{hash.get('nickname')}<br/></div>
+                         (hash) => {
+                             return <div key = {parseInt(feeds.get('postId'))}>{hash.get('nickname')}<br/></div>
                          }
                      );
-                     return <FeedBox key = {parseInt(feeds.get('postId')+index).toString()} 
+                     return <FeedBox key = {parseInt(feeds.get('postId'))} 
                      count = {feeds &&feeds.get('files').size} mainfeed={feeds}
-                hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} like={like} >{hashTagList}</FeedBox>
+                hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} like={like} cancel={cancel} >{hashTagList}</FeedBox>
                 }
                 else{
-                    return <FeedBox key = {parseInt(feeds.get('postId')+index).toString()} like={like}  
+                    return <FeedBox key = {parseInt(feeds.get('postId'))}
                     count = {feeds && feeds.get('files').size}
-                     mainfeed={feeds} hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} >
+                     mainfeed={feeds} hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} 
+                     like={like} cancel={cancel}>
                     <div key = {parseInt(feeds.get('postId'))+'gdg'}>태그된 사람이 없습니다.<br/></div></FeedBox>
                 }   
             }
             else if(feeds){ 
-            return  <FeedBox key = {parseInt(feeds.get('postId')+index).toString()} 
-            count = {feeds.get('files') && feeds.get('files').size} mainfeed={feeds} like={like} 
-            hashdisplay = {'none'} hover = {hover} nothover = {nothover} />
+            return  <FeedBox key = {parseInt(feeds.get('postId')).toString()} 
+            count = {feeds.get('files') && feeds.get('files').size} mainfeed={feeds} 
+            hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like} cancel={cancel} />
             }
         }
     )

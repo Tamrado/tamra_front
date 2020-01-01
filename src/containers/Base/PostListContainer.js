@@ -23,21 +23,14 @@ class PostListContainer extends Component{
         await this.props.TimelineActions.addPage();
         }
     }
-
     componentDidMount= async() =>{
-        this.props.TimelineActions.setKey(-1);
-        this.props.TimelineActions.setMainfeed();
-        this.props.TimelineActions.setIsTruePost();
-        await this.props.TimelineActions.setPage();
         window.addEventListener("scroll", this.handleScroll);
         if(!storage.get('loggedInfo')) return ;
-        this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
-         this.getFeedList();
+        await this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
+         await this.getFeedList();
         await this.props.TimelineActions.addPage();
       }
 
-   
-    
       getFeedList = async() => {
         const{TimelineActions,page,isTruePost} = this.props;
         if(isTruePost){
@@ -62,27 +55,35 @@ class PostListContainer extends Component{
     outHashTag = (e) =>{
         const {TimelineActions} = this.props;
         TimelineActions.setHashDisplay('none');
-        
-        
+          
     }
     handleStateClick = (e) =>{
         window.location.href =`/@:${e.target.id}`;
     }
     handleLikeClick = async(e) =>{
-        const {LikeActions,TimelineActions} = this.props;
+        const {LikeActions,TimelineActions,data} = this.props;
         const id = e.target.id;
-        await LikeActions.setLikeKey(id);
+        await TimelineActions.setLikeKey(id);
         await LikeActions.clickLike(id);
+        await TimelineActions.setLike('none');
+        try{
         await LikeActions.getLikeAndUserList(id,1);
-        
-       
+        }catch(e){}
+        const {totalNum} = this.props;
+        await TimelineActions.setLikeNum(totalNum);
+           
     }
     handleCancelClick =async(e) => {
         const {LikeActions,TimelineActions} = this.props;
         const id = e.target.id;
-        await LikeActions.setLikeKey(id);
+        await TimelineActions.setLikeKey(id);
         await LikeActions.cancelLike(id);
+        await TimelineActions.setLike('block');
+        try{
         await LikeActions.getLikeAndUserList(id,1);
+        }catch(e){}
+        const {totalNum} = this.props;
+        await TimelineActions.setLikeNum(totalNum);
     }
     render(){
         
@@ -95,7 +96,7 @@ class PostListContainer extends Component{
             return null;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {writtenData,hashdisplay,keyid,category,sender,totalNum,likeKey,likedisplay} = this.props;
+        const {writtenData,hashdisplay,keyid,category,sender,totalNum} = this.props;
         const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,handleCancelClick} = this;
         
         return(
@@ -105,8 +106,7 @@ class PostListContainer extends Component{
             return (<div style={style} >{line}<br/></div>)
           })
         } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
-         category = {category} sender = {sender} cancel={handleCancelClick} totalNum={totalNum} likeKey={likeKey}
-         likedisplay = {likedisplay} />
+         category = {category} sender = {sender} cancel={handleCancelClick} totalNum={totalNum}  />
          
             </PageWrapper>
         );
@@ -123,9 +123,7 @@ export default connect(
         keyid : state.timeline.get('keyid'),
         category : state.timeline.get('categoryid'),
         sender : state.timeline.get('senderid'),
-        totalNum : state.like.get('totalNum'),
-        likeKey : state.like.get('likeKey'),
-        likedisplay : state.like.get('likedisplay')
+        totalNum : state.like.get('totalNum')
     }),
     (dispatch) => ({
         TimelineActions: bindActionCreators(timelineActions, dispatch),

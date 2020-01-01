@@ -3,7 +3,6 @@ import SearchBox from './SearchBox';
 import FriendSearch from './FriendSearch';
 
 const SearchList = ({onclick,nickname,visible,users,userclick}) => {
-    console.log(1);
     const userList = users.map(
         (user)=>(
         <SearchBox key = {user.get('username')} user={user} visible={visible} onclick={userclick}/>

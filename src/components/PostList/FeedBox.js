@@ -7,7 +7,7 @@ import clickhash from '../../build/static/images/iconmonstr-hashtag-1-24 (1).png
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
-import scuize from '../../lib/scuize';
+
 const Box = styled.div`
 width: 70%;
 left : 15%;
@@ -159,11 +159,11 @@ text-align: center;
 letter-spacing: 0.05em;
 `;
 const Image = styled.div`
-position: relative;
+margin : 0 auto ;
 overflow: hidden;
 width : ${props=>props.size};
 height : ${props=>props.size};
-left : ${props=>props.left};
+
 display : block;
 background-image : url(${props => props.src});
 background-size: cover;
@@ -312,14 +312,14 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,likedisplay,cancel,likenum}) => {
-    console.log(likedisplay);
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,cancel}) => {
+    
     const {
         feed,
         category,
         sender,
         message,
-        profileId
+        profileId,
     } = mainfeed.toJS();
   
    const {
@@ -332,10 +332,10 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,
     totalLike,
     profile,
     files,
-    loggedInUserLikeIt,
+    islike,
     tags
    } = feed;
-    if(!profileId) return null;
+    
 return(
     <div>
     {`${message}`&&<PostStateBox onClick = {stateclick} id = {sender.username}>{message}</PostStateBox>}
@@ -370,16 +370,13 @@ return(
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
             <HashImage id={postId} data-category={category} data-sender={sender.username} onMouseOver={hover} onMouseOut={nothover}/>
-            <LikeImage id = {postId} onClick = {like} like = {likedisplay}/>
-            <LikeNumber>{likenum}</LikeNumber>
-            {likedisplay === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
+            <LikeImage id = {postId} onClick = {like} like = {islike}/>
+            <LikeNumber>{totalLike}</LikeNumber>
+            {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
             <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
     </div>
     )
 }
-export default scuize(FeedBox, function(nextProps, nextState){
-    return this.props.feed !== nextProps.feed || this.props.hashdisplay !== nextProps.hashdisplay || 
-    this.props.loggedInUserLikeIt !== nextProps.loggedInUserLikeIt;
-});
+export default FeedBox;

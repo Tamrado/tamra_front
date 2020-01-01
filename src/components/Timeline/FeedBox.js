@@ -7,7 +7,7 @@ import clickhash from '../../build/static/images/iconmonstr-hashtag-1-24 (1).png
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
-import scuize from '../../lib/scuize';
+
 const Box = styled.div`
 width: 60%;
 left: 20%;
@@ -147,12 +147,12 @@ text-align: center;
 letter-spacing: 0.05em;
 `;
 const Image = styled.div`
-position: relative;
+margin : 0 auto;
 overflow: hidden;
 width : ${props => props.size};
 height : ${props => props.size};
 display : block;
-left : ${props => props.left};
+
 background-image : url(${props => props.src});
 background-size: cover;
 background-position: center;
@@ -212,6 +212,7 @@ position : absolute;
 width: 32px;
 height: 32px;
 left : 105px;
+display : ${props => props.like};
 background-image : url(${like});
 background-size: cover;
 background-position: center;
@@ -219,6 +220,16 @@ background-repeat: no-repeat;
 &:hover {
     background-image: url(${clickLike});
 }
+`;
+const LikedImage = styled.div`
+position : absolute;
+width: 32px;
+height: 32px;
+left : 105px;
+background-image : url(${clickLike});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
 `;
 const HashImage = styled.div`
 
@@ -289,7 +300,7 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like}) => {
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel}) => {
     
     const {
         postId,
@@ -301,17 +312,18 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,li
         totalLike,
         profile,
         files,
-        loggedInUserLikeIt,
+        islike,
         tags
     } = mainfeed.toJS();
-  
+   
     /*const toggleLike = () => onToggleLike({
         feedId : postId,
         liked
     });
     const commentClick = () => onCommentClick(postId);*/
-    if(!profile) return null;
+    if(!profile || !postId) return null;
 return(
+
     <div>
     <Box>
         <NickNameBox>
@@ -344,13 +356,13 @@ return(
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
             <HashImage id={postId} onMouseOver={hover} onMouseOut={nothover}/>
-            <LikeImage id = {postId} onClick = {like}/><LikeNumber>{totalLike}</LikeNumber>
+            <LikeImage id = {postId} onClick = {like} like = {islike}/>
+            <LikeNumber>{totalLike}</LikeNumber>
+            {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
             <Comment>댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
     </div>
     )
 }
-export default scuize(FeedBox, function(nextProps, nextState){
-    return this.props.feed !== nextProps.feed || this.props.hashdisplay !== nextProps.hashdisplay;
-});
+export default FeedBox;

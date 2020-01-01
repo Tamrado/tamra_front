@@ -101,6 +101,11 @@ class HeaderContainer extends Component {
         }
     }
 
+    handleProfileClick = () => {
+        const{username} = this.props;
+        window.location.href =`/@:${username}`;
+    }
+
     handleSearchBox = async(e) => {
         const {SearchActions} = this.props;
         const {innerText} = e.target;
@@ -124,19 +129,22 @@ class HeaderContainer extends Component {
     handleUserClick = async(e) => {
         window.location.href = `/@:${e.target.id}`;
     }
+    handleClickHome = () => {
+        window.location.href = '/';
+    }
 
     render(){
     const {visible, user,followRequest,friendRequestNum,alarmRequestNum,headerVisible,userList,headerContent} = this.props;
     const{friendRequestVisible,alarmVisble,alarmMenuVisible,
         followMenuVisible,mypageVisible,mVisible,noFriendAddVisible} = this.state;
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
-        ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick} = this;
+        ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick,handleProfileClick,handleClickHome} = this;
     let content,search,alarm,friendRequest,mypage,menu = null;
 
     if(!visible) return null;
 
     if(user.get('logged')){
-        content = <UserThumbnail username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
+        content = <UserThumbnail profileClick={handleProfileClick}  username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
         search = <SearchList userclick = {handleUserClick}
          onclick = {handleSearchBox} visible={headerVisible} users={userList} nickname={headerContent}/>;
         alarm = <Setting resultvisible = {alarmVisble} image = {alarmImage} size = {'30px'}
@@ -154,7 +162,7 @@ class HeaderContainer extends Component {
     }
         return(
             
-            <Header>
+            <Header home={handleClickHome}>
                 {search}
                 {content}
                 {alarm}

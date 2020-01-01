@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import { shadow } from '../../lib/styleUtils';
 const Box = styled.div`
 position: absolute;
@@ -52,7 +51,7 @@ left: 0px;
 top: 64px;
 border: 1px solid #12B886;
 `;
-const Alarm = styled(Link)`
+const Alarm = styled.div`
 position: absolute;
 width: 100px;
 height: 45px;

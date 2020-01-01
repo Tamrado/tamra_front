@@ -43,7 +43,7 @@ const HeaderContents = styled.div`
 `;
 
 // 로고
-const Logo = styled(Link)`
+const Logo = styled.div`
     font-size: 1.4rem;
     letter-spacing: 2px;
     color: ${oc.teal[7]};
@@ -60,12 +60,12 @@ const GradientBorder = styled.div`
     background: linear-gradient(to right, ${oc.teal[6]}, ${oc.cyan[5]});
 `;
 
-const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour}) => {
+const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour,home}) => {
     return (
         <Positioner>
             <WhiteBackground>
                 <HeaderContents>
-                    <Logo to="/">TIMELINE</Logo>
+                    <Logo onClick={home}>TIMELINE</Logo>
                     {children}
                     {childrentwo}
                     {menuOne}

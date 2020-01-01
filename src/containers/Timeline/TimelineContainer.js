@@ -5,8 +5,10 @@ import PageWrapper from '../../components/PageWrapper';
 import {FeedList} from '../../components/Timeline';
 import * as friendActions from '../../redux/modules/friend';
 import * as timelineActions from '../../redux/modules/timeline';
+import * as likeActions from '../../redux/modules/like';
 import storage from '../../lib/storage';
 class TimelineContainer extends Component{
+    
     handleScroll = async(e) => {
         const scrollTop =e.srcElement.scrollingElement.scrollTop;
         const { innerHeight } = window;
@@ -17,7 +19,6 @@ class TimelineContainer extends Component{
          await this.props.TimelineActions.addPage();
         }
     }
-    
       getFeedList = async() => {
         const{TimelineActions,page,isTruePost,userid} = this.props;
         var username = userid.substr(1);
@@ -42,25 +43,12 @@ class TimelineContainer extends Component{
         TimelineActions.setHashDisplay('none');
     }
 
-    handleMyTimeline = () =>{
-        const {TimelineActions,FriendActions} = this.props;
-        if(!storage.get('loggedInfo')) return ;
-        const {thumbnail,comment,username,nickname} = storage.get('loggedInfo');
-        TimelineActions.setComment(comment);
-        TimelineActions.setThumbnail(thumbnail);
-        TimelineActions.setUsername(username);
-        TimelineActions.setNickname(nickname);
-        TimelineActions.setFollowDisplay('none');
-        try{
-        FriendActions.getMyInfoNum();
-        TimelineActions.getTimelinePostNum(username);
-        }catch(e){
-            window.location.replace('/');
-        }
-    }
-    handleOtherTimeline =async()=>{
+    handleTimeline =async()=>{
         const {TimelineActions,FriendActions,userid} = this.props;
         var id = userid.substr(1);
+        const {username} = storage.get('loggedInfo');
+        if(username === id)TimelineActions.setFollowDisplay('none');
+        else TimelineActions.setFollowDisplay('block');
         try{
         await FriendActions.getOtherInfoNum(id);
         TimelineActions.getTimelinePostNum(id);
@@ -72,40 +60,27 @@ class TimelineContainer extends Component{
         TimelineActions.setThumbnail(result.thumbnail);
         TimelineActions.setUsername(result.username);
         TimelineActions.setNickname(result.nickname);
-        TimelineActions.setFollowDisplay('block');
         FriendActions.notifyIsFollowUser(id);
 
     }
-
-    componentDidUpdate(prevProps, prevState, snapshot){
-        if(snapshot || prevProps.userid !== this.props.userid){
-        const {userid} = this.props;
-        const {handleMyTimeline,handleOtherTimeline} = this;
-
-        if(storage.get('loggedInfo') && ':'+storage.get('loggedInfo').username === userid){
-            handleMyTimeline();
-        }
-        else{
-            handleOtherTimeline();
-        }
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        return prevProps.userid !== this.props.userid;
+    }
+   componentDidUpdate(prevProps, prevState, snapshot){
+        
+        if(snapshot){
+        
+        const {handleTimeline} = this;
+        handleTimeline();
         }
     }
+    
     componentDidMount=async()=>{
-        this.props.TimelineActions.setKey(-1);
-        this.props.TimelineActions.setMainfeed();
-        this.props.TimelineActions.setIsTruePost();
-        await this.props.TimelineActions.setPage();
-        const {userid} = this.props;
-        const {handleMyTimeline,handleOtherTimeline} = this;
+        const {handleTimeline} = this;
         window.addEventListener("scroll", this.handleScroll);
-        this.getFeedList();
+        await this.getFeedList();
         await this.props.TimelineActions.addPage();
-        if(storage.get('loggedInfo') && ':'+storage.get('loggedInfo').username === userid){
-            handleMyTimeline();
-        }
-        else{
-            handleOtherTimeline();
-        }
+        await handleTimeline();
     }
     handleFollowClick =async()=>{
         const {FriendActions,isfollow,userid} = this.props;
@@ -116,23 +91,48 @@ class TimelineContainer extends Component{
             await FriendActions.unfollow({'friendId': id});
         await FriendActions.getOtherInfoNum(id);
     }
-    handleLikeClick = (e) =>{
-        
+    handleLikeClick = async(e) =>{
+        const {LikeActions,TimelineActions} = this.props;
+        const id = e.target.id;
+        await TimelineActions.setLikeKey(id);
+        await LikeActions.clickLike(id);
+        await TimelineActions.setTimelineLike('none');
+        try{
+        await LikeActions.getLikeAndUserList(id,1);
+        }catch(e){}
+        const {totalNum} = this.props;
+        await TimelineActions.setTimelineLikeNum(totalNum);
+           
+    }
+    handleCancelClick =async(e) => {
+        const {LikeActions,TimelineActions} = this.props;
+        const id = e.target.id;
+        await TimelineActions.setLikeKey(id);
+        await LikeActions.cancelLike(id);
+        await TimelineActions.setTimelineLike('block');
+        try{
+        await LikeActions.getLikeAndUserList(id,1);
+        }catch(e){}
+        const {totalNum} = this.props;
+        await TimelineActions.setTimelineLikeNum(totalNum);
     }
     render(){
+        
+        const {data} = this.props;
         if(!storage.get('loggedInfo')) {
             
             return null;
         }
-        const {hashdisplay,keyid,data} = this.props;
+        const {hashdisplay,keyid,totalNum} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow} = this.props;
-        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick} = this;
+        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick} = this;
         return(
             <PageWrapper>
             <FeedList thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
             followNum = {followNum} followerNum = {followerNum}  followclick={handleFollowClick}
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}
-             mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} nothover={outHashTag} keyid = {keyid}/>
+             mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} 
+             nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}/>
           </PageWrapper>
             );
     }
@@ -154,12 +154,14 @@ export default connect(
         page : state.timeline.get('page'),
         isTruePost : state.timeline.get('isTruePost'),
         hashdisplay : state.timeline.get('hashdisplay'),
-        keyid : state.timeline.get('keyid')
+        keyid : state.timeline.get('keyid'),
+        totalNum : state.like.get('totalNum')
 
     }),
     (dispatch) => ({
         FriendActions: bindActionCreators(friendActions, dispatch),
-        TimelineActions : bindActionCreators(timelineActions,dispatch)
+        TimelineActions : bindActionCreators(timelineActions,dispatch),
+        LikeActions : bindActionCreators(likeActions,dispatch)
 
     })
 )(TimelineContainer);
