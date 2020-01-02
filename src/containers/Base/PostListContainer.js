@@ -8,6 +8,7 @@ import * as postActions from '../../redux/modules/post';
 import * as timelineActions from '../../redux/modules/timeline';
 import * as searchActions from '../../redux/modules/search';
 import * as likeActions from '../../redux/modules/like';
+import * as commentActions from '../../redux/modules/comment';
 import storage from '../../lib/storage';
 class PostListContainer extends Component{
     openWriteModal = () => {
@@ -85,6 +86,22 @@ class PostListContainer extends Component{
         const {totalNum} = this.props;
         await TimelineActions.setLikeNum(totalNum);
     }
+    handleComment =async(e)=>{
+        const {CommentActions,commentdisplay,page} = this.props;
+        const {id} = e.target;
+        const {category,sender} = e.target.dataset;
+        CommentActions.setCommentCategory(category);
+        CommentActions.setCommentId(id);
+        CommentActions.setCommentSender(sender);
+        if(commentdisplay === 'none'){
+        CommentActions.setCommentDisplay('block');
+        await CommentActions.showPostCommentList(id,page);
+        await CommentActions.addPage();
+        }
+        else{
+        CommentActions.setCommentDisplay('none');
+        }
+    }
     render(){
         
         const {data} = this.props;
@@ -96,8 +113,9 @@ class PostListContainer extends Component{
             return null;
         }
         const username = storage.get('loggedInfo').nickname;
-        const {writtenData,hashdisplay,keyid,category,sender,totalNum} = this.props;
-        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,handleCancelClick} = this;
+        const thumbnail = storage.get('loggedInfo').thumbnail;
+        const {writtenData,hashdisplay,keyid,category,sender,totalNum,commentList,commentdisplay,commentId,commentSender,commentCategory} = this.props;
+        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,handleCancelClick,handleComment} = this;
         
         return(
             <PageWrapper>
@@ -106,7 +124,9 @@ class PostListContainer extends Component{
             return (<div style={style} >{line}<br/></div>)
           })
         } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
-         category = {category} sender = {sender} cancel={handleCancelClick} totalNum={totalNum}  />
+         category = {category} sender = {sender} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment}
+         comment={commentList} commentdisplay ={commentdisplay} thumbnail={thumbnail} commentId={commentId}
+          commentSender={commentSender} commentCategory={commentCategory} />
          
             </PageWrapper>
         );
@@ -123,14 +143,20 @@ export default connect(
         keyid : state.timeline.get('keyid'),
         category : state.timeline.get('categoryid'),
         sender : state.timeline.get('senderid'),
-        totalNum : state.like.get('totalNum')
+        totalNum : state.like.get('totalNum'),
+        commentList : state.comment.get('commentList'),
+        commentdisplay : state.comment.get('commentdisplay'),
+        commentCategory : state.comment.get('commentCategory'),
+        commentSender : state.comment.get('commentSender'),
+        commentId : state.comment.get('commentId')
     }),
     (dispatch) => ({
         TimelineActions: bindActionCreators(timelineActions, dispatch),
         FriendActions: bindActionCreators(friendActions, dispatch),
         SearchActions : bindActionCreators(searchActions,dispatch),
         PostActions : bindActionCreators(postActions,dispatch),
-        LikeActions : bindActionCreators(likeActions,dispatch)
+        LikeActions : bindActionCreators(likeActions,dispatch),
+        CommentActions : bindActionCreators(commentActions,dispatch)
 
     })
 )(PostListContainer);

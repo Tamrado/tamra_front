@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import cancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24 (1).png';
 import hoverCancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24.png';
 const Wrapper = styled.div`
@@ -82,7 +81,7 @@ overflow-y: auto;
 
 }`;
 
-const FriendButton = styled(Link)`
+const FriendButton = styled.div`
 position: absolute;
 width: 172px;
 height: 26px;
@@ -105,7 +104,7 @@ border-radius: 10px;
     color : #15AABF;
 }
 `;
-const Button = styled(Link)`
+const Button = styled.div`
 position: absolute;
 width: 152px;
 height: 26px;

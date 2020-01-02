@@ -9,6 +9,7 @@ import search from './search';
 import timeline from './timeline';
 import {penderReducer} from 'redux-pender';
 import like from './like';
+import comment from './comment';
 
 export default combineReducers({
     base,
@@ -20,5 +21,6 @@ export default combineReducers({
     search,
     timeline,
     like,
+    comment,
     pender: penderReducer
 });

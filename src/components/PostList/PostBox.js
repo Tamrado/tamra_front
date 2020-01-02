@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
-const Box = styled(Link)`
+
+const Box = styled.div`
 position: absolute;
 width: 70%;
 left : 15%;

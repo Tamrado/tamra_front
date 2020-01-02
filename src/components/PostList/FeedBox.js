@@ -14,16 +14,69 @@ left : 15%;
 height: 500px;
 background : #ffffff;
 position: relative;
-top : 180px;
+top : 150px;
+margin-top : ${props => props.bottom};
+`;
+const CommentBox = styled.div`
+width : 70%;
+left : 15%;
+height : 300px;
+background : #ffffff;
+position: relative;
+display : ${props => props.display};
+top:150px;
 margin-bottom : 1rem;
+border-top : 1px solid rgba(0, 0, 0, 0.25);
+`;
+const CommentView = styled.div`
+position : absolute;
+background : #ffffff;
+width: 90%;
+height: 60px;
+left: 5%;
+top: 10px;
+`;
+const CommentThumbnail = styled.div`
+position :absolute;
+background-image: url(${props => props.thumbnail});
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 45px;
+    height: 45px;
+    top :10%;
+    left : 15px;
+`;
+const CommentInput = styled.div`
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: 300;
+font-size: 16px;
+line-height: 32px;
+position: absolute;
+width: 80%;
+height: 35px;
+left: 76px;
+top: 12px;
+padding-left : 25px;
+background: #E5E5E5;
+border-radius: 23px;
+&:empty&:not(:focus)&:before {
+    content : attr(aria-label);
+    color : #90949c;
+}
 `;
 const PostStateBox  = styled.div`
+margin-top : 1rem;
 width: 70%;
 left : 15%;
 height : 30px;
 background : #ffffff;
 position : relative;
-top : 180px;
+top : 150px;
 padding-left : 15px;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -312,8 +365,9 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,cancel}) => {
-    
+const FeedBox = ({thumbnail,mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,cancel,handleComment,
+commentdisplay}) => {
+     
     const {
         feed,
         category,
@@ -335,11 +389,12 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick,
     islike,
     tags
    } = feed;
-    
+   var bottom = '1rem';
+   if(`${message}`) bottom = '0'; 
 return(
     <div>
     {`${message}`&&<PostStateBox onClick = {stateclick} id = {sender.username}>{message}</PostStateBox>}
-    <Box>
+    <Box bottom ={bottom}>
         <NickNameBox>
             <Profile id = {profileId} thumbnail = {profile.profile}/>
             <NickName id = {profileId}>{profile.name}</NickName>
@@ -373,9 +428,17 @@ return(
             <LikeImage id = {postId} onClick = {like} like = {islike}/>
             <LikeNumber>{totalLike}</LikeNumber>
             {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
-            <Comment>댓글 {totalComment}</Comment>
+            <Comment id={postId} data-category={category} data-sender={sender.username} onClick = {handleComment}>댓글 {totalComment}</Comment>
+            
         </FeedSubMenu>
     </Box>
+    <CommentBox display = {commentdisplay}>
+        <CommentView>
+            <CommentThumbnail thumbnail = {thumbnail}/>
+            <CommentInput role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
+        onInput={onclick}></CommentInput>
+        </CommentView>
+    </CommentBox>
     </div>
     )
 }
