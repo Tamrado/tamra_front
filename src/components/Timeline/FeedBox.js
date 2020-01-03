@@ -16,6 +16,58 @@ background : #ffffff;
 position: relative;
 top : 10px;
 margin-bottom : 1rem;
+margin-bottom : 0.8rem;
+`;
+const CommentBox = styled.div`
+width : 60%;
+left : 20%;
+height : 300px;
+background : #ffffff;
+position: relative;
+display : ${props => props.display};
+margin-bottom : 0.5rem;
+border-top : 1px solid rgba(0, 0, 0, 0.25);
+`;
+const CommentView = styled.div`
+position : absolute;
+background : #ffffff;
+width: 90%;
+height: 60px;
+left: 5%;
+top: 10px;
+`;
+const CommentThumbnail = styled.div`
+position :absolute;
+background-image: url(${props => props.thumbnail});
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    cursor: pointer;
+    width: 45px;
+    height: 45px;
+    top :10%;
+    left : 15px;
+`;
+const CommentInput = styled.div`
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: 300;
+font-size: 16px;
+line-height: 32px;
+position: absolute;
+width: 80%;
+height: 35px;
+left: 76px;
+top: 12px;
+padding-left : 25px;
+background: #E5E5E5;
+border-radius: 23px;
+&:empty&:not(:focus)&:before {
+    content : attr(aria-label);
+    color : #90949c;
+}
 `;
 const NickNameBox = styled.div`
 width: 356px;
@@ -74,7 +126,7 @@ letter-spacing: 0.05em;
 color: #515250;
 `;
 const ViewPhase = styled.div`
-
+position : relative;
     width: 24px;
     height: 24px;
     display: flex;
@@ -300,7 +352,7 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel}) => {
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,thumbnail}) => {
     
     const {
         postId,
@@ -313,15 +365,16 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,li
         profile,
         files,
         islike,
+        commentState,
         tags
     } = mainfeed.toJS();
-   
-    /*const toggleLike = () => onToggleLike({
-        feedId : postId,
-        liked
-    });
-    const commentClick = () => onCommentClick(postId);*/
     if(!profile || !postId) return null;
+    const style = {
+        lineHeight: '160%'
+    };
+       const contents=content.split('\n').map( line => {
+        return (<div style={style} >{line}<br/></div>)
+      }); 
 return(
 
     <div>
@@ -337,7 +390,7 @@ return(
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
-        { !`${files}` &&<Feed>{content}</Feed>}
+        { !`${files}` &&<Feed>{contents}</Feed>}
         {`${files}` && count > 3 && <FeedImage>
             <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}>
                 <ImageCount>
@@ -359,9 +412,16 @@ return(
             <LikeImage id = {postId} onClick = {like} like = {islike}/>
             <LikeNumber>{totalLike}</LikeNumber>
             {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
-            <Comment>댓글 {totalComment}</Comment>
+            <Comment id ={postId} onClick={handleComment} >댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
+    <CommentBox display = {commentState}>
+        <CommentView>
+            <CommentThumbnail thumbnail = {thumbnail}/>
+            <CommentInput role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
+        onInput={onclick}></CommentInput>
+        </CommentView>
+    </CommentBox>
     </div>
     )
 }

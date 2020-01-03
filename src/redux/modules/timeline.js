@@ -11,22 +11,33 @@ const GET_MAIN_INFORMATION = 'timeline/GET_MAIN_INFORMATION';
 const GET_TIMELINE_INFORMATION = 'timeline/GET_TIMELINE_INFORMATION';
 const GET_TIMELINE_POST_NUM = 'timeline/GET_TIMELINE_POST_NUM';
 const GET_FEED_INFORMATION_DETAIL = 'timeline/GET_FEED_INFORMATION_DETAIL';
-const SET_HASH_DISPLAY = 'post/SET_HASH_DISPLAY';
-const SET_KEY = 'post/SET_KEY';
-const ADD_PAGE = 'post/ADD_PAGE';
-const SET_FALSE_POST = 'post/SET_FALSE_POST';
-const SET_CATEGORY_ID = 'post/SET_CATEGORY_ID';
-const SET_SENDER_ID = 'post/SET_SENDER_ID';
-const SET_FOLLOW_DISPLAY = 'post/SET_FOLLOW_DISPLAY';
-const SET_MAINFEED = 'post/SET_MAINFEED';
-const SET_ISTRUE_POST = 'post/SET_ISTRUE_POST';
-const SET_PAGE = 'post/SET_PAGE';
-const SET_LIKE_KEY = 'post/SET_LIKE_KEY';
-const SET_LIKE = 'post/SET_LIKE';
-const SET_LIKE_NUM = 'post/SET_LIKE_NUM';
-const SET_TIMELINE_LIKE = 'post/SET_TIMELINE_LIKE';
-const SET_TIMELINE_LIKE_NUM = 'post/SET_TIMELINE_LIKE_NUM';
+const SET_HASH_DISPLAY = 'timeline/SET_HASH_DISPLAY';
+const SET_KEY = 'timeline/SET_KEY';
+const ADD_PAGE = 'timeline/ADD_PAGE';
+const SET_FALSE_POST = 'timeline/SET_FALSE_POST';
+const SET_CATEGORY_ID = 'timeline/SET_CATEGORY_ID';
+const SET_FOLLOW_DISPLAY = 'timeline/SET_FOLLOW_DISPLAY';
+const SET_MAINFEED = 'timeline/SET_MAINFEED';
+const SET_ISTRUE_POST = 'timeline/SET_ISTRUE_POST';
+const SET_PAGE = 'timeline/SET_PAGE';
+const SET_LIKE_KEY = 'timeline/SET_LIKE_KEY';
+const SET_LIKE = 'timeline/SET_LIKE';
+const SET_LIKE_NUM = 'timeline/SET_LIKE_NUM';
+const SET_TIMELINE_LIKE = 'timeline/SET_TIMELINE_LIKE';
+const SET_TIMELINE_LIKE_NUM = 'timeline/SET_TIMELINE_LIKE_NUM';
+const GET_COMMENT_DISPLAY = 'timeline/GET_COMMENT_DISPLAY';
+const SET_COMMENT_DISPLAY = 'timeline/SET_COMMENT_DISPLAY';
+const SET_COMMENT_ID = 'timeline/SET_COMMENT_ID';
+const SET_COMMENT_CATEGORY = 'timeline/SET_COMMENT_CATEGORY';
+const SET_TIMELINE_COMMENT_DISPLAY = 'timeline/SET_TIMELINE_COMMENT_DISPLAY';
+const RENEW_MAIN_INFORMATION = 'timeline/RENEW_MAIN_INFORMATION';
 
+export const renewMainInformation = createAction(RENEW_MAIN_INFORMATION);
+export const setTimelineCommentDisplay = createAction(SET_TIMELINE_COMMENT_DISPLAY);
+export const setCommentDisplay = createAction(SET_COMMENT_DISPLAY);
+export const setCommentCategory=createAction(SET_COMMENT_CATEGORY);
+export const setCommentId = createAction(SET_COMMENT_ID);
+export const getCommentDisplay = createAction(GET_COMMENT_DISPLAY);
 export const setTimelineLike = createAction(SET_TIMELINE_LIKE);
 export const setTimelineLikeNum = createAction(SET_TIMELINE_LIKE_NUM);
 export const setLikeNum = createAction(SET_LIKE_NUM);
@@ -37,7 +48,6 @@ export const setIsTruePost = createAction(SET_ISTRUE_POST);
 export const setMainfeed= createAction(SET_MAINFEED);
 export const setFollowDisplay = createAction(SET_FOLLOW_DISPLAY);
 export const setCategoryId = createAction(SET_CATEGORY_ID);
-export const setSenderId = createAction(SET_SENDER_ID);
 export const setFalsePost = createAction(SET_FALSE_POST);
 export const addPage = createAction(ADD_PAGE);
 export const setKey = createAction(SET_KEY);
@@ -62,13 +72,36 @@ const initialState = Map({
     hashdisplay : 'none',
     keyid : -1,
     categoryid : '',
-    senderid : '',
     followdisplay : 'none',
-    likeNum : -1,
-    totalNum : 0
+    likeKey : -1,
+    commentId : -1,
+    totalNum : 0,
+    commentCategory : '',
+    commentdisplay : 'none',
+    presentPost : Map({})
 });
 
 export default handleActions({
+    [RENEW_MAIN_INFORMATION] : (state,action) =>{ 
+        return state.set('mainfeed',state.get('mainfeed').unshift(state.get('presentPost')));
+    }, 
+    [SET_COMMENT_CATEGORY] : (state,action) => state.set('commentCategory',action.payload),
+    [SET_COMMENT_ID] : (state,action) => state.set('commentId',action.payload),
+    [SET_COMMENT_DISPLAY] : (state,action) =>{
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('commentId'))
+        && item.get('category')===state.get('commentCategory'));
+        if(state.getIn(['mainfeed',index,'feed','commentState'])==='none')
+            return state.setIn(['mainfeed',index,'feed','commentState'],'block').set('commentdisplay','block');
+        else
+            return state.setIn(['mainfeed',index,'feed','commentState'],'none').set('commentdisplay','none');
+    },
+    [SET_TIMELINE_COMMENT_DISPLAY] : (state,action) =>{
+        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(state.get('commentId')));
+        if(state.getIn(['mainfeed',index,'commentState'])==='none')
+            return state.setIn(['mainfeed',index,'commentState'],'block').set('commentdisplay','block');
+        else
+            return state.setIn(['mainfeed',index,'commentState'],'none').set('commentdisplay','none');
+    },
     [SET_LIKE_NUM] : (state,action) => {
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('likeKey')))
         return state.setIn(['mainfeed',index,'feed','totalLike'],action.payload);
@@ -83,7 +116,6 @@ export default handleActions({
     [SET_MAINFEED] : (state,action) => state.set('mainfeed',List()),
     [SET_FOLLOW_DISPLAY]:(state,action) => state.set('followdisplay',action.payload),
     [SET_CATEGORY_ID] : (state,action) => state.set('categoryid',action.payload),
-    [SET_SENDER_ID] : (state,action) => state.set('senderid',action.payload),
     [SET_COMMENT]:(state,action)=>state.set('comment',action.payload),
     [SET_THUMBNAIL] :(state,action) =>state.set('thumbnail',action.payload),
     [SET_USERNAME]: (state,action)=>state.set('username',action.payload),
@@ -113,5 +145,9 @@ export default handleActions({
         type: GET_TIMELINE_INFORMATION,
         onSuccess: (state,action) =>state.update('mainfeed',feed => feed.concat(fromJS(action.payload.data.contentlist))) 
         
+    }),
+    ...pender({
+        type: GET_FEED_INFORMATION_DETAIL,
+        onSuccess: (state,action) => state.set('presentPost',fromJS(action.payload.data))
     })
     }, initialState);

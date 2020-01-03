@@ -4,7 +4,7 @@ import WithTag from './WithTag';
 const WithList = ({friend,cancel,opacity,display,close}) => {
     const withList = friend.map(
         (item) => (
-            <WithBox key = {item.get('id')} friend= {item} cancel = {cancel} />
+            <WithBox key = {item.get('username')} friend= {item} cancel = {cancel} />
         )
     )
     return (

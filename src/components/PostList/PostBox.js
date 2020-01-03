@@ -32,9 +32,11 @@ color: #515250;
 content : attr(placeholder);
 `; 
 
-const PostBox = ({content,username,onclick}) => (
+const PostBox = ({content,username,onclick}) => {
+    return(
     <Box onClick={onclick}>
         <TextBox placeholder = {`${username}님, 무슨 일이 있으셨나요?`} >{content}</TextBox>
     </Box>
 );
+}
 export default PostBox;

@@ -14,8 +14,9 @@ left : 15%;
 height: 500px;
 background : #ffffff;
 position: relative;
-top : 150px;
+top : 160px;
 margin-top : ${props => props.bottom};
+margin-bottom : 0.8rem;
 `;
 const CommentBox = styled.div`
 width : 70%;
@@ -24,8 +25,8 @@ height : 300px;
 background : #ffffff;
 position: relative;
 display : ${props => props.display};
-top:150px;
-margin-bottom : 1rem;
+top:148px;
+margin-bottom : 0.5rem;
 border-top : 1px solid rgba(0, 0, 0, 0.25);
 `;
 const CommentView = styled.div`
@@ -70,13 +71,13 @@ border-radius: 23px;
 }
 `;
 const PostStateBox  = styled.div`
-margin-top : 1rem;
+margin-top : 0.8rem;
 width: 70%;
 left : 15%;
 height : 30px;
 background : #ffffff;
 position : relative;
-top : 150px;
+top : 160px;
 padding-left : 15px;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -115,17 +116,22 @@ color: #000000;
 
 `;
 const ViewBox = styled.div`
-position : absolute;
+position : relative;
 width : 150px;
 height: 32px;
 left : 60px;
 top : 42px;
+display : flex;
+flex: 1;
+    flex-direction: row;
 `;
 const Time = styled.div`
-position : absolute;
-width: 104px;
-height: 32px;
 
+margin-right : 10px;
+max-width: 110px;
+height: 32px;
+left : 0;
+float : left;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
@@ -139,12 +145,13 @@ letter-spacing: 0.05em;
 color: #515250;
 `;
 const ViewPhase = styled.div`
-position : absolute;
+position : relative;
     width: 24px;
     height: 24px;
-    right : 0;
-    top : 5px;
     
+    top : 5px;
+    left : 0;
+float : left;
     background-image: url(${props => props.showLevel});
     background-size: cover;
     background-position: center;
@@ -230,17 +237,16 @@ background-repeat: no-repeat;
 }
 `;
 const ImageCount = styled.div`
-position : absolute;
 overflow: hidden;
-width : 330px;
-height : 330px;
+width : 250px;
+height : 250px;
 display : block;
 background: rgba(196, 196, 196, 0.75);
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;
 font-size: 96px;
-line-height: 310px;
+line-height: 250px;
 
 align-items: center;
 text-align: center;
@@ -366,7 +372,7 @@ color: #000000;
 }
 `;
 const FeedBox = ({thumbnail,mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,cancel,handleComment,
-commentdisplay}) => {
+}) => {
      
     const {
         feed,
@@ -387,13 +393,20 @@ commentdisplay}) => {
     profile,
     files,
     islike,
+    commentState,
     tags
    } = feed;
-   var bottom = '1rem';
-   if(`${message}`) bottom = '0'; 
+   var bottom = '0.5rem';
+   if(`${message}`) bottom = '0';
+   const style = {
+    lineHeight: '160%'
+};
+   const contents=content.split('\n').map( line => {
+    return (<div style={style} >{line}<br/></div>)
+  }); 
 return(
     <div>
-    {`${message}`&&<PostStateBox onClick = {stateclick} id = {sender.username}>{message}</PostStateBox>}
+    {`${message}`&&<PostStateBox onClick = {stateclick}>{message}</PostStateBox>}
     <Box bottom ={bottom}>
         <NickNameBox>
             <Profile id = {profileId} thumbnail = {profile.profile}/>
@@ -406,9 +419,9 @@ return(
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
-        { !`${files}` &&<Feed>{feed.content}</Feed>}
+        { !`${files}` &&<Feed>{contents}</Feed>}
         {`${files}` && count > 3 && <FeedImage>
-            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}>
+            <Image src={files[0].thumbnail} size ={'250px'}/><Image src={files[1].thumbnail} size ={'250px'}/><Image src={files[2].thumbnail} size ={'250px'}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
@@ -424,15 +437,15 @@ return(
             </FeedImage>}
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
-            <HashImage id={postId} data-category={category} data-sender={sender.username} onMouseOver={hover} onMouseOut={nothover}/>
+            <HashImage id={postId} data-category={category} onMouseOver={hover} onMouseOut={nothover}/>
             <LikeImage id = {postId} onClick = {like} like = {islike}/>
             <LikeNumber>{totalLike}</LikeNumber>
             {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
-            <Comment id={postId} data-category={category} data-sender={sender.username} onClick = {handleComment}>댓글 {totalComment}</Comment>
+            <Comment id={postId} data-category={category} onClick = {handleComment}>댓글 {totalComment}</Comment>
             
         </FeedSubMenu>
     </Box>
-    <CommentBox display = {commentdisplay}>
+    <CommentBox display = {commentState}>
         <CommentView>
             <CommentThumbnail thumbnail = {thumbnail}/>
             <CommentInput role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}

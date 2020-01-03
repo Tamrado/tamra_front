@@ -1,10 +1,11 @@
-import { List} from 'immutable';
+import { List,Map} from 'immutable';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {WriteBox,ImageList} from '../../components/Post';
 import {bindActionCreators} from 'redux';
 import * as postActions from '../../redux/modules/post';
 import * as searchActions from '../../redux/modules/search';
+import * as timelineActions from '../../redux/modules/timeline';
 import storage from '../../lib/storage';
 import ShowLevelMenu from '../../components/Post/ShowLevelMenu';
 class WriteBoxContainer extends Component{
@@ -12,8 +13,7 @@ class WriteBoxContainer extends Component{
         
         opacity : 0.8,
         showLevelDisplay : 'none',
-        level : '전체 공개',
-        filelist : List()
+        level : '전체 공개'
     };
 
     openShowLevel = () => {
@@ -27,17 +27,14 @@ class WriteBoxContainer extends Component{
         })
     }
 
-    handleImageChange = (e) => {
+    handleImageChange = async(e) => {
         e.preventDefault();
         const {PostActions} = this.props;
         let reader = new FileReader();
         let file = e.target.files[0];
         reader.onloadend = () => {
-            const {filelist} = this.state;
             PostActions.setImage({'url' : reader.result});
-            this.setState({
-                filelist : filelist.concat({file})
-            });
+            PostActions.updateFilelist(file);
         }
         reader.readAsDataURL(file);
       }
@@ -45,7 +42,6 @@ class WriteBoxContainer extends Component{
       handleWriteBox = (e) => {
         const {PostActions} = this.props;
         const {innerText} = e.target;
-        
         PostActions.setWrittenData(innerText);
     }
 
@@ -106,6 +102,53 @@ class WriteBoxContainer extends Component{
         this.closeShowLevel();
     }
 
+    handleWriteClick = async() => {
+        const {PostActions,content,showLevel,friendInfo,TimelineActions,filelist} = this.props;
+        var tags = friendInfo.toJS();
+        try{
+        await PostActions.uploadFeed({content,showLevel,tags});
+        }catch(e){
+
+        }
+        try{
+        const {postId} = this.props;
+        await Promise.all(
+            filelist.map(
+                async(item) => {
+                    var formdata = new FormData();
+                    formdata.set('file',item.get('file'));
+                    return PostActions.uploadImage(formdata,postId);
+                }
+            )
+        );
+        }catch(e){
+            console.log(e);
+        }
+        await PostActions.setDisplay('none');
+        await PostActions.setWithFriendDisplay('none');
+        await PostActions.setWithDisplay('none');
+        await PostActions.setWriteDisplay('none');
+        await PostActions.setWrittenData('');
+        document.getElementById('^^content').textContent = '';
+        await PostActions.initializeFilelist();
+        await PostActions.initializeImage();
+        try{
+            this.renewMain();
+            
+        }catch(e){
+            console.log(e);
+        }
+    }
+    renewMain=()=>
+        setTimeout(async()=>{
+            const {postId,TimelineActions} = this.props;
+            await TimelineActions.getFeedInformationDetail(postId);
+            await TimelineActions.renewMainInformation();
+        },4000);
+    
+   componentWillUnmount(){
+    clearTimeout(this.renewMain);
+   }
     render(){
         if(!storage.get('loggedInfo')) {
             
@@ -115,11 +158,11 @@ class WriteBoxContainer extends Component{
         const {images,writeDisplay,withdisplay,withfriend} = this.props;
         const {opacity,showLevelDisplay,level} = this.state;
         const {handleImageChange,handleWriteBox,openModal,closeWriteModal,handleWithBox,
-            handleImageCancel,handleLevelClick,handleShowClick} = this;
+            handleImageCancel,handleLevelClick,handleShowClick,handleWriteClick} = this;
         return(
             <WriteBox withdisplay = {withdisplay}  withclick = {handleWithBox} friend = {withfriend} username = {username} 
             onclick = {handleWriteBox} opacity = {opacity} click={openModal} display = {writeDisplay} 
-            close = {closeWriteModal} showClick = {handleShowClick} showLevel={level} >
+            close = {closeWriteModal} showClick = {handleShowClick} showLevel={level} writeClick={handleWriteClick} >
                 <ShowLevelMenu showDisplay = {showLevelDisplay} onclick = {handleLevelClick}/>
                 <ImageList image = {images} cancel = {handleImageCancel} change = {handleImageChange}/>
                 </WriteBox>
@@ -134,11 +177,17 @@ export default connect(
         withfriend : state.post.get('withFriend'),
         isTruePost : state.post.get('isTruePost'),
         writeDisplay : state.post.get('writeDisplay'),
-        friendData : state.friend.get('friend')
+        friendData : state.friend.get('friend'),
+        content : state.post.get('writtenData'),
+        showLevel : state.post.get('showLevel'),
+        friendInfo : state.post.get('friendInfo'),
+        postId : state.post.get('postId'),
+        filelist : state.post.get('filelist')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch),
-        SearchActions : bindActionCreators(searchActions,dispatch)
+        SearchActions : bindActionCreators(searchActions,dispatch),
+        TimelineActions : bindActionCreators(timelineActions,dispatch)
 
     })
 )(WriteBoxContainer);

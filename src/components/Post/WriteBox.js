@@ -182,18 +182,18 @@ text-align: center;
 }
 color: #515250;
 `;
-const WriteBox = ({showLevel,username,onclick,opacity,click,display,close,withclick,friend,withdisplay,children,showClick}) => {
+const WriteBox = ({writeClick,showLevel,username,onclick,opacity,click,display,close,withclick,friend,withdisplay,children,showClick}) => {
     return (
     <Wrapper display = {display}>
         <Fixed opacity = {opacity}>
         <Box>
             {children}
-        <Text role = "textbox" spellcheck = "true" aria-autocomplete="list" data-content = "true"
+        <Text id={'^^content'} role = "textbox" spellcheck = "true" aria-autocomplete="list" data-content = "true"
         contentEditable = "true" aria-multiline="true" aria-label = {`${username}님 무슨 일이 있으셨나요?`} onInput={onclick}></Text>
         <FriendButton onClick = {click}>친구 태그하기</FriendButton>
         <CancelButton onClick = {close} />
         <Button onClick = {showClick}>{showLevel}</Button>
-        <WriteButton >글쓰기</WriteButton>
+        <WriteButton onClick ={writeClick} >글쓰기</WriteButton>
         <WithBox withdisplay= {withdisplay} onClick={withclick}>{friend}</WithBox>
         </Box>
         </Fixed>

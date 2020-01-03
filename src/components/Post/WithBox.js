@@ -58,14 +58,14 @@ background-repeat: no-repeat;
 
 const WithBox = ({cancel,friend})=>{
     const {
-        id,
+        username,
         nickname,
         thumbnail
     } = friend.toJS();
     return(
-        <Box id = {id}>
-            <Thumbnail id = {id} src = {thumbnail}/>
-            <Nickname id = {id}>  {nickname}</Nickname>
+        <Box id = {username}>
+            <Thumbnail id = {username} src = {thumbnail}/>
+            <Nickname id = {username}>  {nickname}</Nickname>
             <FriendCancel onClick={cancel}/>
         </Box>
     )

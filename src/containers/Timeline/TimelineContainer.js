@@ -7,6 +7,7 @@ import * as friendActions from '../../redux/modules/friend';
 import * as timelineActions from '../../redux/modules/timeline';
 import * as likeActions from '../../redux/modules/like';
 import storage from '../../lib/storage';
+import * as commentActions from '../../redux/modules/comment';
 class TimelineContainer extends Component{
     
     handleScroll = async(e) => {
@@ -116,6 +117,24 @@ class TimelineContainer extends Component{
         const {totalNum} = this.props;
         await TimelineActions.setTimelineLikeNum(totalNum);
     }
+    handleComment =async(e)=>{
+        const {CommentActions,TimelineActions,page} = this.props;
+        const {id} = e.target;
+        await TimelineActions.setCommentId(parseInt(id));
+        await TimelineActions.setTimelineCommentDisplay();
+        const{commentdisplay} = this.props;
+        if(commentdisplay === 'block'){
+            await CommentActions.showPostCommentList(id,page);
+            await CommentActions.addPage();
+        }
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return this.props.data !== nextProps.data || this.props.result !== nextProps.result || 
+        this.props.followDisplay !== nextProps.followDisplay || this.props.comment !== nextProps.comment ||
+        this.props.username !== nextProps.username || this.props.nickname !== nextProps.nickname || 
+        this.props.thumbnail !== nextProps.thumbnail || this.props.hashdisplay !== nextProps.hashdisplay
+        || this.props.postNum !== nextProps.postNum;
+    }
     render(){
         
         const {data} = this.props;
@@ -125,13 +144,13 @@ class TimelineContainer extends Component{
         }
         const {hashdisplay,keyid,totalNum} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow} = this.props;
-        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick} = this;
+        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,handleComment} = this;
         return(
             <PageWrapper>
             <FeedList thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
             followNum = {followNum} followerNum = {followerNum}  followclick={handleFollowClick}
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}
-             mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} 
+             mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
              nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}/>
           </PageWrapper>
             );
@@ -155,13 +174,15 @@ export default connect(
         isTruePost : state.timeline.get('isTruePost'),
         hashdisplay : state.timeline.get('hashdisplay'),
         keyid : state.timeline.get('keyid'),
-        totalNum : state.like.get('totalNum')
+        totalNum : state.like.get('totalNum'),
+        commentdisplay : state.timeline.get('commentdisplay')
 
     }),
     (dispatch) => ({
         FriendActions: bindActionCreators(friendActions, dispatch),
         TimelineActions : bindActionCreators(timelineActions,dispatch),
-        LikeActions : bindActionCreators(likeActions,dispatch)
+        LikeActions : bindActionCreators(likeActions,dispatch),
+        CommentActions : bindActionCreators(commentActions,dispatch)
 
     })
 )(TimelineContainer);

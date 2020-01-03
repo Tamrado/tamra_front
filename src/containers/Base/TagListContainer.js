@@ -16,7 +16,7 @@ class TagListContainer extends Component{
         const {SearchActions,PostActions} = this.props;
         PostActions.setDisplay('none');
         SearchActions.setFriendContent('');
-        //document.getElementById('^^content').textContent = '';
+        
     }
      
     componentDidMount() {
@@ -39,7 +39,7 @@ class TagListContainer extends Component{
         const{PostActions} = this.props;
         const {id} = e.target;
         let count = 0;
-        await PostActions.setFriendInfo({'id':id,'nickname': e.target.getAttribute('data-nickname'), 'thumbnail' : e.target.getAttribute('data-thumbnail')});
+        await PostActions.setFriendInfo({'username':id,'nickname': e.target.getAttribute('data-nickname'), 'thumbnail' : e.target.getAttribute('data-thumbnail')});
         PostActions.setWithDisplay('display');
         const{withData} = this.props;
         await withData.toJS().forEach(item => count++);
