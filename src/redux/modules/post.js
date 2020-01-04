@@ -108,9 +108,7 @@ export default handleActions({
         return state.set('friendInfo',state.get('friendInfo'));
             },
     [REMOVE_FRIEND]:(state,action)=>{
-        const index = state.get('friendInfo')
-        .findIndex(item => item.get('username')===action.payload.id);
-        
+        const index = state.get('friendInfo').findIndex(item => item.get('username')===action.payload);
         return state.deleteIn(['friendInfo',index]);
     },
     

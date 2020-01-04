@@ -7,9 +7,7 @@ const SHOW_POST_COMMENT_LIST = 'comment/SHOW_POST_COMMENT_LIST';
 const WRITE_COMMENT = 'comment/WRITE_COMMENT';
 const MODIFY_COMMENT = 'comment/MODIFY_COMMENT';
 const DELETE_COMMENT = 'comment/DELETE_COMMENT';
-const ADD_PAGE = 'comment/ADD_PAGE';
 
-export const addPage = createAction(ADD_PAGE);
 export const showPostCommentList = createAction(SHOW_POST_COMMENT_LIST,CommentAPI.showPostCommentList);
 export const writeComment = createAction(WRITE_COMMENT,CommentAPI.writeComment);
 export const modifyComment = createAction(MODIFY_COMMENT,CommentAPI.modifyComment);
@@ -17,15 +15,13 @@ export const deleteComment = createAction(DELETE_COMMENT,CommentAPI.deleteCommen
 
 const initialState = Map({
     commentList : List(),
-    result : Map({}),
-    page : 1
+    result : Map({})
 });
 
 export default handleActions({
-    [ADD_PAGE] : (state,action) => state.set('page',state.get('page')+ 1),
     ...pender({
         type : SHOW_POST_COMMENT_LIST,
-        onSuccess : (state,action) => state.set('commentList',action.payload.contentlist),
+        onSuccess : (state,action) => state.set('commentList',fromJS(action.payload.data.contentlist)),
         onFailure : (state,action) => state.set('commentList',List())
         }),
     ...pender({

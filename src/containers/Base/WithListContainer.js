@@ -35,7 +35,6 @@ class WithListContainer extends Component{
         let count = 0;
         await PostActions.removeFriend(id);
         const{withData} = this.props;
-        console.log(withData.toJS());
         await withData.toJS().forEach(item => count++);
        
         if(count > 1){

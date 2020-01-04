@@ -18,58 +18,7 @@ top : 160px;
 margin-top : ${props => props.bottom};
 margin-bottom : 0.8rem;
 `;
-const CommentBox = styled.div`
-width : 70%;
-left : 15%;
-height : 300px;
-background : #ffffff;
-position: relative;
-display : ${props => props.display};
-top:148px;
-margin-bottom : 0.5rem;
-border-top : 1px solid rgba(0, 0, 0, 0.25);
-`;
-const CommentView = styled.div`
-position : absolute;
-background : #ffffff;
-width: 90%;
-height: 60px;
-left: 5%;
-top: 10px;
-`;
-const CommentThumbnail = styled.div`
-position :absolute;
-background-image: url(${props => props.thumbnail});
 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 45px;
-    height: 45px;
-    top :10%;
-    left : 15px;
-`;
-const CommentInput = styled.div`
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: 300;
-font-size: 16px;
-line-height: 32px;
-position: absolute;
-width: 80%;
-height: 35px;
-left: 76px;
-top: 12px;
-padding-left : 25px;
-background: #E5E5E5;
-border-radius: 23px;
-&:empty&:not(:focus)&:before {
-    content : attr(aria-label);
-    color : #90949c;
-}
-`;
 const PostStateBox  = styled.div`
 margin-top : 0.8rem;
 width: 70%;
@@ -371,8 +320,8 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({thumbnail,mainfeed,count,children,hover,nothover,hashdisplay,stateclick,like,cancel,handleComment,
-}) => {
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
+    ,like,cancel,handleComment,childrenTwo}) => {
      
     const {
         feed,
@@ -394,7 +343,8 @@ const FeedBox = ({thumbnail,mainfeed,count,children,hover,nothover,hashdisplay,s
     files,
     islike,
     commentState,
-    tags
+    tags,
+    dateString
    } = feed;
    var bottom = '0.5rem';
    if(`${message}`) bottom = '0';
@@ -412,7 +362,7 @@ return(
             <Profile id = {profileId} thumbnail = {profile.profile}/>
             <NickName id = {profileId}>{profile.name}</NickName>
             <ViewBox>
-            <Time>{timestamp}</Time>
+            <Time>{dateString}</Time>
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
            { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
            { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
@@ -442,16 +392,9 @@ return(
             <LikeNumber>{totalLike}</LikeNumber>
             {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
             <Comment id={postId} data-category={category} onClick = {handleComment}>댓글 {totalComment}</Comment>
-            
         </FeedSubMenu>
     </Box>
-    <CommentBox display = {commentState}>
-        <CommentView>
-            <CommentThumbnail thumbnail = {thumbnail}/>
-            <CommentInput role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
-        onInput={onclick}></CommentInput>
-        </CommentView>
-    </CommentBox>
+    {childrenTwo}
     </div>
     )
 }

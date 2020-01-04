@@ -8,6 +8,7 @@ import * as searchActions from '../../redux/modules/search';
 import * as timelineActions from '../../redux/modules/timeline';
 import storage from '../../lib/storage';
 import ShowLevelMenu from '../../components/Post/ShowLevelMenu';
+import PostListContainer from './PostListContainer';
 class WriteBoxContainer extends Component{
     state  = {
         
@@ -139,6 +140,7 @@ class WriteBoxContainer extends Component{
             console.log(e);
         }
     }
+   
     renewMain=()=>
         setTimeout(async()=>{
             const {postId,TimelineActions} = this.props;

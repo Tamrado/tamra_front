@@ -366,6 +366,7 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,li
         files,
         islike,
         commentState,
+        dateString,
         tags
     } = mainfeed.toJS();
     if(!profile || !postId) return null;
@@ -383,7 +384,7 @@ return(
             <Profile id = {username} thumbnail = {profile.profile}/>
             <NickName id = {username}>{profile.name}</NickName>
             <ViewBox>
-            <Time>{timestamp}</Time>
+            <Time>{dateString}</Time>
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
            { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
            { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}

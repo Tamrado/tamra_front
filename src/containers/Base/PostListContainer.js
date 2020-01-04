@@ -37,15 +37,39 @@ class PostListContainer extends Component{
         if(isTruePost){
             try{
                 await TimelineActions.getMainInformation(page);
-                
+                await this.setPostTime();
             }catch(e){
-               
                 await TimelineActions.setFalsePost();
-                
             }
             
         }
     }
+    setPostTime = async() => {
+        const{data,TimelineActions} = this.props;
+                await Promise.all(
+                    data.map(
+                        async(feed,index) => {
+                            let time = feed.getIn(['feed','timestamp']);
+                            let timestring = this.dateTimeToFormatted(time);
+                            await TimelineActions.setTime({timestring:timestring,index : index});
+                        }
+                    )
+                );
+    }
+
+    /*setTime = async() => {
+        const{,TimelineActions} = this.props;
+                await Promise.all(
+                    data.map(
+                        async(feed,index) => {
+                            let time = feed.getIn(['feed','timestamp']);
+                            let timestring = this.dateTimeToFormatted(time);
+                            await TimelineActions.setTime({timestring:timestring,index : index});
+                        }
+                    )
+                );
+    }*/
+    
     overHashTag = (e) =>{
         const {TimelineActions} = this.props;
         TimelineActions.setHashDisplay('block');
@@ -73,6 +97,33 @@ class PostListContainer extends Component{
         await TimelineActions.setLikeNum(totalNum);
            
     }
+     dateTimeToFormatted=(dt)=> {
+		const min = 60 * 1000;
+		const c = new Date();
+		var d = new Date(dt);
+		var minsAgo = Math.floor((c - d) / (min));
+
+		var result = {
+            'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
+            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') 
+            +  d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') +  d.getMinutes() + ':'  
+            + (d.getSeconds() > 9 ? '' : '0') +  d.getSeconds(),
+            'month' : d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
+            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate(),
+			'formatted': ''
+		};
+
+		if (minsAgo < 60) { // 1시간 내
+			result.formatted = minsAgo + '분 전';
+		} else if (minsAgo < 60 * 24) { // 하루 내
+			result.formatted = Math.floor(minsAgo / 60) + '시간 전';
+		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
+			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
+		} else{
+            result.formatted = result.raw;
+        }
+		return result.formatted;
+	};
     handleCancelClick =async(e) => {
         const {LikeActions,TimelineActions} = this.props;
         const id = e.target.id;
@@ -86,7 +137,7 @@ class PostListContainer extends Component{
         await TimelineActions.setLikeNum(totalNum);
     }
     handleComment =async(e)=>{
-        const {CommentActions,TimelineActions,page,commentCategory,commentId,data} = this.props;
+        const {CommentActions,TimelineActions,commentCategory,commentId,data} = this.props;
         const {id} = e.target;
         const {category} = e.target.dataset;
         await TimelineActions.setCommentCategory(category);
@@ -94,8 +145,22 @@ class PostListContainer extends Component{
         await TimelineActions.setCommentDisplay();
         const{commentdisplay} = this.props;
         if(commentdisplay === 'block'){
+            let index = data.findIndex(item => item.getIn(['feed','postId'])===parseInt(commentId));
+            let page = data.getIn([index,'feed','commentPage']);
             await CommentActions.showPostCommentList(id,page);
-            await CommentActions.addPage();
+            await TimelineActions.setCommentPage();
+            const{commentList}=this.props;
+            await TimelineActions.setCommentList(commentList);
+            
+        }
+    }
+
+    getSnapshotBeforeUpdate(prevProps, prevState) {
+        return prevProps.data !== this.props.data;
+    }
+   componentDidUpdate(prevProps, prevState, snapshot){
+        if(snapshot){
+            this.setPostTime();
         }
     }
 
@@ -103,7 +168,19 @@ class PostListContainer extends Component{
         return this.props.data !== nextProps.data || this.props.writtenData !== nextProps.writtenData ||
         this.props.hashdisplay !== nextProps.hashdisplay;
     }
-    
+    handleCommentInput = (e) =>{
+        const {id} = e.target;
+        this.props.TimelineActions.setCommentId(parseInt(id));
+    }
+    enterComment = async(e) =>{
+        if(window.event.keyCode === 13){
+            const {CommentActions,TimelineActions,commentId} = this.props;
+            const {innerText} = e.target;
+            var content = innerText;
+            await CommentActions.writeComment({commentId,content});
+            await CommentActions.showPostCommentList(commentId,1);
+        }
+    }
     render(){
         
         const {data} = this.props;
@@ -116,19 +193,20 @@ class PostListContainer extends Component{
         }
         const username = storage.get('loggedInfo').nickname;
         const thumbnail = storage.get('loggedInfo').thumbnail;
-        const {writtenData,hashdisplay,keyid,category,totalNum,commentList,commentId,commentCategory} = this.props;
-        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,handleCancelClick,handleComment} = this;
-        
+        const {writtenData,hashdisplay,keyid,category,totalNum,commentList,commentId,commentCategory,PostActions} = this.props;
+        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,enterComment
+            ,handleCancelClick,handleComment,handleCommentInput} = this;
+        if(writtenData === '') PostActions.setWrittenData(`${username}님, 무슨 일이 있으셨나요?`);
         return(
             <PageWrapper>
             <FeedList mainfeed={data} username = {username} onclick = {openWriteModal} stateclick={handleStateClick} content ={
                 writtenData.split('\n').map( line => {
             return (<div style={style} >{line}<br/></div>)
-          })
-        } hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
+          })}
+           hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
          category = {category} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment}
-         comment={commentList} thumbnail={thumbnail} commentId={commentId}
-           commentCategory={commentCategory} />
+         comments={commentList} thumbnail={thumbnail} commentId={commentId} handleCommentInput={handleCommentInput}
+           commentCategory={commentCategory} enterComment={enterComment}/>
          
             </PageWrapper>
         );

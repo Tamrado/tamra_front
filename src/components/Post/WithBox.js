@@ -66,7 +66,7 @@ const WithBox = ({cancel,friend})=>{
         <Box id = {username}>
             <Thumbnail id = {username} src = {thumbnail}/>
             <Nickname id = {username}>  {nickname}</Nickname>
-            <FriendCancel onClick={cancel}/>
+            <FriendCancel id = {username} onClick={cancel}/>
         </Box>
     )
 };
