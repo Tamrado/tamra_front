@@ -15,7 +15,8 @@ export const deleteComment = createAction(DELETE_COMMENT,CommentAPI.deleteCommen
 
 const initialState = Map({
     commentList : List(),
-    result : Map({})
+    result : Map({}),
+    presentComment : Map({})
 });
 
 export default handleActions({
@@ -26,7 +27,7 @@ export default handleActions({
         }),
     ...pender({
         type : WRITE_COMMENT,
-        onSuccess : (state,action) => state.set('result',action.payload)
+        onSuccess : (state,action) => state.set('presentComment',fromJS(action.payload.data))
     }),
     ...pender({
         type : MODIFY_COMMENT,

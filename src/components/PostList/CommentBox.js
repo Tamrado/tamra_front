@@ -75,10 +75,10 @@ const CommentBox = ({comment}) => {
     } = comment.toJS();
     return(
         <CommentView>
-            <CommentThumbnail id = {commentId} data-postId = {postId} data-userId = {profile.id} 
+            <CommentThumbnail id = {commentId} data-postid = {postId} data-userid = {profile.id} 
             thumbnail = {profile.profile}/>
             <CommentInputBox>
-                <CommentInput id = {commentId} data-postId = {postId} data-userId = {profile.id}>{content}</CommentInput>
+                <CommentInput id = {commentId} data-postid = {postId} data-userid = {profile.id}>{content}</CommentInput>
             </CommentInputBox>
             <CommentTime>{dateString}</CommentTime>
         </CommentView>

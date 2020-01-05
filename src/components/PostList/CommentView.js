@@ -105,7 +105,7 @@ return(
 <CommentBox display = {commentState}>
         <CommentWrapper>
             <CommentThumbnail thumbnail = {thumbnail}/>
-            <CommentInput id={postId} role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
+            <CommentInput id={postId} name = {'^^comment'} value={postId} role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
          onKeyUp={enterComment} onFocus = {handleCommentInput}></CommentInput>
          {children}
         </CommentWrapper>

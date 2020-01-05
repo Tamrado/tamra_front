@@ -37,7 +37,9 @@ const SET_COMMENT_PAGE = 'timeline/SET_COMMENT_PAGE';
 const SET_COMMENT_FALSE = 'timeline/SET_COMMENT_FALSE';
 const SET_COMMENT_NUM = 'timeline/SET_COMMENT_NUM';
 const SET_COMMENT_LIST = 'timeline/SET_COMMENT_LIST';
+const RENEW_COMMENT = 'timeline/RENEW_COMMENT';
 
+export const renewComment = createAction(RENEW_COMMENT);
 export const setCommentList = createAction(SET_COMMENT_LIST);
 export const setCommentNum = createAction(SET_COMMENT_NUM);
 export const setCommentFalse = createAction(SET_COMMENT_FALSE);
@@ -115,6 +117,11 @@ export default handleActions({
     [RENEW_MAIN_INFORMATION] : (state,action) =>{ 
         return state.set('mainfeed',state.get('mainfeed').unshift(state.get('presentPost')));
     }, 
+    [RENEW_COMMENT] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(state.get('commentId')));
+        return state.setIn(['mainfeed',index,'feed','commentList']
+        ,state.getIn(['mainfeed',index,'feed','commentList']).unshift(action.payload));
+    },
     [SET_COMMENT_CATEGORY] : (state,action) => state.set('commentCategory',action.payload),
     [SET_COMMENT_ID] : (state,action) => state.set('commentId',action.payload),
     [SET_COMMENT_DISPLAY] : (state,action) =>{

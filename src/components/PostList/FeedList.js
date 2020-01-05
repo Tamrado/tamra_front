@@ -15,7 +15,7 @@ const FeedList = ({cancel,like,mainfeed,username,onclick,content, handleCommentI
     const feedList = mainfeed.map(
         (feeds) => {
             const commentList= 
-            <CommentList thumbnail = {thumbnail} handleCommentInput={handleCommentInput}
+            <CommentList key = {'commentlist'} thumbnail = {thumbnail} handleCommentInput={handleCommentInput}
                 enterComment={enterComment} mainfeed={feeds} comments = {comments}/>;
             if(feeds && (keyid === feeds.getIn(['feed','postId']) && category === feeds.get('category'))){
                
@@ -53,7 +53,7 @@ const FeedList = ({cancel,like,mainfeed,username,onclick,content, handleCommentI
     
     return(
         <Box>
-            <PostBox key = {'postbox'}username = {username} onclick = {onclick} content={content} />
+            <PostBox key = {'postbox'} username = {username} onclick = {onclick} content={content} />
             {feedList}
         </Box>
     );

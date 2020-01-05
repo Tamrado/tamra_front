@@ -177,10 +177,26 @@ class PostListContainer extends Component{
             const {CommentActions,TimelineActions,commentId} = this.props;
             const {innerText} = e.target;
             var content = innerText;
+            content = content.replace(/\r/g, "");
+            content = content.replace(/\n/g, "");
             await CommentActions.writeComment({commentId,content});
             await CommentActions.showPostCommentList(commentId,1);
+            this.renewComment();
+            for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
+                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(commentId)){
+                    document.getElementsByName('^^comment')[i].textContent = '';
+                    document.getElementsByName('^^comment')[i].blur();
+                }
+            }
+            
         }
     }
+    renewComment=()=>
+        setTimeout(async()=>{
+            const {presentComment,TimelineActions} = this.props;
+            await TimelineActions.renewComment(presentComment);
+        },2000);
+
     render(){
         
         const {data} = this.props;
@@ -200,8 +216,8 @@ class PostListContainer extends Component{
         return(
             <PageWrapper>
             <FeedList mainfeed={data} username = {username} onclick = {openWriteModal} stateclick={handleStateClick} content ={
-                writtenData.split('\n').map( line => {
-            return (<div style={style} >{line}<br/></div>)
+                writtenData.split('\n').map( (line,index) => {
+            return (<div key={index} style={style} >{line}<br/></div>)
           })}
            hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
          category = {category} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment}
@@ -227,7 +243,8 @@ export default connect(
         commentCategory : state.timeline.get('commentCategory'),
         commentId : state.timeline.get('commentId'),
         commentdisplay : state.timeline.get('commentdisplay'),
-        postId : state.post.get('postId')
+        postId : state.post.get('postId'),
+        presentComment : state.comment.get('presentComment')
     }),
     (dispatch) => ({
         TimelineActions: bindActionCreators(timelineActions, dispatch),

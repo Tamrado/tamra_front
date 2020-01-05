@@ -146,7 +146,7 @@ class WriteBoxContainer extends Component{
             const {postId,TimelineActions} = this.props;
             await TimelineActions.getFeedInformationDetail(postId);
             await TimelineActions.renewMainInformation();
-        },4000);
+        },3000);
     
    componentWillUnmount(){
     clearTimeout(this.renewMain);
