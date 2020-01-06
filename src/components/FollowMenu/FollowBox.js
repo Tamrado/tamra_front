@@ -7,8 +7,9 @@ position: relative;
 width: 100%;
 height: 100px;
 left: 0px;
-top: 4px;
+
 background: #FFFFFF;
+
 }
 `;
 const Button = styled(Link)`
@@ -43,6 +44,8 @@ left: 5.63%;
 right: 87.98%;
 top: 17%;
 bottom: 33%;
+width: 50px;
+height : 50px;
 border-radius: 50%;
 background-image: url(${props => props.image});
 background-size: cover;

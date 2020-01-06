@@ -39,6 +39,20 @@ background: #E5E5E5;
 border-radius: 23px;
 
 `;
+
+const CommentName = styled.div`
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: 300;
+font-size: 16px;
+line-height: 32px;
+position:relative;
+word-wrap: break-word;
+padding-bottom : 10px;
+white-space: pre-wrap;
+display : inline-block;
+color: #0CA678;
+`;
 const CommentInput = styled.div`
 font-family: Noto Sans KR;
 font-style: normal;
@@ -79,7 +93,8 @@ const CommentBox = ({comment}) => {
             <CommentThumbnail id = {commentId} data-postid = {postId} data-userid = {profile.id} 
             thumbnail = {profile.profile}/>
             <CommentInputBox>
-                <CommentInput id = {commentId} data-postid = {postId} data-userid = {profile.id}>{content}</CommentInput>
+                <CommentName id = {commentId} data-postid = {postId} data-userid = {profile.id}>{profile.name}</CommentName>
+                <CommentInput id = {commentId} data-postid = {postId} data-userid = {profile.id}> {content}</CommentInput>
             </CommentInputBox>
             <CommentTime>{dateString}</CommentTime>
         </CommentView>

@@ -8,7 +8,7 @@ import * as searchActions from '../../redux/modules/search';
 import * as timelineActions from '../../redux/modules/timeline';
 import storage from '../../lib/storage';
 import ShowLevelMenu from '../../components/Post/ShowLevelMenu';
-import PostListContainer from './PostListContainer';
+
 class WriteBoxContainer extends Component{
     state  = {
         
@@ -28,7 +28,7 @@ class WriteBoxContainer extends Component{
         })
     }
 
-    handleImageChange = async(e) => {
+    handleImageChange = (e) => {
         e.preventDefault();
         const {PostActions} = this.props;
         let reader = new FileReader();
@@ -103,36 +103,38 @@ class WriteBoxContainer extends Component{
         this.closeShowLevel();
     }
 
-    handleWriteClick = async() => {
-        const {PostActions,content,showLevel,friendInfo,TimelineActions,filelist} = this.props;
+    handleWriteClick = () => {
+        const {PostActions,content,showLevel,friendInfo,filelist} = this.props;
         var tags = friendInfo.toJS();
         try{
-        await PostActions.uploadFeed({content,showLevel,tags});
+            console.log('ㅎㅇ');
+        PostActions.uploadFeed({content,showLevel,tags});
+        console.log('ㅂㅇ');
         }catch(e){
 
         }
         try{
-        const {postId} = this.props;
-        await Promise.all(
-            filelist.map(
-                async(item) => {
-                    var formdata = new FormData();
-                    formdata.set('file',item.get('file'));
-                    return PostActions.uploadImage(formdata,postId);
-                }
-            )
-        );
+        filelist.map(
+            (item,index) => {
+                var formdata = new FormData();
+                formdata.set('file',item.get('file'));
+                console.log(index);
+                const {postId} = this.props;
+                console.log(postId);
+                return PostActions.uploadImage(formdata,postId);
+            }
+        )
         }catch(e){
             console.log(e);
         }
-        await PostActions.setDisplay('none');
-        await PostActions.setWithFriendDisplay('none');
-        await PostActions.setWithDisplay('none');
-        await PostActions.setWriteDisplay('none');
-        await PostActions.setWrittenData('');
+         PostActions.setDisplay('none');
+         PostActions.setWithFriendDisplay('none');
+         PostActions.setWithDisplay('none');
+         PostActions.setWriteDisplay('none');
+         PostActions.setWrittenData('');
         document.getElementById('^^content').textContent = '';
-        await PostActions.initializeFilelist();
-        await PostActions.initializeImage();
+         PostActions.initializeFilelist();
+         PostActions.initializeImage();
         try{
             this.renewMain();
             

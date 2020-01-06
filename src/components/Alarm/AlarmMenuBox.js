@@ -5,7 +5,7 @@ const Box = styled.div`
 position: absolute;
 width: 782px;
 height: 500px;
-right: 16%;
+right: 20%;
 top: 59px;
 display : ${props => props.visible};
 background: #FFFFFF;
@@ -41,10 +41,10 @@ border: 1px solid #12B886;
 `;
 const Alarm = styled.div`
 position: absolute;
-width: 100px;
-height: 45px;
-left: 670px;
-top: 6px;
+    width: 200px;
+    height: 45px;
+    left: 570px;
+    top: 6px;
 text-decoration:none;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -103,17 +103,18 @@ letter-spacing: 2px;
 color: #000000;
 `;
 
-const FollowMenuBox = ({alarm,children,visible,result,fvisible}) => (
+const AlarmMenuBox = ({alarm,children,visible,result,alarmvisible}) => (
     <div>
+    
     <Box visible = {visible}>
         <Line/>
-        <Title>FRIEND</Title>
-        <Alarm>알람끄기</Alarm>
+        <Title>ALARM</Title>
+        <Alarm>알림 모두 읽은 상태로 표시</Alarm>
         <FriendBox>
         {children}
-        <NonFriendText result={fvisible}>새로운 친구 요청이 없습니다.</NonFriendText>
+        <NonFriendText result={alarmvisible}>알림이 없습니다.</NonFriendText>
         </FriendBox>
     </Box>
     </div>
 );
-export default FollowMenuBox;
+export default AlarmMenuBox;

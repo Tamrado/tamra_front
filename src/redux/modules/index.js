@@ -10,6 +10,7 @@ import timeline from './timeline';
 import {penderReducer} from 'redux-pender';
 import like from './like';
 import comment from './comment';
+import alarm from './alarm';
 
 export default combineReducers({
     base,
@@ -22,5 +23,6 @@ export default combineReducers({
     timeline,
     like,
     comment,
+    alarm,
     pender: penderReducer
 });
