@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const CommentBox = styled.div`
 width : 70%;
 left : 15%;
-overflow : auto;
+
 min-height : 300px;
 background : #ffffff;
 
@@ -27,11 +27,11 @@ background : #ffffff;
 position: relative;
 display : ${props => props.display};
 top:148px;
-margin-bottom : 0.5rem;
+padding-bottom : 2.5rem;
 border-top : 1px solid rgba(0, 0, 0, 0.25);
 `;
 const CommentWrapper = styled.div`
-position : absolute;
+position : relative;
 background : #ffffff;
 width: 90%;
 height: 60px;
@@ -77,7 +77,25 @@ border-radius: 23px;
     color : #90949c;
 }
 `;
-const CommentView = ({thumbnail,handleCommentInput,enterComment,children,mainfeed}) => {
+const CommentAdd = styled.div`
+position: absolute;
+width: 121px;
+height: 29px;
+left: 38px;
+bottom : 0;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+font-size: 16px;
+line-height: 33px;
+align-items: center;
+
+color: #0A825E;
+&:hover {
+    text-decoration-line: underline;
+}
+`;
+const CommentView = ({thumbnail,enterComment,children,mainfeed,handleCommentAdd}) => {
     const {
         feed,
         category,
@@ -99,16 +117,18 @@ const CommentView = ({thumbnail,handleCommentInput,enterComment,children,mainfee
     islike,
     commentState,
     tags,
-    dateString
+    dateString,
+    trueComment
    } = feed;
 return(
 <CommentBox display = {commentState}>
         <CommentWrapper>
             <CommentThumbnail thumbnail = {thumbnail}/>
             <CommentInput id={postId} name = {'^^comment'} value={postId} role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
-         onKeyUp={enterComment} onFocus = {handleCommentInput}></CommentInput>
-         {children}
+         onKeyUp={enterComment} ></CommentInput>
         </CommentWrapper>
+        {children}
+        {trueComment &&<CommentAdd onClick = {handleCommentAdd} id={postId}>댓글 더보기</CommentAdd>}
     </CommentBox>
 )
 };

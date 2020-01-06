@@ -4,10 +4,13 @@ import styled from 'styled-components';
 const CommentView = styled.div`
 position: relative;
 background: #ffffff;
-min-width: 90%;
+max-width: 90%;
+min-width : 90%;
+display : inline-block;
 padding-bottom: 5px;
 padding-top: 5px;
-top: 60px;
+top: 10px;
+left : 5%;
 
 `;
 const CommentThumbnail = styled.div`
@@ -50,21 +53,19 @@ display : inline-block;
 `;
 const CommentTime = styled.div`
 font-family: Noto Sans KR;
-font-style: normal;
-font-weight: 300;
-font-size: 14px;
-line-height: 32px;
-position: absolute;
-border : none;
-outline: none;
-max-width: 80%;
-height: 25px;
-left: 76px;
-top: 12px;
-background: #ffffff;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    position: relative;
+    border: none;
+    outline: none;
+    max-width: 80%;
+    height: 20px;
+    left: 76px;
+    background: #ffffff;
+
 `;
 const CommentBox = ({comment}) => {
-     
     const {
         postId,
         commentId,
@@ -72,7 +73,7 @@ const CommentBox = ({comment}) => {
         timestamp,
         profile,
         dateString
-    } = comment.toJS();
+    } = comment;
     return(
         <CommentView>
             <CommentThumbnail id = {commentId} data-postid = {postId} data-userid = {profile.id} 

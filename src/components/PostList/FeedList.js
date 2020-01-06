@@ -8,15 +8,15 @@ position : absolute;
 width : 80%;
 
 `;
-const FeedList = ({cancel,like,mainfeed,username,onclick,content, handleCommentInput,enterComment,
-    hashdisplay,hover,nothover,keyid,category,stateclick,handleComment,thumbnail,comments}) => {
+const FeedList = ({cancel,like,mainfeed,username,onclick,content,enterComment,
+    hashdisplay,hover,nothover,keyid,category,stateclick,handleComment,thumbnail,handleCommentAdd}) => {
         
             
     const feedList = mainfeed.map(
         (feeds) => {
             const commentList= 
-            <CommentList key = {'commentlist'} thumbnail = {thumbnail} handleCommentInput={handleCommentInput}
-                enterComment={enterComment} mainfeed={feeds} comments = {comments}/>;
+            <CommentList key = {'commentlist'} thumbnail = {thumbnail}
+             handleCommentAdd = {handleCommentAdd} enterComment={enterComment} mainfeed={feeds} comments = {feeds.getIn(['feed','commentList'])}/>;
             if(feeds && (keyid === feeds.getIn(['feed','postId']) && category === feeds.get('category'))){
                
                 if(feeds.getIn(['feed','tags']).size > 0){

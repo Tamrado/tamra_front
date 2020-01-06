@@ -20,17 +20,17 @@ background: #FFFFFF;
 border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 `;
 const ProfileBox = styled.div`
-position: absolute;
+margin : 0 auto;
 width: 300px;
 height: 150px;
 top : 15px;
-right:${props => props.right};
+
 `;
 
 const UserThumbnail = styled.div`
 position: absolute;
 width: 100px;
-top : 10px;
+top : 15%;
 height: 100px;
 border-radius: 50%;
     cursor: pointer;
@@ -44,46 +44,56 @@ background-repeat: no-repeat;
 `;
 const Nickname = styled.div`
 
-position: absolute;
-overflow: hidden;
+position : relative;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-width : 30%
-max-width: 35%;
-height: 29px;
-left: 140px;
-top: 20px;
-margin-right : 10px;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 1.4rem;
-line-height: 29px;
-/* identical to box height */
+    width: 30%;
+    max-width: 35%;
+    height: 29px;
+    left: 130px;
+    top: 40px;
+    margin-right: 10px;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.4rem;
+    line-height: 29px;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-letter-spacing: 0.05em;
+    -moz-letter-spacing: 0.05em;
+    -ms-letter-spacing: 0.05em;
+    letter-spacing: 0.05em;
+    color: #000000;
 
-display: flex;
-align-items: center;
-letter-spacing: 0.05em;
-
-color: #000000;
 `;
 
 const Comment = styled.div`
-position: absolute;
-max-width: 237px;
-max-height: 80px;
-left: 140px;
-top: 63px;
-overflow: hidden;
+position : relative;
+    max-width: 237px;
+    max-height: 80px;
+    left: 130px;
+    top: 43px;
+    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 1.3rem;
-letter-spacing: 0.05em;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 1.3rem;
+    -webkit-letter-spacing: 0.05em;
+    -moz-letter-spacing: 0.05em;
+    -ms-letter-spacing: 0.05em;
+    letter-spacing: 0.05em;
+    color: #000000;
 
-color: #000000;
 `;
 
 const Column = styled.div`

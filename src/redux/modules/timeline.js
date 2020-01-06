@@ -27,22 +27,21 @@ const SET_TIMELINE_LIKE = 'timeline/SET_TIMELINE_LIKE';
 const SET_TIMELINE_LIKE_NUM = 'timeline/SET_TIMELINE_LIKE_NUM';
 const GET_COMMENT_DISPLAY = 'timeline/GET_COMMENT_DISPLAY';
 const SET_COMMENT_DISPLAY = 'timeline/SET_COMMENT_DISPLAY';
-const SET_COMMENT_ID = 'timeline/SET_COMMENT_ID';
 const SET_COMMENT_CATEGORY = 'timeline/SET_COMMENT_CATEGORY';
 const SET_TIMELINE_COMMENT_DISPLAY = 'timeline/SET_TIMELINE_COMMENT_DISPLAY';
 const RENEW_MAIN_INFORMATION = 'timeline/RENEW_MAIN_INFORMATION';
 const SET_TIME = 'timeline/SET_TIME';
 const SET_TIMELINE_TIME = 'timeline/SET_TIMELINE_TIME';
 const SET_COMMENT_PAGE = 'timeline/SET_COMMENT_PAGE';
-const SET_COMMENT_FALSE = 'timeline/SET_COMMENT_FALSE';
 const SET_COMMENT_NUM = 'timeline/SET_COMMENT_NUM';
 const SET_COMMENT_LIST = 'timeline/SET_COMMENT_LIST';
 const RENEW_COMMENT = 'timeline/RENEW_COMMENT';
+const SET_COMMENT_TIME = 'timeline/SET_COMMENT_TIME';
 
+export const setCommentTime = createAction(SET_COMMENT_TIME);
 export const renewComment = createAction(RENEW_COMMENT);
 export const setCommentList = createAction(SET_COMMENT_LIST);
 export const setCommentNum = createAction(SET_COMMENT_NUM);
-export const setCommentFalse = createAction(SET_COMMENT_FALSE);
 export const setCommentPage = createAction(SET_COMMENT_PAGE);
 export const setTimelineTime = createAction(SET_TIMELINE_TIME);
 export const setTime = createAction(SET_TIME);
@@ -50,7 +49,6 @@ export const renewMainInformation = createAction(RENEW_MAIN_INFORMATION);
 export const setTimelineCommentDisplay = createAction(SET_TIMELINE_COMMENT_DISPLAY);
 export const setCommentDisplay = createAction(SET_COMMENT_DISPLAY);
 export const setCommentCategory=createAction(SET_COMMENT_CATEGORY);
-export const setCommentId = createAction(SET_COMMENT_ID);
 export const getCommentDisplay = createAction(GET_COMMENT_DISPLAY);
 export const setTimelineLike = createAction(SET_TIMELINE_LIKE);
 export const setTimelineLikeNum = createAction(SET_TIMELINE_LIKE_NUM);
@@ -88,7 +86,6 @@ const initialState = Map({
     categoryid : '',
     followdisplay : 'none',
     likeKey : -1,
-    commentId : -1,
     totalNum : 0,
     commentCategory : '',
     commentdisplay : 'none',
@@ -97,17 +94,15 @@ const initialState = Map({
 });
 
 export default handleActions({
+    [SET_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'feed','commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
     [SET_COMMENT_LIST] : (state,action) => {
-        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(state.get('commentId')));
-        return state.setIn(['mainfeed',index,'feed','commentList'],state.getIn(['mainfeed',index,'feed','commentList']).concat(action.payload));
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(action.payload.commentId));
+        return state.setIn(['mainfeed',index,'feed','commentList'], state.getIn(['mainfeed',index,'feed','commentList']).concat(action.payload.commentList.toJS()))
+        .setIn(['mainfeed',index,'feed','trueComment'],action.payload.trueComment);
     },
     [SET_COMMENT_NUM] : (state,action) => {
-        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('commentId')));
-        return state.setIn(['mainfeed',index,'feed','totalComment'],action.payload);
-    },
-    [SET_COMMENT_FALSE]: (state,action) => {
-        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload));
-        return state.setIn(['mainfeed',index,'feed','trueComment'],false);
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload.commentId));
+        return state.setIn(['mainfeed',index,'feed','totalComment'],action.payload.commentNum);
     },
     [SET_COMMENT_PAGE] : (state,action) =>{ 
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload));
@@ -118,14 +113,13 @@ export default handleActions({
         return state.set('mainfeed',state.get('mainfeed').unshift(state.get('presentPost')));
     }, 
     [RENEW_COMMENT] : (state,action) => {
-        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(state.get('commentId')));
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(action.payload.commentId));
         return state.setIn(['mainfeed',index,'feed','commentList']
-        ,state.getIn(['mainfeed',index,'feed','commentList']).unshift(action.payload));
+        ,state.getIn(['mainfeed',index,'feed','commentList']).unshift(action.payload.presentComment.toJS()));
     },
     [SET_COMMENT_CATEGORY] : (state,action) => state.set('commentCategory',action.payload),
-    [SET_COMMENT_ID] : (state,action) => state.set('commentId',action.payload),
     [SET_COMMENT_DISPLAY] : (state,action) =>{
-        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('commentId'))
+        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload)
         && item.get('category')===state.get('commentCategory'));
         if(state.getIn(['mainfeed',index,'feed','commentState'])==='none')
             return state.setIn(['mainfeed',index,'feed','commentState'],'block').set('commentdisplay','block');
@@ -133,7 +127,7 @@ export default handleActions({
             return state.setIn(['mainfeed',index,'feed','commentState'],'none').set('commentdisplay','none');
     },
     [SET_TIMELINE_COMMENT_DISPLAY] : (state,action) =>{
-        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(state.get('commentId')));
+        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(action.payload));
         if(state.getIn(['mainfeed',index,'commentState'])==='none')
             return state.setIn(['mainfeed',index,'commentState'],'block').set('commentdisplay','block');
         else

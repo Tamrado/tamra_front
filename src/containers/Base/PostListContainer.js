@@ -57,18 +57,21 @@ class PostListContainer extends Component{
                 );
     }
 
-    /*setTime = async() => {
-        const{,TimelineActions} = this.props;
+    setCommentTime = async(id) => {
+        const{data,TimelineActions} = this.props;
+        let index = data.findIndex(item => item.getIn(['feed','postId'])===parseInt(id));
+        const comments = data.getIn([index,'feed','commentList']);
                 await Promise.all(
-                    data.map(
-                        async(feed,index) => {
-                            let time = feed.getIn(['feed','timestamp']);
+                    comments.map(
+                        async(comment,commentIndex) => {
+                            console.log(comment.timestamp);
+                            let time = comment.timestamp;
                             let timestring = this.dateTimeToFormatted(time);
-                            await TimelineActions.setTime({timestring:timestring,index : index});
+                            await TimelineActions.setCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
                         }
                     )
                 );
-    }*/
+    }
     
     overHashTag = (e) =>{
         const {TimelineActions} = this.props;
@@ -85,7 +88,7 @@ class PostListContainer extends Component{
         window.location.href =`/@:${e.target.id}`;
     }
     handleLikeClick = async(e) =>{
-        const {LikeActions,TimelineActions,data} = this.props;
+        const {LikeActions,TimelineActions} = this.props;
         const id = e.target.id;
         await TimelineActions.setLikeKey(id);
         await LikeActions.clickLike(id);
@@ -137,21 +140,23 @@ class PostListContainer extends Component{
         await TimelineActions.setLikeNum(totalNum);
     }
     handleComment =async(e)=>{
-        const {CommentActions,TimelineActions,commentCategory,commentId,data} = this.props;
+        const {CommentActions,TimelineActions,data} = this.props;
         const {id} = e.target;
         const {category} = e.target.dataset;
         await TimelineActions.setCommentCategory(category);
-        await TimelineActions.setCommentId(parseInt(id));
-        await TimelineActions.setCommentDisplay();
+        await TimelineActions.setCommentDisplay(id);
         const{commentdisplay} = this.props;
         if(commentdisplay === 'block'){
-            let index = data.findIndex(item => item.getIn(['feed','postId'])===parseInt(commentId));
+            let index = data.findIndex(item => item.getIn(['feed','postId'])===parseInt(id));
             let page = data.getIn([index,'feed','commentPage']);
             await CommentActions.showPostCommentList(id,page);
-            await TimelineActions.setCommentPage();
-            const{commentList}=this.props;
-            await TimelineActions.setCommentList(commentList);
-            
+            await TimelineActions.setCommentPage(id);
+            const{commentList,lastComment}=this.props;
+            if(lastComment)
+            await TimelineActions.setCommentList({'commentId' : id,'commentList':commentList,'trueComment' :false});
+            else
+            await TimelineActions.setCommentList({'commentId' : id,'commentList':commentList,'trueComment' :true});
+            await this.setCommentTime(id);
         }
     }
 
@@ -168,33 +173,55 @@ class PostListContainer extends Component{
         return this.props.data !== nextProps.data || this.props.writtenData !== nextProps.writtenData ||
         this.props.hashdisplay !== nextProps.hashdisplay;
     }
-    handleCommentInput = (e) =>{
+    handleCommentAdd = async(e) =>{
         const {id} = e.target;
-        this.props.TimelineActions.setCommentId(parseInt(id));
+        const {TimelineActions,CommentActions,data} = this.props;
+        const index = data.findIndex(item => item.getIn(['feed','postId']) ===parseInt(id));
+        if(data.getIn([index,'feed','trueComment'])){
+            
+            const page = data.getIn([index,'feed','commentPage']);
+            try{
+                await CommentActions.showPostCommentList(id,page);
+                await TimelineActions.setCommentPage(id);
+                const{commentList,lastComment}=this.props;
+            if(lastComment)
+            await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
+            else
+            await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
+            await this.setCommentTime(id);
+            }catch(e){
+                TimelineActions.setCommentFalse(id);
+            }
+        } 
     }
     enterComment = async(e) =>{
         if(window.event.keyCode === 13){
-            const {CommentActions,TimelineActions,commentId} = this.props;
-            const {innerText} = e.target;
+            const {CommentActions,TimelineActions} = this.props;
+            const {innerText,id} = e.target;
+            console.log(id);
             var content = innerText;
             content = content.replace(/\r/g, "");
             content = content.replace(/\n/g, "");
-            await CommentActions.writeComment({commentId,content});
-            await CommentActions.showPostCommentList(commentId,1);
-            this.renewComment();
+            await CommentActions.writeComment({id,content});
+            await CommentActions.showPostCommentList(id,1);
+            this.renewComment(id);
             for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
-                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(commentId)){
+                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(id)){
                     document.getElementsByName('^^comment')[i].textContent = '';
                     document.getElementsByName('^^comment')[i].blur();
                 }
             }
+            await CommentActions.getCommentNum(id);
+            var {commentNum} = this.props;
+            await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':id});
+            await this.setCommentTime(id);
             
         }
     }
-    renewComment=()=>
+    renewComment=(id)=>
         setTimeout(async()=>{
             const {presentComment,TimelineActions} = this.props;
-            await TimelineActions.renewComment(presentComment);
+            await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
         },2000);
 
     render(){
@@ -209,9 +236,9 @@ class PostListContainer extends Component{
         }
         const username = storage.get('loggedInfo').nickname;
         const thumbnail = storage.get('loggedInfo').thumbnail;
-        const {writtenData,hashdisplay,keyid,category,totalNum,commentList,commentId,commentCategory,PostActions} = this.props;
-        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,enterComment
-            ,handleCancelClick,handleComment,handleCommentInput} = this;
+        const {writtenData,hashdisplay,keyid,category,totalNum,commentCategory,PostActions} = this.props;
+        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,enterComment,handleCommentAdd
+            ,handleCancelClick,handleComment,} = this;
         if(writtenData === '') PostActions.setWrittenData(`${username}님, 무슨 일이 있으셨나요?`);
         return(
             <PageWrapper>
@@ -220,9 +247,8 @@ class PostListContainer extends Component{
             return (<div key={index} style={style} >{line}<br/></div>)
           })}
            hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
-         category = {category} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment}
-         comments={commentList} thumbnail={thumbnail} commentId={commentId} handleCommentInput={handleCommentInput}
-           commentCategory={commentCategory} enterComment={enterComment}/>
+         category = {category} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment} handleCommentAdd = {handleCommentAdd}
+          thumbnail={thumbnail} commentCategory={commentCategory} enterComment={enterComment}/>
          
             </PageWrapper>
         );
@@ -240,11 +266,12 @@ export default connect(
         category : state.timeline.get('categoryid'),
         totalNum : state.like.get('totalNum'),
         commentList : state.comment.get('commentList'),
+        commentNum : state.comment.get('commentNum'),
         commentCategory : state.timeline.get('commentCategory'),
-        commentId : state.timeline.get('commentId'),
         commentdisplay : state.timeline.get('commentdisplay'),
         postId : state.post.get('postId'),
-        presentComment : state.comment.get('presentComment')
+        presentComment : state.comment.get('presentComment'),
+        lastComment : state.comment.get('lastComment')
     }),
     (dispatch) => ({
         TimelineActions: bindActionCreators(timelineActions, dispatch),
