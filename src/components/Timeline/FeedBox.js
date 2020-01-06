@@ -108,7 +108,7 @@ flex: 1;
 `;
 const Time = styled.div`
 
-max-width: 110px;
+max-width: 120px;
 height: 32px;
 left : 0;
 float : left;
@@ -352,7 +352,7 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,thumbnail}) => {
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,childrenTwo}) => {
     
     const {
         postId,
@@ -416,13 +416,7 @@ return(
             <Comment id ={postId} onClick={handleComment} >댓글 {totalComment}</Comment>
         </FeedSubMenu>
     </Box>
-    <CommentBox display = {commentState}>
-        <CommentView>
-            <CommentThumbnail thumbnail = {thumbnail}/>
-            <CommentInput role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
-        onInput={onclick}></CommentInput>
-        </CommentView>
-    </CommentBox>
+    {childrenTwo}
     </div>
     )
 }

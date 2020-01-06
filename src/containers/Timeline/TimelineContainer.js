@@ -76,6 +76,21 @@ class TimelineContainer extends Component{
                     )
                 );
     }
+    setCommentTime = async(id) => {
+        const{data,TimelineActions} = this.props;
+        let index = data.findIndex(item => item.get('postId')===parseInt(id));
+        const comments = data.getIn([index,'commentList']);
+                await Promise.all(
+                    comments.map(
+                        async(comment,commentIndex) => {
+                            console.log(comment.timestamp);
+                            let time = comment.timestamp;
+                            let timestring = this.dateTimeToFormatted(time);
+                            await TimelineActions.setTimelineCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
+                        }
+                    )
+                );
+    }
     dateTimeToFormatted=(dt)=> {
 		const min = 60 * 1000;
 		const c = new Date();
@@ -99,7 +114,7 @@ class TimelineContainer extends Component{
 		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
 			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
 		} else{
-            result.formatted = result.raw;
+            result.formatted = result.month;
         }
 		return result.formatted;
 	};
@@ -159,16 +174,77 @@ class TimelineContainer extends Component{
         await TimelineActions.setTimelineLikeNum(totalNum);
     }
     handleComment =async(e)=>{
-        const {CommentActions,TimelineActions,page} = this.props;
+        const {CommentActions,TimelineActions,data} = this.props;
         const {id} = e.target;
-        await TimelineActions.setCommentId(parseInt(id));
-        await TimelineActions.setTimelineCommentDisplay();
+        const {category} = e.target.dataset;
+        await TimelineActions.setCommentCategory(category);
+        await TimelineActions.setTimelineCommentDisplay(id);
         const{commentdisplay} = this.props;
         if(commentdisplay === 'block'){
+            let index = data.findIndex(item => item.get('postId')===parseInt(id));
+            let page = data.getIn([index,'commentPage']);
             await CommentActions.showPostCommentList(id,page);
-            await CommentActions.addPage();
+            await TimelineActions.setTimelineCommentPage(id);
+            const{commentList,lastComment}=this.props;
+            if(lastComment)
+            await TimelineActions.setTimelineCommentList({'commentId' : id,'commentList':commentList,'trueComment' :false});
+            else
+            await TimelineActions.setTimelineCommentList({'commentId' : id,'commentList':commentList,'trueComment' :true});
+            await this.setCommentTime(id);
         }
     }
+    handleCommentAdd = async(e) =>{
+        const {id} = e.target;
+        const {TimelineActions,CommentActions,data} = this.props;
+        const index = data.findIndex(item => item.get('postId') ===parseInt(id));
+        if(data.getIn([index,'trueComment'])){
+            
+            const page = data.getIn([index,'commentPage']);
+            try{
+                await CommentActions.showPostCommentList(id,page);
+                await TimelineActions.setTimelineCommentPage(id);
+                const{commentList,lastComment}=this.props;
+            if(lastComment)
+            await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
+            else
+            await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
+            await this.setCommentTime(id);
+            }catch(e){
+                TimelineActions.setTimelineCommentFalse(id);
+            }
+        } 
+    }
+    enterComment = async(e) =>{
+        if(window.event.keyCode === 13){
+            const {CommentActions,TimelineActions} = this.props;
+            const {innerText,id} = e.target;
+            console.log(id);
+            var content = innerText;
+            content = content.replace(/\r/g, "");
+            content = content.replace(/\n/g, "");
+            await CommentActions.writeComment({id,content});
+            await CommentActions.showPostCommentList(id,1);
+            this.renewComment(id);
+            for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
+                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(id)){
+                    document.getElementsByName('^^comment')[i].textContent = '';
+                    document.getElementsByName('^^comment')[i].blur();
+                }
+            }
+            await CommentActions.getCommentNum(id);
+            var {commentNum} = this.props;
+            await TimelineActions.setTimelineCommentNum({'commentNum':commentNum,'commentId':id});
+            await this.setCommentTime(id);
+            
+        }
+    }
+    renewComment=(id)=>
+        setTimeout(async()=>{
+            const {presentComment,TimelineActions} = this.props;
+            await TimelineActions.renewTimelineComment({'commentId' : id,'presentComment':presentComment});
+            await this.setCommentTime(id);
+        },2000);
+
     shouldComponentUpdate(nextProps, nextState) {
         return this.props.data !== nextProps.data || this.props.result !== nextProps.result || 
         this.props.followDisplay !== nextProps.followDisplay || this.props.comment !== nextProps.comment ||
@@ -183,16 +259,21 @@ class TimelineContainer extends Component{
             
             return null;
         }
+        const commentThumbnail = storage.get('loggedInfo').thumbnail; 
+        console.log(commentThumbnail);
         const {hashdisplay,keyid,totalNum} = this.props;
-        const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow} = this.props;
-        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,handleComment} = this;
+        const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
+        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
+            ,handleComment} = this;
         return(
             <PageWrapper>
-            <FeedList thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
+            <FeedList  commentThumbnail = {commentThumbnail} 
+            thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
             followNum = {followNum} followerNum = {followerNum}  followclick={handleFollowClick}
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}
              mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
-             nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}/>
+             nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}
+             enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory} />
           </PageWrapper>
             );
     }
@@ -216,7 +297,13 @@ export default connect(
         hashdisplay : state.timeline.get('hashdisplay'),
         keyid : state.timeline.get('keyid'),
         totalNum : state.like.get('totalNum'),
-        commentdisplay : state.timeline.get('commentdisplay')
+        commentList : state.comment.get('commentList'),
+        commentNum : state.comment.get('commentNum'),
+        commentCategory : state.timeline.get('commentCategory'),
+        commentdisplay : state.timeline.get('commentdisplay'),
+        postId : state.post.get('postId'),
+        presentComment : state.comment.get('presentComment'),
+        lastComment : state.comment.get('lastComment')
 
     }),
     (dispatch) => ({

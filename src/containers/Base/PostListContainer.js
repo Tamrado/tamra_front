@@ -123,7 +123,7 @@ class PostListContainer extends Component{
 		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
 			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
 		} else{
-            result.formatted = result.raw;
+            result.formatted = result.month;
         }
 		return result.formatted;
 	};
@@ -222,6 +222,7 @@ class PostListContainer extends Component{
         setTimeout(async()=>{
             const {presentComment,TimelineActions} = this.props;
             await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
+            await this.setCommentTime(id);
         },2000);
 
     render(){
@@ -238,7 +239,7 @@ class PostListContainer extends Component{
         const thumbnail = storage.get('loggedInfo').thumbnail;
         const {writtenData,hashdisplay,keyid,category,totalNum,commentCategory,PostActions} = this.props;
         const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,enterComment,handleCommentAdd
-            ,handleCancelClick,handleComment,} = this;
+            ,handleCancelClick,handleComment} = this;
         if(writtenData === '') PostActions.setWrittenData(`${username}님, 무슨 일이 있으셨나요?`);
         return(
             <PageWrapper>

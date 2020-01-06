@@ -32,12 +32,22 @@ const SET_TIMELINE_COMMENT_DISPLAY = 'timeline/SET_TIMELINE_COMMENT_DISPLAY';
 const RENEW_MAIN_INFORMATION = 'timeline/RENEW_MAIN_INFORMATION';
 const SET_TIME = 'timeline/SET_TIME';
 const SET_TIMELINE_TIME = 'timeline/SET_TIMELINE_TIME';
+const SET_TIMELINE_COMMENT_PAGE = 'timeline/SET_TIMELINE_COMMENT_PAGE';
+const SET_TIMELINE_COMMENT_NUM = 'timeline/SET_TIMELINE_COMMENT_NUM';
+const SET_TIMELINE_COMMENT_LIST = 'timeline/SET_TIMELINE_COMMENT_LIST';
+const RENEW_TIMELINE_COMMENT = 'timeline/RENEW_TIMELINE_COMMENT';
 const SET_COMMENT_PAGE = 'timeline/SET_COMMENT_PAGE';
 const SET_COMMENT_NUM = 'timeline/SET_COMMENT_NUM';
 const SET_COMMENT_LIST = 'timeline/SET_COMMENT_LIST';
 const RENEW_COMMENT = 'timeline/RENEW_COMMENT';
 const SET_COMMENT_TIME = 'timeline/SET_COMMENT_TIME';
+const SET_TIMELINE_COMMENT_TIME = 'timeline/SET_TIMELINE_COMMENT_TIME';
 
+export const renewTimelineComment = createAction(RENEW_TIMELINE_COMMENT);
+export const setTimelineCommentList = createAction(SET_TIMELINE_COMMENT_LIST);
+export const setTimelineCommentNum = createAction(SET_TIMELINE_COMMENT_NUM);
+export const setTimelineCommentPage = createAction(SET_TIMELINE_COMMENT_PAGE);
+export const setTimelineCommentTime = createAction(SET_TIMELINE_COMMENT_TIME);
 export const setCommentTime = createAction(SET_COMMENT_TIME);
 export const renewComment = createAction(RENEW_COMMENT);
 export const setCommentList = createAction(SET_COMMENT_LIST);
@@ -95,6 +105,25 @@ const initialState = Map({
 
 export default handleActions({
     [SET_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'feed','commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
+    [SET_TIMELINE_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
+    [SET_TIMELINE_COMMENT_LIST] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.get('postId') ===parseInt(action.payload.commentId));
+        return state.setIn(['mainfeed',index,'commentList'], state.getIn(['mainfeed',index,'commentList']).concat(action.payload.commentList.toJS()))
+        .setIn(['mainfeed',index,'trueComment'],action.payload.trueComment);
+    },
+    [SET_TIMELINE_COMMENT_NUM] : (state,action) => {
+        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(action.payload.commentId));
+        return state.setIn(['mainfeed',index,'totalComment'],action.payload.commentNum);
+    },
+    [SET_TIMELINE_COMMENT_PAGE] : (state,action) =>{ 
+        const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(action.payload));
+        return state.setIn(['mainfeed',index,'commentPage'],state.getIn(['mainfeed',index,'commentPage'])+1);
+},
+[RENEW_TIMELINE_COMMENT] : (state,action) => {
+    const index = state.get('mainfeed').findIndex(item => item.get('postId') ===parseInt(action.payload.commentId));
+    return state.setIn(['mainfeed',index,'commentList']
+    ,state.getIn(['mainfeed',index,'commentList']).unshift(action.payload.presentComment.toJS()));
+},
     [SET_COMMENT_LIST] : (state,action) => {
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(action.payload.commentId));
         return state.setIn(['mainfeed',index,'feed','commentList'], state.getIn(['mainfeed',index,'feed','commentList']).concat(action.payload.commentList.toJS()))
@@ -108,15 +137,16 @@ export default handleActions({
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload));
         return state.setIn(['mainfeed',index,'feed','commentPage'],state.getIn(['mainfeed',index,'feed','commentPage'])+1);
 },
+[RENEW_COMMENT] : (state,action) => {
+    const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(action.payload.commentId));
+    return state.setIn(['mainfeed',index,'feed','commentList']
+    ,state.getIn(['mainfeed',index,'feed','commentList']).unshift(action.payload.presentComment.toJS()));
+},
     [SET_TIMELINE_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'dateString'],action.payload.timestring),
     [RENEW_MAIN_INFORMATION] : (state,action) =>{ 
         return state.set('mainfeed',state.get('mainfeed').unshift(state.get('presentPost')));
     }, 
-    [RENEW_COMMENT] : (state,action) => {
-        const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(action.payload.commentId));
-        return state.setIn(['mainfeed',index,'feed','commentList']
-        ,state.getIn(['mainfeed',index,'feed','commentList']).unshift(action.payload.presentComment.toJS()));
-    },
+    
     [SET_COMMENT_CATEGORY] : (state,action) => state.set('commentCategory',action.payload),
     [SET_COMMENT_DISPLAY] : (state,action) =>{
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload)

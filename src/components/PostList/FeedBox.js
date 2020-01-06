@@ -77,7 +77,7 @@ flex: 1;
 const Time = styled.div`
 
 margin-right : 10px;
-max-width: 110px;
+max-width: 120px;
 height: 32px;
 left : 0;
 float : left;
