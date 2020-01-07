@@ -34,11 +34,15 @@ class UserMenuContainer extends Component{
     }
 
     render(){
-        const{visible, username} = this.props;
+        const{visible, username,BaseActions} = this.props;
         const {handleLogout,handleSetUserInfo} = this;
 
         if(!visible){
             return null;
+        }
+        else {
+            BaseActions.setFollowMenuVisible('none');
+            BaseActions.setAlarmMenuVisible('none');
         }
         return (
             <UserMenu>

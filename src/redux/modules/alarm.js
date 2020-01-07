@@ -15,7 +15,8 @@ export const setAlarmNum = createAction(SET_ALARM_NUM);
 
 const initialState = Map({
     alarmList : List(),
-    alarmNum : 0
+    alarmNum : 0,
+    result : Map({})
 });
 
 export default handleActions({
@@ -26,6 +27,10 @@ export default handleActions({
     ...pender({
         type : GET_ALARM_NUM,
         onSuccess : (state,action) => state.set('alarmNum',action.payload.data.count)
+    }),
+    ...pender({
+        type : SET_ALL_READ_ALARM,
+        onSuccess : (state,action) => state.set('result',action.payload)
     })
 
 },initialState);

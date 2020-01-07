@@ -49,8 +49,8 @@ position: absolute;
     display : ${props => props.visible};
 `;
 const Setting = ({image,onclick,size,hoverimg,alarmNum,resultvisible,tvisible,left}) => {
-    
-    //if(alarmNum > 99) aNum = '99+';
+    var aNum = alarmNum;
+    if(alarmNum > 99) aNum = '99+';
     return(
         <div>
         <SettingImage src = {image} size = {size} onClick = {onclick} hoverimg={hoverimg} left={left}/>

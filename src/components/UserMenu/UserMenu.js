@@ -4,7 +4,7 @@ import styled from 'styled-components';
 // 유저 메뉴를 우측 상단에 위치시킵니다
 const Positioner = styled.div`
 position: absolute;
-right: 11.3%;
+right: 10%;
 top: 59px;
 `;
 

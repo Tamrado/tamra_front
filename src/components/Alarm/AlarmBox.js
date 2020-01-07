@@ -8,7 +8,7 @@ width: 100%;
 height: 100px;
 left: 0px;
 
-background: #FFFFFF;
+background: ${props => props.color};
 border-bottom: 1px solid rgba(196, 196, 196, 0.75);
 }
 `;
@@ -59,7 +59,7 @@ text-align: center;
 letter-spacing: 2px;
 position: absolute;
 top: 30%;
-right: 30%;
+right: 25%;
 `;
 const Time = styled.div`
 position: absolute;
@@ -80,8 +80,10 @@ const AlarmBox = ({alarm}) => {
         dateString,
         sender
     } = alarm.toJS();
+    var color = '#ffffff';
+    if(!read) color = 'rgba(222, 226, 230, 0.3)';
     return(
-        <Box id = {sender.id}>
+        <Box color={color} id = {sender.id}>
             <Name id = {sender.id}>{sender.name}</Name>
             <Thumbnail id = {sender.id} image = {sender.profile}/>
             <Content id = {sender.id}>{message}</Content>

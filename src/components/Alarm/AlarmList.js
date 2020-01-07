@@ -2,7 +2,7 @@ import React from 'react';
 import AlarmBox from './AlarmBox';
 import AlarmMenuBox from './AlarmMenuBox';
 
-const AlarmList = ({alarms,deleteclick,follow,result,alarm,visible,alarmvisible}) => {
+const AlarmList = ({alarms,visible,alarmvisible,handleAllRead}) => {
     const alarmList = alarms.map(
         (alarm) => (
             alarm && <AlarmBox key = {alarm.get('link')+alarm.get('sender').id + alarm.get('message')}
@@ -11,7 +11,7 @@ const AlarmList = ({alarms,deleteclick,follow,result,alarm,visible,alarmvisible}
         )
     )
     return(
-        <AlarmMenuBox alarmvisible = {alarmvisible} visible = {visible}>
+        <AlarmMenuBox handleAllRead={handleAllRead} alarmvisible = {alarmvisible} visible = {visible}>
             {alarmList}
             </AlarmMenuBox>
     );

@@ -4,7 +4,7 @@ import { shadow } from '../../lib/styleUtils';
 const Box = styled.div`
 position: absolute;
 width: 782px;
-height: 500px;
+height: 430px;
 right: 16%;
 top: 59px;
 display : ${props => props.visible};
@@ -17,12 +17,11 @@ position: absolute;
 width: 134px;
 height: 45px;
 left: 19px;
-top: 6px;
 
 font-family: Rajdhani;
 font-style: normal;
 font-weight: bold;
-font-size: 22.4px;
+font-size: 20.4px;
 line-height: 29px;
 display: flex;
 align-items: center;
@@ -36,15 +35,15 @@ position: absolute;
 width: 782px;
 height: 0px;
 left: 0px;
-top: 64px;
-border: 1px solid #12B886;
+top: 44px;
+border: 1px solid #0ca678;
 `;
 const Alarm = styled.div`
 position: absolute;
 width: 100px;
 height: 45px;
 left: 670px;
-top: 6px;
+
 text-decoration:none;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -64,7 +63,7 @@ width: 100%;
 max-height: 354px;
 height : 354px;
 left: 0px;
-top: 82px;
+top: 62px;
 overflow-y: auto;
 &::-webkit-scrollbar-track
 {
