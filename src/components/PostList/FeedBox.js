@@ -371,19 +371,19 @@ return(
         <FeedLine/>
         { !`${files}` &&<Feed>{contents}</Feed>}
         {`${files}` && count > 3 && <FeedImage>
-            <Image src={files[0].thumbnail} size ={'250px'}/><Image src={files[1].thumbnail} size ={'250px'}/><Image src={files[2].thumbnail} size ={'250px'}>
+            <Image src={files[0].original} size ={'250px'}/><Image src={files[1].original} size ={'250px'}/><Image src={files[2].original} size ={'250px'}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>
-            <Image src={files[0].thumbnail} size ={'250px'}/><Image size ={'250px'} src={files[1].thumbnail}/><Image size ={'250px'} src={files[2].thumbnail}/>
+            <Image src={files[0].original} size ={'250px'}/><Image size ={'250px'} src={files[1].original}/><Image size ={'250px'} src={files[2].original}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image src={files[0].thumbnail} left = {`5%`} size ={'320px'}/><Image left = {`5%`} size ={'320px'} src={files[1].thumbnail}/>
+            <Image src={files[0].original} left = {`5%`} size ={'320px'}/><Image left = {`5%`} size ={'320px'} src={files[1].original}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image left={`26%`} size ={'320px'} src={files[0].thumbnail}/>
+            <Image left={`26%`} size ={'320px'} src={files[0].original}/>
             </FeedImage>}
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>

@@ -42,7 +42,13 @@ const SET_COMMENT_LIST = 'timeline/SET_COMMENT_LIST';
 const RENEW_COMMENT = 'timeline/RENEW_COMMENT';
 const SET_COMMENT_TIME = 'timeline/SET_COMMENT_TIME';
 const SET_TIMELINE_COMMENT_TIME = 'timeline/SET_TIMELINE_COMMENT_TIME';
+const SET_SHOW_MENU_VISIBLE = 'timeline/SET_SHOW_MENU_VISIBLE';
+const SET_MENU_VISIBLE = 'timeline/SET_MENU_VISIBLE';
+const DELETE_FEED = 'timeline/DELETE_FEED';
 
+export const deleteFeed = createAction(DELETE_FEED);
+export const setShowMenuVisible = createAction(SET_SHOW_MENU_VISIBLE);
+export const setMenuVisible = createAction(SET_MENU_VISIBLE);
 export const renewTimelineComment = createAction(RENEW_TIMELINE_COMMENT);
 export const setTimelineCommentList = createAction(SET_TIMELINE_COMMENT_LIST);
 export const setTimelineCommentNum = createAction(SET_TIMELINE_COMMENT_NUM);
@@ -104,6 +110,13 @@ const initialState = Map({
 });
 
 export default handleActions({
+    [DELETE_FEED] : (state,action) => state.deleteIn(['mainfeed',action.payload]),
+    [SET_MENU_VISIBLE] : (state,action) => {
+        return state.setIn(['mainfeed',action.payload.index,'menuVisible'],action.payload.visible);
+    },
+    [SET_SHOW_MENU_VISIBLE] : (state,action) => {
+        return state.setIn(['mainfeed',action.payload.index,'showMenuVisible'],action.payload.visible);
+    },
     [SET_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'feed','commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
     [SET_TIMELINE_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
     [SET_TIMELINE_COMMENT_LIST] : (state,action) => {

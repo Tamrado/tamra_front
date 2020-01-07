@@ -103,12 +103,12 @@ class WriteBoxContainer extends Component{
         this.closeShowLevel();
     }
 
-    handleWriteClick = () => {
+    handleWriteClick = async() => {
         const {PostActions,content,showLevel,friendInfo,filelist} = this.props;
         var tags = friendInfo.toJS();
         try{
             console.log('ㅎㅇ');
-        PostActions.uploadFeed({content,showLevel,tags});
+        await PostActions.uploadFeed({content,showLevel,tags});
         console.log('ㅂㅇ');
         }catch(e){
 

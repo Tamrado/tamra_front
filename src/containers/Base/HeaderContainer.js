@@ -9,6 +9,7 @@ import * as friendActions from '../../redux/modules/friend';
 import * as searchActions from '../../redux/modules/search';
 import * as alarmActions from '../../redux/modules/alarm';
 import {bindActionCreators} from 'redux';
+import UserMenuContainer from './UserMenuContainer';
 import menuImage from '../../build/static/images/iconmonstr-arrow-80-24.png';
 import alarmImage from '../../build/static/images/iconmonstr-bell-thin-32.png';
 import friendRequestImage from '../../build/static/images/iconmonstr-user-29-32.png';
@@ -17,7 +18,6 @@ import hoverMenuImage from '../../build/static/images/iconmonstr-arrow-80-12.png
 import hoverAlarmImage from '../../build/static/images/iconmonstr-bell-thin-32 (1).png';
 import hoverFriendRequestImage from '../../build/static/images/iconmonstr-user-29-32 (1).png';
 import hoverMypageImage from '../../build/static/images/iconmonstr-gear-10-32 (1).png';
-import UserMenuContainer from './UserMenuContainer';
 class HeaderContainer extends Component {
     state = {
         friendRequestVisible : 'none',
@@ -28,6 +28,34 @@ class HeaderContainer extends Component {
         alarmNonevisible : 'none'
     }
 
+    dateTimeToFormatted=(dt)=> {
+		const min = 60 * 1000;
+		const c = new Date();
+		var d = new Date(dt);
+		var minsAgo = Math.floor((c - d) / (min));
+
+		var result = {
+            'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
+            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') 
+            +  d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') +  d.getMinutes() + ':'  
+            + (d.getSeconds() > 9 ? '' : '0') +  d.getSeconds(),
+            'month' : d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
+            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate(),
+			'formatted': ''
+		};
+
+		if (minsAgo < 60) { // 1시간 내
+			result.formatted = minsAgo + '분 전';
+		} else if (minsAgo < 60 * 24) { // 하루 내
+			result.formatted = Math.floor(minsAgo / 60) + '시간 전';
+		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
+			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
+		} else{
+            result.formatted = result.month;
+        }
+		return result.formatted;
+    };
+    
     componentDidMount() {
        this.getFollowRequest();
        this.getAlarm();
@@ -54,7 +82,15 @@ class HeaderContainer extends Component {
         try{
             await AlarmActions.getAlarmNum();
             await AlarmActions.getAlarm();
+
             const {alarmList,alarmNum} = this.props;
+            alarmList.map(
+                async(alarm,index) =>{
+                    let time = alarm.get('timestamp');
+                            let dateString = this.dateTimeToFormatted(time);
+                            await AlarmActions.setAlarmTime({dateString:dateString,index : index});
+                }
+            )
             if(alarmList.size > 0)
             this.setState({ alarmNonevisible : 'none'});
             else
@@ -162,9 +198,11 @@ class HeaderContainer extends Component {
         window.location.href = '/';
     }
     handleAllRead = async() => {
-        const {AlarmActions} = this.props;
+        const {AlarmActions,BaseActions} = this.props;
         await AlarmActions.setAllReadAlarm();
         await this.getAlarm();
+        BaseActions.setAlarmMenuVisible('none');
+
     }
 
     render(){
@@ -174,7 +212,7 @@ class HeaderContainer extends Component {
         mypageVisible,mVisible,noFriendAddVisible} = this.state;
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
         ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick,handleProfileClick,
-        handleClickHome,handleAllRead} = this;
+        handleClickHome,handleAllRead,handleAlarmInfoClick} = this;
     let content,search,alarm,friendRequest,mypage,menu,menuVisible = null;
     
     if(!visible) return null;
@@ -208,7 +246,7 @@ class HeaderContainer extends Component {
                 {mypage}
                 {menu}
                 <AlarmList alarms={alarmList} visible={alarmMenuVisible} alarmvisible={alarmNonevisible}
-                handleAllRead={handleAllRead}/>
+                handleAllRead={handleAllRead} handleAlarmInfoClick={handleAlarmInfoClick}/>
                 <FollowList friend = {followRequest} deleteclick={setFollowNotificationUnavailable}
                 follow = {follow} visible = {followMenuVisible} result={friendRequestVisible} 
                 friendvisible = {noFriendAddVisible} />

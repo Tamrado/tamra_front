@@ -7,6 +7,8 @@ import clickhash from '../../build/static/images/iconmonstr-hashtag-1-24 (1).png
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
+import menuImage from '../../build/static/images/iconmonstr-menu-7-24.png';
+import hoverMenuImage from '../../build/static/images/iconmonstr-menu-7-24 (1).png';
 
 const Box = styled.div`
 width: 60%;
@@ -18,62 +20,13 @@ top : 10px;
 margin-bottom : 1rem;
 margin-bottom : 0.8rem;
 `;
-const CommentBox = styled.div`
-width : 60%;
-left : 20%;
-height : 300px;
-background : #ffffff;
-position: relative;
-display : ${props => props.display};
-margin-bottom : 0.5rem;
-border-top : 1px solid rgba(0, 0, 0, 0.25);
-`;
-const CommentView = styled.div`
-position : absolute;
-background : #ffffff;
-width: 90%;
-height: 60px;
-left: 5%;
-top: 10px;
-`;
-const CommentThumbnail = styled.div`
-position :absolute;
-background-image: url(${props => props.thumbnail});
 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 50%;
-    cursor: pointer;
-    width: 45px;
-    height: 45px;
-    top :10%;
-    left : 15px;
-`;
-const CommentInput = styled.div`
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: 300;
-font-size: 16px;
-line-height: 32px;
-position: absolute;
-width: 80%;
-height: 35px;
-left: 76px;
-top: 12px;
-padding-left : 25px;
-background: #E5E5E5;
-border-radius: 23px;
-&:empty&:not(:focus)&:before {
-    content : attr(aria-label);
-    color : #90949c;
-}
-`;
 const NickNameBox = styled.div`
-width: 356px;
+width:90%;
 height: 72px;
 position : absolute;
 margin-left : 70px;
+margin-right : 10px;
 top: 5px; 
 `;
 const NickName = styled.div`
@@ -352,7 +305,22 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,childrenTwo}) => {
+const MenuButton = styled.div`
+position: absolute;
+width : 24px;
+height : 24px;
+    right: 20px;
+    top: 10px;
+background: url(${menuImage});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+&:hover {
+background: url(${hoverMenuImage});
+}
+`;
+const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,
+    childrenTwo,handleMenu,menu}) => {
     
     const {
         postId,
@@ -367,6 +335,8 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,li
         islike,
         commentState,
         dateString,
+        menuVisible,
+        showMenuVisible,
         tags
     } = mainfeed.toJS();
     if(!profile || !postId) return null;
@@ -389,23 +359,25 @@ return(
            { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
            { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
             </ViewBox>
+            <MenuButton id = {postId} onClick={handleMenu}/>
+            {menu}
         </NickNameBox>
         <FeedLine/>
         { !`${files}` &&<Feed>{contents}</Feed>}
         {`${files}` && count > 3 && <FeedImage>
-            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}>
+            <Image src={files[0].original}/><Image src={files[1].original}/><Image src={files[2].original}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>
-            <Image src={files[0].thumbnail}/><Image src={files[1].thumbnail}/><Image src={files[2].thumbnail}/>
+            <Image src={files[0].original}/><Image src={files[1].original}/><Image src={files[2].original}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image left = {`5%`} size ={'320px'} src={files[0].thumbnail}/><Image left = {`5%`} size ={'320px'} src={files[1].thumbnail}/>
+            <Image left = {`5%`} size ={'320px'} src={files[0].original}/><Image left = {`5%`} size ={'320px'} src={files[1].original}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image left={`26%`} size ={'320px'} src={files[0].thumbnail}/>
+            <Image left={`26%`} size ={'320px'} src={files[0].original}/>
             </FeedImage>}
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>

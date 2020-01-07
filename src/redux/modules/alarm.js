@@ -6,13 +6,12 @@ import * as AlarmAPI from '../../lib/api/alarm';
 const GET_ALARM = 'alarm/GET_ALARM';
 const GET_ALARM_NUM = 'alarm/GET_ALARM_NUM';
 const SET_ALL_READ_ALARM = 'alarm/SET_ALL_READ_ALARM';
-const SET_ALARM_NUM = 'alarm/SET_ALARM_NUM';
+const SET_ALARM_TIME = 'alarm/SET_ALARM_TIME';
 
 export const getAlarm = createAction(GET_ALARM,AlarmAPI.getAlarm);
 export const getAlarmNum = createAction(GET_ALARM_NUM,AlarmAPI.getAlarmNum);
 export const setAllReadAlarm = createAction(SET_ALL_READ_ALARM,AlarmAPI.setAllReadAlarm);
-export const setAlarmNum = createAction(SET_ALARM_NUM);
-
+export const setAlarmTime = createAction(SET_ALARM_TIME);
 const initialState = Map({
     alarmList : List(),
     alarmNum : 0,
@@ -20,6 +19,7 @@ const initialState = Map({
 });
 
 export default handleActions({
+    [SET_ALARM_TIME] : (state,action) => state.setIn(['alarmList',action.payload.index,'dateString'],action.payload.dateString),
     ...pender({
         type : GET_ALARM,
         onSuccess : (state,action) => state.set('alarmList',fromJS(action.payload.data))

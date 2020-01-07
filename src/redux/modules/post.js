@@ -20,7 +20,9 @@ const SET_WRITE_DISPLAY = 'post/SET_WRITE_DISPLAY';
 const UPDATE_FILELIST = 'post/UPDATE_FILELIST';
 const INITIALIZE_FILELIST = 'post/INITIALIZE_FILELIST';
 const INITIALIZE_IMAGE = 'post/INITIALIZE_IMAGE';
+const DELETE_FEED = 'post/DELETE_FEED';
 
+export const deleteFeed = createAction(DELETE_FEED,PostAPI.deleteFeed);
 export const initializeImage = createAction(INITIALIZE_IMAGE);
 export const initializeFilelist = createAction(INITIALIZE_FILELIST);
 export const updateFilelist = createAction(UPDATE_FILELIST);
@@ -57,6 +59,10 @@ const initialState = Map({
 
 
 export default handleActions({
+    ...pender({
+        type : DELETE_FEED,
+        onSucces : (state,action) => state.set('result',action.payload)
+    }),
     ...pender({
         type : UPLOAD_FEED,
         onSuccess : (state,action) => state.set('postId',action.payload.data.postId)

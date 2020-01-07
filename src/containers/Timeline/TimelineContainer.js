@@ -6,6 +6,8 @@ import {FeedList} from '../../components/Timeline';
 import * as friendActions from '../../redux/modules/friend';
 import * as timelineActions from '../../redux/modules/timeline';
 import * as likeActions from '../../redux/modules/like';
+import * as baseActions from '../../redux/modules/base';
+import * as postActions from '../../redux/modules/post';
 import storage from '../../lib/storage';
 import * as commentActions from '../../redux/modules/comment';
 class TimelineContainer extends Component{
@@ -252,6 +254,42 @@ class TimelineContainer extends Component{
         this.props.thumbnail !== nextProps.thumbnail || this.props.hashdisplay !== nextProps.hashdisplay
         || this.props.postNum !== nextProps.postNum;
     }
+
+    handleMenu = (e) => {
+        const {data,TimelineActions,BaseActions} = this.props;
+        const {id} = e.target;
+        const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        console.log(id);
+        if(data.getIn([index,'menuVisible']) === 'none'){
+            TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
+            BaseActions.setFollowMenuVisible('none');
+            BaseActions.setAlarmMenuVisible('none');
+            BaseActions.setUserMenuVisibility(false);
+            TimelineActions.setMenuVisible({'index':index, 'visible':'block'});
+        }
+        else{
+            TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
+        }
+        
+    }
+
+    modifyClick = (e) => {
+        const {id} = e.target;
+    }
+
+    deleteClick = async(e) => {
+        const {id} = e.target;
+        const {PostActions,TimelineActions,data,userid} = this.props;
+        const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        const userId = userid.substr(1);
+        try{
+            await PostActions.deleteFeed(id);
+            await TimelineActions.deleteFeed(index);
+            await TimelineActions.getTimelinePostNum(userId);
+        }catch(e){
+            console.log(e);
+        }
+    }
     render(){
         
         const {data} = this.props;
@@ -260,11 +298,10 @@ class TimelineContainer extends Component{
             return null;
         }
         const commentThumbnail = storage.get('loggedInfo').thumbnail; 
-        console.log(commentThumbnail);
         const {hashdisplay,keyid,totalNum} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
         const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
-            ,handleComment} = this;
+            ,handleComment,handleMenu,modifyClick,deleteClick} = this;
         return(
             <PageWrapper>
             <FeedList  commentThumbnail = {commentThumbnail} 
@@ -273,7 +310,8 @@ class TimelineContainer extends Component{
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}
              mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
              nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}
-             enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory} />
+             enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory}
+             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {deleteClick} />
           </PageWrapper>
             );
     }
@@ -310,7 +348,9 @@ export default connect(
         FriendActions: bindActionCreators(friendActions, dispatch),
         TimelineActions : bindActionCreators(timelineActions,dispatch),
         LikeActions : bindActionCreators(likeActions,dispatch),
-        CommentActions : bindActionCreators(commentActions,dispatch)
+        CommentActions : bindActionCreators(commentActions,dispatch),
+        BaseActions : bindActionCreators(baseActions,dispatch),
+        PostActions : bindActionCreators(postActions,dispatch)
 
     })
 )(TimelineContainer);

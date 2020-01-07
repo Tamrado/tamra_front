@@ -49,17 +49,23 @@ color: #000000;
 `;
 const Content = styled.div`
 font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 17px;
-line-height: 20px;
-
-align-items: center;
-text-align: center;
-letter-spacing: 2px;
-position: absolute;
-top: 30%;
-right: 25%;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 17px;
+    line-height: 60px;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-align: center;
+    -webkit-letter-spacing: 2px;
+    -moz-letter-spacing: 2px;
+    -ms-letter-spacing: 2px;
+    letter-spacing: 2px;
+    position: absolute;
+    height: 70px;
+    top: 10%;
+    right: 25%;
 `;
 const Time = styled.div`
 position: absolute;
@@ -67,11 +73,10 @@ top: 30%;
 right : 10%;
 font-family: Noto Sans KR;
 font-style: normal;
-font-weight: bold;
 font-size: 16px;
 `;
 
-const AlarmBox = ({alarm}) => {
+const AlarmBox = ({alarm,handleAlarmInfoClick}) => {
     const {
         message,
         timestamp,
@@ -83,7 +88,7 @@ const AlarmBox = ({alarm}) => {
     var color = '#ffffff';
     if(!read) color = 'rgba(222, 226, 230, 0.3)';
     return(
-        <Box color={color} id = {sender.id}>
+        <Box color={color} id = {sender.id} onClick = {handleAlarmInfoClick}>
             <Name id = {sender.id}>{sender.name}</Name>
             <Thumbnail id = {sender.id} image = {sender.profile}/>
             <Content id = {sender.id}>{message}</Content>
