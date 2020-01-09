@@ -5,3 +5,4 @@ export {default as UserMenuContainer} from './UserMenuContainer';
 export {default as WriteBoxContainer} from './WriteBoxContainer';
 export {default as WithListContainer} from './WithListContainer';
 export {default as TagListContainer} from './TagListContainer';
+export {default as PostDetailContainer} from './PostDetailContainer';

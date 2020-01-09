@@ -20,10 +20,12 @@ background: #FFFFFF;
 border-bottom: 1px solid rgba(0, 0, 0, 0.25);
 `;
 const ProfileBox = styled.div`
-margin : 0 auto;
+margin : ${props=>props.margin};
 width: 300px;
 height: 150px;
-top : 15px;
+
+position : ${props=>props.position};
+right : ${props=>props.right};
 
 `;
 
@@ -45,9 +47,6 @@ background-repeat: no-repeat;
 const Nickname = styled.div`
 
 position : relative;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     width: 30%;
     max-width: 35%;
     height: 29px;
@@ -77,13 +76,10 @@ position : relative;
 
 const Comment = styled.div`
 position : relative;
-    max-width: 237px;
+    max-width: 200px;
     max-height: 80px;
     left: 130px;
     top: 43px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     font-family: Noto Sans KR;
     font-style: normal;
     font-weight: normal;
@@ -93,6 +89,8 @@ position : relative;
     -ms-letter-spacing: 0.05em;
     letter-spacing: 0.05em;
     color: #000000;
+    white-space:normal;
+word-break: break-all;
 
 `;
 
@@ -266,36 +264,27 @@ letter-spacing: 2px;
 background: rgba(18, 184, 134, 0.1);
 border-radius: 10px;
 `;
-const SettingButton = styled.div`
-display : ${props=>props.display};
+const Photo = styled.input`
 position: absolute;
-width: 13%;
-height: 45px;
-right: 20%;
-top: 50px;
-color : #515250;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: 500;
-font-size: 1.3rem;
-line-height: 40px;
-
-align-items: center;
-text-align: center;
-letter-spacing: 2px;
-background: rgba(18, 184, 134, 0.1);
-border-radius: 10px;
+overflow: hidden;
+top: 0;
+left: 0;
+width : 100%;
+height: 100%;
+opacity : 0;
 `;
 const Profile = ({followclick,postNum,followerNum,followNum,comment,nickname,username,thumbnail
-    ,followdisplay,isfollow}) => (
+    ,followdisplay,isfollow,change}) => (
     <div>
     <Box>
-        {followdisplay === 'none' &&<ProfileBox right = {'33%'}>
-            <UserThumbnail id = {username} thumbnail ={thumbnail}/>
+        {followdisplay === 'none' &&<ProfileBox margin = {'0 auto'}>
+            <UserThumbnail id = {username} thumbnail ={thumbnail}>
+                <Photo type='file' onChange={change}/>
+                </UserThumbnail>
             <Nickname>{nickname}</Nickname>
             <Comment>{comment}</Comment>
         </ProfileBox>}
-        {followdisplay === 'block' &&<ProfileBox right = {'49%'}>
+        {followdisplay === 'block' &&<ProfileBox right = {'49%'} position = {'absolute'}>
             <UserThumbnail id = {username} thumbnail ={thumbnail}/>
             <Nickname>{nickname}</Nickname>
             <Comment>{comment}</Comment>

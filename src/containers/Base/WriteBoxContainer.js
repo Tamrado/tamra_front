@@ -37,7 +37,11 @@ class WriteBoxContainer extends Component{
             PostActions.setImage({'url' : reader.result});
             PostActions.updateFilelist(file);
         }
+        try{
         reader.readAsDataURL(file);
+        }catch(e){
+
+        }
       }
 
       handleWriteBox = (e) => {
@@ -107,25 +111,16 @@ class WriteBoxContainer extends Component{
         const {PostActions,content,showLevel,friendInfo,filelist} = this.props;
         var tags = friendInfo.toJS();
         try{
-            console.log('ㅎㅇ');
         await PostActions.uploadFeed({content,showLevel,tags});
-        console.log('ㅂㅇ');
-        }catch(e){
-
-        }
-        try{
-        filelist.map(
-            (item,index) => {
+        await filelist.forEach((value,index,filelist)=>{
                 var formdata = new FormData();
-                formdata.set('file',item.get('file'));
-                console.log(index);
-                const {postId} = this.props;
-                console.log(postId);
-                return PostActions.uploadImage(formdata,postId);
-            }
-        )
-        }catch(e){
-            console.log(e);
+                formdata.set('file',value.get('file'));
+                const {postId,PostActions} = this.props;
+                if(postId !== -1 && formdata.get('file') !== null)
+                    PostActions.uploadImage(formdata,postId);
+        });
+    }catch(e){
+
         }
          PostActions.setDisplay('none');
          PostActions.setWithFriendDisplay('none');
@@ -133,22 +128,17 @@ class WriteBoxContainer extends Component{
          PostActions.setWriteDisplay('none');
          PostActions.setWrittenData('');
         document.getElementById('^^content').textContent = '';
-         PostActions.initializeFilelist();
-         PostActions.initializeImage();
-        try{
-            this.renewMain();
-            
-        }catch(e){
-            console.log(e);
-        }
+         await PostActions.initializeFilelist();
+         await PostActions.initializeImage();
+         this.renewMain();
     }
    
     renewMain=()=>
-        setTimeout(async()=>{
-            const {postId,TimelineActions} = this.props;
-            await TimelineActions.getFeedInformationDetail(postId);
-            await TimelineActions.renewMainInformation();
-        },3000);
+    setTimeout(async()=>{
+        const {postId,TimelineActions} = this.props;
+        await TimelineActions.getFeedInformationDetail(postId);
+        await TimelineActions.renewMainInformation();
+    },4000);
     
    componentWillUnmount(){
     clearTimeout(this.renewMain);
@@ -186,7 +176,8 @@ export default connect(
         showLevel : state.post.get('showLevel'),
         friendInfo : state.post.get('friendInfo'),
         postId : state.post.get('postId'),
-        filelist : state.post.get('filelist')
+        filelist : state.post.get('filelist'),
+        clear : state.post.get('clear')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch),

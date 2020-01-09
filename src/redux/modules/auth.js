@@ -8,6 +8,7 @@ const CHECK_ID_EXISTS = 'auth/CHECK_ID_EXISTS';
 const CHECK_PHONE_EXISTS = 'auth/CHECK_PHONE_EXISTS';
 
 const SET_ERROR = 'auth/SET_ERROR';
+const SET_ERROR_ID = 'auth/SET_ERROR_ID';
 
 const LOCAL_REGISTER = 'auth/LOCAL_REGISTER';
 const LOCAL_LOGIN = 'auth/LOCAL_LOGIN';
@@ -30,6 +31,7 @@ export const logout = createAction(LOGOUT, AuthAPI.logout);
 export const changeInput = createAction(CHANGE_INPUT);// {form, name, value}
 export const initializeForm = createAction(INITIALIZE_FORM); //form
 export const setError = createAction(SET_ERROR);
+export const setErrorId = createAction(SET_ERROR_ID);
 
 const initialState = Map({
     register: Map({
@@ -45,7 +47,8 @@ const initialState = Map({
             gender : '',
             address : ''
             }),
-        error: null
+        error: null,
+        errorId : ''
     }),
     registerImage: Map({
         form : Map({
@@ -75,6 +78,10 @@ export default handleActions({
     [SET_ERROR]: (state, action)=> {
         const {form, message} = action.payload;
         return state.setIn([form, 'error'],message);
+    },
+    [SET_ERROR_ID] : (state,action) => {
+        const {form, id} = action.payload;
+        return state.setIn([form, 'errorId'],id);
     },
     ...pender({
         type: CHECK_EMAIL_EXISTS,

@@ -11,12 +11,14 @@ import privateImage from '../../build/static/images/private.png';
 const Box = styled.div`
 width: 70%;
 left : 15%;
-height: 500px;
+min-height: 500px;
 background : #ffffff;
 position: relative;
 top : 160px;
+display : block;
 margin-top : ${props => props.bottom};
 margin-bottom : 0.8rem;
+padding-bottom : 160px;
 `;
 
 const PostStateBox  = styled.div`
@@ -130,33 +132,23 @@ top: 91px;
 border: 2px solid #12B886;
 `;
 const FeedImage = styled.div`
-position : absolute;
+position : relative;
 width: 100%;
 display : flex;
 flex-direction: row;
-padding-left : 3rem;
-padding-right : 3rem;
+
 height: 330px;
-top : 120px;
-word-break: normal;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 20px;
-line-height: 28px;
-align-items: center;
-text-align: center;
-letter-spacing: 0.05em;
+
 `;
 const Feed = styled.div`
-position : absolute;
+position : relative;
 width: 100%;
+display : inline-block;
 padding-left : 5rem;
 padding-right : 5rem;
-height: 330px;
 white-space:normal;
+z-index : 1;
 top : 120px;
-white-space:normal;
 word-break: break-all;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -166,9 +158,11 @@ line-height: 28px;
 align-items: center;
 text-align: center;
 letter-spacing: 0.05em;
+
+
 `;
 const Image = styled.div`
-margin : 0 auto ;
+margin : ${props=>props.margin} ;
 overflow: hidden;
 width : ${props=>props.size};
 height : ${props=>props.size};
@@ -203,11 +197,11 @@ text-align: center;
 color: #FFFFFF;
 `;
 const FeedSubMenu = styled.div`
-position : absolute;
-width: 300px;
+min-width: 300px;
 height: 32px;
 right: 5%;
-top: 460px;
+bottom : 10px;
+position: absolute;
 `;
 const LikeNumber = styled.div`
 position : absolute;
@@ -256,8 +250,8 @@ const HashImage = styled.div`
 position : absolute;
 width: 24px;
 height: 24px;
-top : 3px;
 left : 0;
+bottom : 4px;
 background-image : url(${hash});
 background-size: cover;
 background-position: center;
@@ -272,7 +266,8 @@ display : ${props=> props.display};
     position: absolute;
     width: 100px;
     padding: 8px;
-    right: 265px;
+    right: 275px;
+    z-index : 1;
     bottom: 10%;
     align-items: center;
 text-align: center;
@@ -320,8 +315,27 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
+const FeedAdd = styled.div`
+position: absolute;
+width: 121px;
+height: 29px;
+left: 38px;
+bottom : 0;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+font-size: 16px;
+line-height: 33px;
+align-items: center;
+
+color: #0A825E;
+&:hover {
+    text-decoration-line: underline;
+}
+`;
+
 const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
-    ,like,cancel,handleComment,childrenTwo}) => {
+    ,like,cancel,handleComment,childrenTwo,handleImage}) => {
      
     const {
         feed,
@@ -351,6 +365,7 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
    const style = {
     lineHeight: '160%'
 };
+
    const contents=content.split('\n').map( (line,index) => {
     return (<div key={index} style={style} >{line}<br/></div>)
   }); 
@@ -369,22 +384,28 @@ return(
             </ViewBox>
         </NickNameBox>
         <FeedLine/>
-        { !`${files}` &&<Feed>{contents}</Feed>}
+        <Feed>{contents}<br/>
         {`${files}` && count > 3 && <FeedImage>
-            <Image src={files[0].original} size ={'250px'}/><Image src={files[1].original} size ={'250px'}/><Image src={files[2].original} size ={'250px'}>
+            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} src={files[0].original} size ={'250px'}/>
+            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} src={files[1].original} size ={'250px'}/>
+            <Image id = {postId} data-imageid = {files[2].imageId} onClick={handleImage} src={files[2].original} size ={'250px'}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>
-            <Image src={files[0].original} size ={'250px'}/><Image size ={'250px'} src={files[1].original}/><Image size ={'250px'} src={files[2].original}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {files[0].imageId} src={files[0].original} size ={'250px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {files[1].imageId} src={files[1].original} size ={'250px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {files[2].imageId} src={files[2].original} size ={'250px'}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image src={files[0].original} left = {`5%`} size ={'320px'}/><Image left = {`5%`} size ={'320px'} src={files[1].original}/>
+            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[1].original}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image left={`26%`} size ={'320px'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} left={`26%`} size ={'320px'} margin = {'0 auto'}src={files[0].original}/>
             </FeedImage>}
+            </Feed>
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
             <HashImage id={postId} data-category={category} onMouseOver={hover} onMouseOut={nothover}/>

@@ -20,21 +20,19 @@ class Register extends Component{
         }
         this.handleFileInput = this.handleFileInput.bind(this);
     }
-    setError = (message) => {
+    setError = (message,id) => {
         const{AuthActions} = this.props;
-        AuthActions.setError({
-            form: 'register',
-            message
-        });
+        AuthActions.setError({form: 'register',message});
+        AuthActions.setErrorId({form: 'register',id});
     }
 
     checkEmailExists = debounce(async (email) => {
         const { AuthActions } = this.props;
         try{
             await AuthActions.checkEmailExists(email,'null');
-            this.setError(null);
+            this.setError(null,'email');
         }catch(e){
-            this.setError('이미 존재하는 이메일입니다.');
+            this.setError('이미 존재하는 이메일입니다.','email');
         }
     },300);
 
@@ -42,10 +40,10 @@ class Register extends Component{
         const {AuthActions} = this.props;
         try{
             await AuthActions.checkIdExists(id);
-                this.setError(null);
+                this.setError(null,'id');
             
         } catch (e){
-            this.setError('이미 존재하는 아이디입니다.');
+            this.setError('이미 존재하는 아이디입니다.','id');
         }
     },300);
 
@@ -53,36 +51,36 @@ class Register extends Component{
         const {AuthActions} = this.props;
         try{
             await AuthActions.checkPhoneExists(phone,'null');
-                this.setError(null);
+                this.setError(null,'phone');
             
         }catch (e){
-            this.setError('이미 존재하는 핸드폰 번호입니다.');
+            this.setError('이미 존재하는 핸드폰 번호입니다.','phone');
         }
     },300);
 
     validate = {
         email: (value) => {
             if(!isEmail(value)){
-                this.setError('잘못된 이메일 형식 입니다.');
+                this.setError('잘못된 이메일 형식 입니다.','email');
                 return false;
             }
             return true;
         },
             id: (value) => {
             if(!isAlphanumeric(value) || !isLength(value, {min:9, max: 15})) {
-                this.setError('아이디는 9~15 글자의 알파벳 혹은 숫자로 이루어져야 합니다.');
+                this.setError('아이디는 9~15 글자의 알파벳 혹은 숫자로 이루어져야 합니다.','id');
                 return false;
             }
             return true;
         },
         password: (value) => {
-            var passwordRules = /^(?=.*\\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z])(?=.*[A-Z]).{9,12}$/;
-            if(new RegExp(passwordRules).test(value)){
-                this.setError('비밀번호는 9~12 글자의 알파벳 (대소문자 구분), 숫자, 특수문자로 이루어져야 합니다.');
+            
+            if(!new RegExp(/^(?=.*\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z])(?=.*[A-Z]).{8,12}$/).test(value)){
+                this.setError('비밀번호는 8~12 글자의 알파벳 (대소문자 구분), 숫자, 특수문자로 이루어져야 합니다.','password');
                 return false;
             }
-            if(new RegExp(/(\w)\1\1\1/).test(value)){
-                this.setError('비밀번호는 같은 문자를 4번 이상 사용할 수 없습니다.');
+            else if(new RegExp(/(\w)\1\1\1/).test(value)){
+                this.setError('비밀번호는 같은 문자를 4번 이상 사용할 수 없습니다.','password');
                 return false;
             }
             this.setError(null);
@@ -90,7 +88,7 @@ class Register extends Component{
         },
         passwordConfirm: (value) => {
             if(this.props.form.get('password') !== value){
-                this.setError('비밀번호 확인이 일치하지 않습니다.');
+                this.setError('비밀번호 확인이 일치하지 않습니다.','passwordConfirm');
                 return false;
             }
             this.setError(null);
@@ -98,14 +96,14 @@ class Register extends Component{
         },
         phone: (value)=> {
             if(!new RegExp(/^01(?:0|1|[6-9])-(\d{3}|\d{4})-(\d{4})$/).test(value)){
-                this.setError('핸드폰 번호는 01x-xxx(x)-xxxx와 같은 형태로 입력해야 합니다.');
+                this.setError('핸드폰 번호는 01x-xxx(x)-xxxx와 같은 형태로 입력해야 합니다.','phone');
                 return false;
             }
             return true;
         },
         comment: (value)=> {
             if(!isLength(value, {min:0, max: 50})){
-                this.setError('코멘트는 50자를 넘길 수 없습니다.');
+                this.setError('코멘트는 50자를 넘길 수 없습니다.','comment');
                 return false;
             }
             this.setError(null);
@@ -113,7 +111,7 @@ class Register extends Component{
         },
         name: (value) => {
             if(!isLength(value, {min:1, max: 30})){
-                this.setError('이름은 1자 이상 30자 이하여야 합니다.');
+                this.setError('이름은 1자 이상 30자 이하여야 합니다.','name');
                 return false;
             }
             this.setError(null);
@@ -121,7 +119,7 @@ class Register extends Component{
         },
         gender: (value) => {
             if(value == null){
-                this.setError('성별은 반드시 입력해야 합니다.');
+                this.setError('성별은 반드시 입력해야 합니다.','gender');
                 return false;
             }
             this.setError(null);
@@ -180,7 +178,7 @@ class Register extends Component{
      this.checkPhoneExists(value);
     
 }
-handleLocalRegister = async () => {
+handleLocalRegister = async() => {
     const{form, AuthActions, error, history,UserActions} = this.props;
     const {email, id, password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
     const formData = new FormData();
@@ -206,7 +204,7 @@ handleLocalRegister = async () => {
     }
     
     try{
-        await AuthActions.localRegister({
+         await AuthActions.localRegister({
             email,id,password,name,comment,phone,address,gender,birthday
         });
     } catch(e){
@@ -216,7 +214,7 @@ handleLocalRegister = async () => {
             this.setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.');
     }
     try{
-        await AuthActions.localRegisterImage(
+         await AuthActions.localRegisterImage(
             formData
         );
         const loggedInfo = this.props.result.toJS();
@@ -233,48 +231,81 @@ handleLocalRegister = async () => {
             this.setError('조건에 맞는 데이터를 입력해주세요.');
     }
     }
+    enterRegister = () => {
+        if(window.event.keyCode === 13)
+          this.handleLocalRegister();
+    }
     render(){
-        const {error} = this.props;
+        const {error,errorId} = this.props;
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this;
+        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange,enterRegister} = this;
         return(
             <AuthContent title='SIGN UP'>
-                <InputWithLabel label = "아이디" name="id" placeholder="아이디"
+                <InputWithLabel label = "아이디" name="id" placeholder="아이디" enter = {enterRegister}
                 value = {id}
                 onChange={handleChange}/>
-                <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
+                 {
+                    errorId === 'id' &&error && <AuthError>{error}</AuthError>
+                }               
+                <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호" enter = {enterRegister}
                 type="password"
                 value={password} onChange={handleChange}
                 />
+                {
+                    errorId === 'password' &&error && <AuthError>{error}</AuthError>
+                }  
                 <InputWithLabel label = "비밀번호 확인" name="passwordConfirm" placeholder="다시 한번 입력"
-                type="password"
+                type="password" enter = {enterRegister}
                 value={passwordConfirm} onChange={handleChange}
                 />
+                {
+                    errorId === 'passwordConfirm' &&error && <AuthError>{error}</AuthError>
+                }  
                 <InputWithLabel label = "생년월일" name="birthday" placeholder="****-**-**"
-                type="date"
+                type="date" enter = {enterRegister}
                 value = {birthday} onChange={defaultNullChange}
                 />
+                {
+                    errorId === 'birthday' &&error && <AuthError>{error}</AuthError>
+                } 
                 <InputWithLabel label = "이메일" name="email" placeholder="timeline@naver.com"
-                type="email"
+                type="email" enter = {enterRegister}
                 value = {email}
                 onChange={handleChange}/>
-                <InputWithLabel label = "핸드폰 번호" name="phone" placeholder="010-1234-1234"
-                value={phone}
-                onChange={handleChange}/>
-                <InputWithLabel label = "이름" name="name" placeholder="이름"
-                value = {name} onChange={handleChange}/>
-                <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
-                value = {comment} onChange={handleChange} /> <br/>
-                <Label label = "성별"></Label>
-                <input name= "gender" type="radio" value='0' onChange={checkedChange} />여성
-                <input name="gender" type="radio" value ={1}  onChange={checkedChange}/>남성
-                <input name="gender" type="radio"value={2} onChange={checkedChange} />others
-                <InputWithLabel label ="주소" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
-                <InputWithLabel label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
                 {
-                    error && <AuthError>{error}</AuthError>
-                }               
-                <AuthButton onClick={handleLocalRegister}>회원가입</AuthButton>
+                    errorId === 'email' &&error && <AuthError>{error}</AuthError>
+                } 
+                <InputWithLabel label = "핸드폰 번호" name="phone" placeholder="010-1234-1234"
+                value={phone} enter = {enterRegister}
+                onChange={handleChange}/>
+                {
+                    errorId === 'phone' &&error && <AuthError>{error}</AuthError>
+                } 
+                <InputWithLabel label = "이름" name="name" placeholder="이름" enter = {enterRegister}
+                value = {name} onChange={handleChange}/> 
+                {
+                    errorId === 'name' &&error && <AuthError>{error}</AuthError>
+                } 
+                <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다." enter = {enterRegister}
+                value = {comment} onChange={handleChange} enter = {enterRegister}/>
+                {
+                    errorId === 'comment' &&error && <AuthError>{error}</AuthError>
+                } 
+                 <br/>
+                <Label label = "성별"></Label>
+                <input name= "gender" type="radio" value='0' onKeyUp = {enterRegister} onChange={checkedChange} />여성
+                <input name="gender" type="radio" value ={1} onKeyUp = {enterRegister}  onChange={checkedChange}/>남성
+                <input name="gender" type="radio"value={2} onKeyUp = {enterRegister} onChange={checkedChange} />others
+                {
+                    errorId === 'gender' &&error && <AuthError>{error}</AuthError>
+                } 
+                <InputWithLabel enter = {enterRegister} label ="주소" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
+                {
+                    errorId === 'address' &&error && <AuthError>{error}</AuthError>
+                } 
+                <InputWithLabel enter = {enterRegister} label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
+               
+                <AuthButton onClick={handleLocalRegister} enter = {enterRegister}>회원가입</AuthButton>
                 <RightAlignedLink to="/auth/login">로그인</RightAlignedLink>
             </AuthContent>
         );
@@ -285,6 +316,7 @@ export default connect(
     (state) => ({
         form: state.auth.getIn(['register','form']),
         error: state.auth.getIn(['register','error']),
+        errorId: state.auth.getIn(['register','errorId']),
         result: state.auth.get('result')
     }),
     (dispatch)=>({

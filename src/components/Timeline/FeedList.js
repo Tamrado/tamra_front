@@ -6,7 +6,7 @@ import PostMenu from './PostMenu';
 
 const FeedList = ({followclick,postNum,followerNum,followNum,comment,nickname,username,thumbnail,enterComment,commentThumbnail
     ,followdisplay,isfollow,mainfeed,hover,nothover,hashdisplay,keyid,cancel,like,handleComment,handleCommentAdd,
-handleMenu,modifyClick,deleteClick}) => {
+handleMenu,modifyClick,deleteClick,change,handleImage}) => {
         
     const feedList = mainfeed.map(
         (feeds) => {
@@ -27,13 +27,14 @@ handleMenu,modifyClick,deleteClick}) => {
                      return <FeedBox key = {parseInt(feeds.get('postId'))} thumbnail = {thumbnail}
                      count = {feeds &&feeds.get('files').size} mainfeed={feeds} handleComment = {handleComment}
                 hashdisplay = {hashdisplay} childrenTwo={commentList} hover = {hover} nothover = {nothover}
-                 like={like} cancel={cancel} handleMenu={handleMenu} menu={postMenu}>{hashTagList}</FeedBox>
+                 like={like} cancel={cancel} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}>{hashTagList}</FeedBox>
                 }
                 else{
                     return <FeedBox key = {parseInt(feeds.get('postId'))}
                     count = {feeds && feeds.get('files').size} handleComment = {handleComment} thumbnail = {thumbnail}
                      mainfeed={feeds} hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} 
-                     like={like} cancel={cancel} childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu} >
+                     like={like} cancel={cancel} childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu}
+                     handleImage={handleImage} >
                     <div key = {parseInt(feeds.get('postId'))+'gdg'}>태그된 사람이 없습니다.<br/></div></FeedBox>
                 }   
             }
@@ -41,7 +42,7 @@ handleMenu,modifyClick,deleteClick}) => {
             return  <FeedBox key = {parseInt(feeds.get('postId')).toString()} handleComment = {handleComment}
             count = {feeds.get('files') && feeds.get('files').size} mainfeed={feeds} thumbnail = {thumbnail}
             hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like} cancel={cancel} 
-            childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu}/>
+            childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}/>
             }
         }
     )
@@ -49,7 +50,7 @@ handleMenu,modifyClick,deleteClick}) => {
         <div>
             <Profile followclick = {followclick} postNum={postNum} followerNum = {followerNum}
             followNum = {followNum} comment = {comment} nickname = {nickname} username= {username}
-            thumbnail = {thumbnail} followdisplay={followdisplay} isfollow={isfollow} />
+            thumbnail = {thumbnail} followdisplay={followdisplay} isfollow={isfollow} change={change} />
             {feedList}
         </div>
     );

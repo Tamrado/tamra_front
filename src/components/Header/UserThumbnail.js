@@ -12,7 +12,7 @@ const Wrapper = styled.div`
     margin-right : 20px;
     margin-top : 7px;
     float: left;
-    background: ${oc.cyan[5]};
+    
     background-image: url(${props => props.thumbnail});
     background-size: cover;
     background-position: center;

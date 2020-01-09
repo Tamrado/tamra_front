@@ -45,7 +45,9 @@ const SET_TIMELINE_COMMENT_TIME = 'timeline/SET_TIMELINE_COMMENT_TIME';
 const SET_SHOW_MENU_VISIBLE = 'timeline/SET_SHOW_MENU_VISIBLE';
 const SET_MENU_VISIBLE = 'timeline/SET_MENU_VISIBLE';
 const DELETE_FEED = 'timeline/DELETE_FEED';
+const SET_DETAIL_COMMENT_TIME = 'timeline//SET_DETAIL_COMMENT_TIME';
 
+export const setDetailCommmentTime = createAction(SET_DETAIL_COMMENT_TIME);
 export const deleteFeed = createAction(DELETE_FEED);
 export const setShowMenuVisible = createAction(SET_SHOW_MENU_VISIBLE);
 export const setMenuVisible = createAction(SET_MENU_VISIBLE);
@@ -118,6 +120,7 @@ export default handleActions({
         return state.setIn(['mainfeed',action.payload.index,'showMenuVisible'],action.payload.visible);
     },
     [SET_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'feed','commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
+    [SET_DETAIL_COMMENT_TIME] : (state,action) => state.setIn(['presentPost','feed','commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
     [SET_TIMELINE_COMMENT_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'commentList',action.payload.commentIndex,'dateString'],action.payload.timestring),
     [SET_TIMELINE_COMMENT_LIST] : (state,action) => {
         const index = state.get('mainfeed').findIndex(item => item.get('postId') ===parseInt(action.payload.commentId));

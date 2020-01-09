@@ -225,6 +225,10 @@ class PostListContainer extends Component{
             await this.setCommentTime(id);
         },2000);
 
+    handleImage =(e) =>{
+        const {id} = e.target;
+        window.location.href =`/feed/@:${id}/image`;
+    }
     render(){
         
         const {data} = this.props;
@@ -239,7 +243,7 @@ class PostListContainer extends Component{
         const thumbnail = storage.get('loggedInfo').thumbnail;
         const {writtenData,hashdisplay,keyid,category,totalNum,commentCategory,PostActions} = this.props;
         const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,enterComment,handleCommentAdd
-            ,handleCancelClick,handleComment} = this;
+            ,handleCancelClick,handleComment,handleImage} = this;
         if(writtenData === '') PostActions.setWrittenData(`${username}님, 무슨 일이 있으셨나요?`);
         return(
             <PageWrapper>
@@ -249,7 +253,7 @@ class PostListContainer extends Component{
           })}
            hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
          category = {category} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment} handleCommentAdd = {handleCommentAdd}
-          thumbnail={thumbnail} commentCategory={commentCategory} enterComment={enterComment}/>
+          thumbnail={thumbnail} commentCategory={commentCategory} enterComment={enterComment} handleImage={handleImage}/>
          
             </PageWrapper>
         );

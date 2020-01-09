@@ -4,30 +4,12 @@ import styled from 'styled-components';
 const CommentBox = styled.div`
 width : 70%;
 left : 15%;
-
 min-height : 300px;
 background : #ffffff;
-
-&::-webkit-scrollbar-track
-{
-	border-radius: 20px;
-	background-color: #FFFFFF;
-}
-&::-webkit-scrollbar
-{
-	width: 10px;
-	background-color: #FFFFFF;
-}
-
-&::-webkit-scrollbar-thumb
-{
-	border-radius: 20px;
-	background-color : rgba(18, 184, 134, 0.2);
-}
 position: relative;
+padding-bottom : 2.5rem;
 display : ${props => props.display};
 top:148px;
-padding-bottom : 2.5rem;
 border-top : 1px solid rgba(0, 0, 0, 0.25);
 `;
 const CommentWrapper = styled.div`

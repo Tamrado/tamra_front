@@ -20,19 +20,22 @@ const ShadowedBox = styled.div`
 
 // 로고
 const LogoWrapper = styled.div`
-    background: ${oc.teal[7]};
+    background: white;
     height: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom : 1px solid rgba(0, 0, 0, 0.1);
+  
 `;
 
 const Logo = styled(Link)`
-    color: white;
+    color: ${oc.teal[7]};
     font-family: 'Rajdhani';
     font-size: 2.4rem;
     letter-spacing: 5px;
     text-decoration: none;
+    
 `;
 
 // children 이 들어가는 곳
@@ -46,7 +49,7 @@ const AuthWrapper = ({children}) => (
     <Positioner>
         <ShadowedBox>
             <LogoWrapper>
-                <Logo to="/">TIMELINE</Logo>
+                <Logo to="/">TAMRA</Logo>
             </LogoWrapper>
             <Contents>
                 {children}

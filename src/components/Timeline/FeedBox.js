@@ -12,13 +12,13 @@ import hoverMenuImage from '../../build/static/images/iconmonstr-menu-7-24 (1).p
 
 const Box = styled.div`
 width: 60%;
-left: 20%;
-height: 500px;
+left : 20%;
+min-height: 500px;
 background : #ffffff;
 position: relative;
-top : 10px;
-margin-bottom : 1rem;
-margin-bottom : 0.8rem;
+display : block;
+padding-bottom : 170px;
+margin-top : 0.8rem;
 `;
 
 const NickNameBox = styled.div`
@@ -114,33 +114,22 @@ top: 91px;
 border: 2px solid #12B886;
 `;
 const FeedImage = styled.div`
-position : absolute;
+position : relative;
 width: 100%;
 display : flex;
 flex-direction: row;
-padding-left : 3rem;
-padding-right : 3rem;
+
 height: 330px;
-top : 120px;
-word-break: normal;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 20px;
-line-height: 28px;
-align-items: center;
-text-align: center;
-letter-spacing: 0.05em;
 `;
 const Feed = styled.div`
-position : absolute;
+position : relative;
 width: 100%;
+display : inline-block;
 padding-left : 5rem;
 padding-right : 5rem;
-height: 330px;
 white-space:normal;
-top : 120px;
-white-space:normal;
+z-index : 1;
+top : 110px;
 word-break: break-all;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -150,9 +139,11 @@ line-height: 28px;
 align-items: center;
 text-align: center;
 letter-spacing: 0.05em;
+
+
 `;
 const Image = styled.div`
-margin : 0 auto;
+margin : ${props=>props.margin} ;
 overflow: hidden;
 width : ${props => props.size};
 height : ${props => props.size};
@@ -163,24 +154,23 @@ background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
 & + & {
-    margin-left: 10px;
+    margin-left: ${props=>props.left};
 }
 &:hover {
     filter: brightness(105%);
 }
 `;
 const ImageCount = styled.div`
-position : absolute;
 overflow: hidden;
-width : 330px;
-height : 330px;
+width : 250px;
+height : 250px;
 display : block;
 background: rgba(196, 196, 196, 0.75);
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;
 font-size: 96px;
-line-height: 310px;
+line-height: 250px;
 
 align-items: center;
 text-align: center;
@@ -192,7 +182,7 @@ position : absolute;
 width: 300px;
 height: 32px;
 right: 5%;
-top: 460px;
+bottom : 10px;
 `;
 const LikeNumber = styled.div`
 position : absolute;
@@ -241,7 +231,7 @@ const HashImage = styled.div`
 position : absolute;
 width: 24px;
 height: 24px;
-top : 3px;
+bottom : 4px;
 left : 0;
 background-image : url(${hash});
 background-size: cover;
@@ -257,7 +247,8 @@ display : ${props=> props.display};
     position: absolute;
     width: 100px;
     padding: 8px;
-    right: 267px;
+    right: 275px;
+    z-index : 1;
     bottom: 10%;
     align-items: center;
 text-align: center;
@@ -310,6 +301,7 @@ position: absolute;
 width : 24px;
 height : 24px;
     right: 20px;
+    overflow : hidden;
     top: 10px;
 background: url(${menuImage});
 background-size: cover;
@@ -320,7 +312,7 @@ background: url(${hoverMenuImage});
 }
 `;
 const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,
-    childrenTwo,handleMenu,menu}) => {
+    childrenTwo,handleMenu,menu,handleImage}) => {
     
     const {
         postId,
@@ -363,22 +355,28 @@ return(
             {menu}
         </NickNameBox>
         <FeedLine/>
-        { !`${files}` &&<Feed>{contents}</Feed>}
+         <Feed>{contents}<br/>
         {`${files}` && count > 3 && <FeedImage>
-            <Image src={files[0].original}/><Image src={files[1].original}/><Image src={files[2].original}>
+            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} src={files[0].original} size ={'250px'} left={'10px'} />
+            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} src={files[1].original} size ={'250px'}left={'10px'}/>
+            <Image id = {postId} data-imageid = {files[2].imageId} onClick={handleImage} src={files[2].original} size ={'250px'}left={'10px'}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>
-            <Image src={files[0].original}/><Image src={files[1].original}/><Image src={files[2].original}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {files[0].imageId} src={files[0].original} size ={'250px'} left={'10px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {files[1].imageId} src={files[1].original} size ={'250px'}left={'10px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {files[2].imageId} src={files[2].original}  size ={'250px'}left={'10px'}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image left = {`5%`} size ={'320px'} src={files[0].original}/><Image left = {`5%`} size ={'320px'} src={files[1].original}/>
+            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} size ={'320px'} margin = {'0 auto'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} size ={'320px'} margin = {'0 auto'} src={files[1].original}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image left={`26%`} size ={'320px'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage}  size ={'320px'} margin = {'0 auto'} src={files[0].original}/>
             </FeedImage>}
+            </Feed>
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>
         <FeedSubMenu>
             <HashImage id={postId} onMouseOver={hover} onMouseOut={nothover}/>

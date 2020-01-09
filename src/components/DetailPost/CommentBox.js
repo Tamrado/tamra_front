@@ -3,36 +3,35 @@ import styled from 'styled-components';
 
 const CommentView = styled.div`
 position: relative;
-background: #ffffff;
-max-width: 90%;
-min-width : 90%;
+width: 100%;
+height: 90px;
+left: 0px;
+top: 111px;
 display : inline-block;
 padding-bottom: 5px;
 padding-top: 5px;
-top: 10px;
-left : 5%;
 margin-bottom : 0.8rem;
-
 `;
-const CommentThumbnail = styled.div`
-position :absolute;
-background-image: url(${props => props.thumbnail});
 
-    background-size: cover;
+const CommentThumbnail = styled.div`
+position: absolute;
+background-image: url(${props => props.thumbnail});
+background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 50%;
     cursor: pointer;
-    width: 45px;
-    height: 45px;
-    top :10%;
-    left : 15px;
+width: 45px;
+height: 45px;
+left: 18px;
+top: 8px;
 `;
 const CommentInputBox = styled.div`
 position: relative;
     max-width: 80%;
     height: 100%;
-    left: 76px;
+    left: 82px;
+    top: 8px;
     padding-right: 10px;
     padding-left: 10px;
     padding-top: 8px;
@@ -48,19 +47,24 @@ position: relative;
     padding-bottom: 8px;
     display: inline-block;
 `;
-const CommentTime = styled.div`
-font-family: Noto Sans KR;
-    font-style: normal;
-    font-weight: 300;
-    font-size: 14px;
-    position: relative;
-    border: none;
-    outline: none;
-    max-width: 80%;
-    height: 20px;
-    left: 76px;
-    background: #ffffff;
 
+const CommentTime = styled.div`
+position: relative;
+width: 103px;
+height: 32px;
+left: 95px;
+top: 50px;
+
+font-family: Roboto;
+font-style: normal;
+font-weight: normal;
+font-size: 14px;
+line-height: 19px;
+display: flex;
+align-items: center;
+letter-spacing: 0.05em;
+
+color: #515250;
 `;
 const CommentName = styled.div`
 font-family: Noto Sans KR;
@@ -74,7 +78,6 @@ font-family: Noto Sans KR;
     white-space: pre-wrap;
     display: inline-block;
     color: #0CA678;
-
 `;
 const CommentBox = ({comment}) => {
     const {

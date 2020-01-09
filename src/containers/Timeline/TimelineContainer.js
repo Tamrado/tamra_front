@@ -10,6 +10,7 @@ import * as baseActions from '../../redux/modules/base';
 import * as postActions from '../../redux/modules/post';
 import storage from '../../lib/storage';
 import * as commentActions from '../../redux/modules/comment';
+import * as userPageActions from '../../redux/modules/userPage';
 class TimelineContainer extends Component{
     
     handleScroll = async(e) => {
@@ -63,9 +64,10 @@ class TimelineContainer extends Component{
         TimelineActions.setThumbnail(result.thumbnail);
         TimelineActions.setUsername(result.username);
         TimelineActions.setNickname(result.nickname);
-        FriendActions.notifyIsFollowUser(id);
+        await FriendActions.notifyIsFollowUser(id);
 
     }
+
     setTime = async() => {
         const{data,TimelineActions} = this.props;
                 await Promise.all(
@@ -275,6 +277,14 @@ class TimelineContainer extends Component{
 
     modifyClick = (e) => {
         const {id} = e.target;
+        const {data,PostActions,BaseActions,TimelineActions} = this.props;
+        const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        PostActions.setWriteDisplay('block');
+        TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
+        BaseActions.setFollowMenuVisible('none');
+        BaseActions.setAlarmMenuVisible('none');
+        BaseActions.setUserMenuVisibility(false);
+        TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
     }
 
     deleteClick = async(e) => {
@@ -290,6 +300,25 @@ class TimelineContainer extends Component{
             console.log(e);
         }
     }
+
+    handleImageChange = async(e) => {
+        e.preventDefault();
+        const {UserPageActions} = this.props;
+        let file = e.target.files[0];
+        var formdata = new FormData();
+        formdata.set('file',file);
+        await UserPageActions.modifyUserImage(formdata);
+        const {userResult} = this.props;
+        console.log(userResult.toJS());
+        storage.remove('loggedInfo');
+        storage.set('loggedInfo',userResult.toJS());
+        window.location.reload();
+      }
+
+      handleImage = (e) => {
+        const {id} = e.target;
+    }
+
     render(){
         
         const {data} = this.props;
@@ -301,17 +330,17 @@ class TimelineContainer extends Component{
         const {hashdisplay,keyid,totalNum} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
         const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
-            ,handleComment,handleMenu,modifyClick,deleteClick} = this;
+            ,handleComment,handleMenu,modifyClick,deleteClick,handleImageChange,handleImage} = this;
         return(
             <PageWrapper>
-            <FeedList  commentThumbnail = {commentThumbnail} 
+            <FeedList  commentThumbnail = {commentThumbnail} change = {handleImageChange}
             thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
             followNum = {followNum} followerNum = {followerNum}  followclick={handleFollowClick}
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}
              mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
              nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}
              enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory}
-             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {deleteClick} />
+             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {deleteClick} handleImage={handleImage} />
           </PageWrapper>
             );
     }
@@ -341,7 +370,8 @@ export default connect(
         commentdisplay : state.timeline.get('commentdisplay'),
         postId : state.post.get('postId'),
         presentComment : state.comment.get('presentComment'),
-        lastComment : state.comment.get('lastComment')
+        lastComment : state.comment.get('lastComment'),
+        userResult : state.userPage.get('result')
 
     }),
     (dispatch) => ({
@@ -350,7 +380,8 @@ export default connect(
         LikeActions : bindActionCreators(likeActions,dispatch),
         CommentActions : bindActionCreators(commentActions,dispatch),
         BaseActions : bindActionCreators(baseActions,dispatch),
-        PostActions : bindActionCreators(postActions,dispatch)
+        PostActions : bindActionCreators(postActions,dispatch),
+        UserPageActions : bindActionCreators(userPageActions,dispatch)
 
     })
 )(TimelineContainer);

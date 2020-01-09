@@ -8,7 +8,7 @@ position : absolute;
 width : 80%;
 
 `;
-const FeedList = ({cancel,like,mainfeed,username,onclick,content,enterComment,
+const FeedList = ({cancel,like,mainfeed,username,onclick,content,enterComment,handleImage,
     hashdisplay,hover,nothover,keyid,category,stateclick,handleComment,thumbnail,handleCommentAdd}) => {
         
             
@@ -30,13 +30,13 @@ const FeedList = ({cancel,like,mainfeed,username,onclick,content,enterComment,
                      return <FeedBox key = {(parseInt(feeds.getIn(['feed','postId']))).toString()+feeds.get('category')} 
                      count = {feeds.getIn(['feed','files']).size} mainfeed={feeds} stateclick={stateclick}
                 hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} like={like} cancel={cancel}
-                handleComment={handleComment} childrenTwo={commentList}>{hashTagList}</FeedBox>
+                handleComment={handleComment} childrenTwo={commentList} handleImage={handleImage}>{hashTagList}</FeedBox>
                 }
                 else{
                     return <FeedBox key = {(parseInt(feeds.getIn(['feed','postId']))).toString()+feeds.get('category')} 
                     count = {feeds.getIn(['feed','files']).size} mainfeed={feeds} stateclick={stateclick}
                 hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover}like={like} cancel={cancel} 
-                handleComment={handleComment} childrenTwo={commentList}>
+                handleComment={handleComment} childrenTwo={commentList} handleImage={handleImage}>
                     <div key = {parseInt(feeds.getIn(['feed','postId']))+'gdg'}>태그된 사람이 없습니다.<br/></div>
                     </FeedBox>
                 }   
@@ -45,7 +45,7 @@ const FeedList = ({cancel,like,mainfeed,username,onclick,content,enterComment,
                 return <FeedBox key = {(parseInt(feeds.getIn(['feed','postId']))).toString()+feeds.get('category')} 
             count = {feeds.getIn(['feed','files'])&&feeds.getIn(['feed','files']).size} cancel={cancel} mainfeed={feeds} stateclick={stateclick}
             hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like}
-            handleComment={handleComment} childrenTwo={commentList}></FeedBox>
+            handleComment={handleComment} childrenTwo={commentList} handleImage={handleImage}></FeedBox>
             }
         }
     )

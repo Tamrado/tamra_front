@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import storage from '../lib/storage';
-import PageWrapper from '../components/PageWrapper';
-import {TimelineContainer} from '../containers/Timeline';
-class MyPost extends Component {
+import {PostDetailContainer} from '../containers/Base';
+class ImageDetail extends Component {
     componentDidMount(){
         this.initializeUserInfo();
     }
@@ -15,12 +14,11 @@ class MyPost extends Component {
     }
     render() {
         const { match } = this.props;
-        const { username } = match.params;
+        const { postid } = match.params;
         return (
-            <div>
-            <TimelineContainer userid={username}/>
-            </div>
+            <PostDetailContainer postid={postid}/>
+            
         )
     }
 }
-export default MyPost;
+export default ImageDetail;

@@ -75,27 +75,31 @@ color: #000000;
 const Comment = styled.div`
 
 position: absolute;
-
-text-overflow: ellipsis;
-left: 14.71%;
-right: 60.61%;
-top: 32%;
-bottom: 25%;
-
-
-background: rgba(241, 241, 245, 0.5);
-border-radius: 30px;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 36px;
-
-align-items: center;
-text-align: center;
-letter-spacing: 2px;
-
-color: #000000;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    left: 14.71%;
+    right: 60.61%;
+    top: 32%;
+    bottom: 25%;
+    word-wrap: break-word;
+    background: rgba(241,241,245,0.5);
+    white-space: nowrap;
+    border-radius: 30px;
+    font-family: Noto Sans KR;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 36px;
+    -webkit-align-items: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    text-align: center;
+    -webkit-letter-spacing: 2px;
+    -moz-letter-spacing: 2px;
+    -ms-letter-spacing: 2px;
+    letter-spacing: 2px;
+    color: #000000;
 `;
 const FollowBox = ({friend,deleteclick,follow}) => {
     const {

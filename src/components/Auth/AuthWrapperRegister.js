@@ -4,31 +4,25 @@ import oc from 'open-color';
 import { shadow } from '../../lib/styleUtils';
 import { Link } from 'react-router-dom';
 
-// 화면의 중앙에 위치시킨다
-const Positioner = styled.div`
-    position: absolute;
-    top: 78%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-`;
 
-// 너비, 그림자 설정
 const ShadowedBox = styled.div`
     width: 500px;
+    margin : 0 auto;
     ${shadow(2)}
 `;
 
 // 로고
 const LogoWrapper = styled.div`
-    background: ${oc.teal[7]};
+    background:white;
     height: 5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-bottom : 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const Logo = styled(Link)`
-    color: white;
+    color:  ${oc.teal[7]};
     font-family: 'Rajdhani';
     font-size: 2.4rem;
     letter-spacing: 5px;
@@ -43,16 +37,15 @@ const Contents = styled.div`
 `;
 
 const AuthWrapperRegister = ({children}) => (
-    <Positioner>
-        <ShadowedBox>
+     <ShadowedBox>
             <LogoWrapper>
-                <Logo to="/">TIMELINE</Logo>
+                <Logo to="/">TAMRA</Logo>
             </LogoWrapper>
             <Contents>
                 {children}
             </Contents>
         </ShadowedBox>
-    </Positioner>
+    
 );
 
 export default AuthWrapperRegister;

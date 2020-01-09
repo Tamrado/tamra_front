@@ -44,31 +44,34 @@ class Login extends Component {
     }
 
     handleLocalLogin = async () => {
-        const {form, AuthActions, UserActions, history} = this.props;
+        const {form, AuthActions, UserActions,history} = this.props;
         const {id,password} = form.toJS();
-
         try{
             await AuthActions.localLogin({id, password});
             const loggedInfo = this.props.result.toJS();
 
             UserActions.setLoggedInfo(loggedInfo);
             storage.set('loggedInfo', loggedInfo);
-            history.replace('/');
+            window.location.replace('/');
             
         
         } catch(e){
             this.setError('잘못된 계정정보입니다.');
         }
      }
-
+     enterLogin = () => {
+        if(window.event.keyCode === 13)
+          this.handleLocalLogin();
+    }
     render() {
         const { id, password } = this.props.form.toJS(); // form 에서 id 과 password 값을 읽어옴
-        const { handleChange,handleLocalLogin } = this;
+        const { handleChange,handleLocalLogin,enterLogin } = this;
         const {error} = this.props;
 
         return (
             <AuthContent title="SIGN IN">
                 <InputWithLabel 
+                enter = {enterLogin}
                     label="아이디" 
                     name="id" 
                     placeholder="아이디" 
@@ -82,11 +85,12 @@ class Login extends Component {
                     type="password" 
                     value={password} 
                     onChange={handleChange}
+                    enter = {enterLogin}
                 />
                 {
                     error && <AuthError>{error}</AuthError>
                 }
-                <AuthButton onClick={handleLocalLogin}>로그인</AuthButton>
+                <AuthButton onClick={handleLocalLogin} >로그인</AuthButton>
                 <RightAlignedLink to="/auth/register">회원가입</RightAlignedLink>
             </AuthContent>
         );

@@ -65,7 +65,7 @@ const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour,home}) 
         <Positioner>
             <WhiteBackground>
                 <HeaderContents>
-                    <Logo onClick={home}>TIMELINE</Logo>
+                    <Logo onClick={home}>TAMRA</Logo>
                     {children}
                     {childrentwo}
                     {menuOne}

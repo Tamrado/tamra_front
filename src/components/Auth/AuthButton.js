@@ -34,7 +34,7 @@ const Wrapper = styled.div`
 `;
 
 const AuthButton = ({children, onClick}) => (
-    <Wrapper onClick={onClick}>
+    <Wrapper onClick={onClick} >
         {children}
     </Wrapper>
 );

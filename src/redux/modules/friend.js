@@ -28,7 +28,7 @@ const initialState = Map({
     alarmRequestNum : 0,
     followNum : 0,
     followerNum : 0,
-    isFollow : '팔로잉'
+    isFollow : '팔로우'
 });
 
 export default handleActions({

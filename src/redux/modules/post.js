@@ -21,7 +21,9 @@ const UPDATE_FILELIST = 'post/UPDATE_FILELIST';
 const INITIALIZE_FILELIST = 'post/INITIALIZE_FILELIST';
 const INITIALIZE_IMAGE = 'post/INITIALIZE_IMAGE';
 const DELETE_FEED = 'post/DELETE_FEED';
+const SET_FILE_SIZE = 'post/SET_FILE_SIZE';
 
+export const setFileSize = createAction(SET_FILE_SIZE);
 export const deleteFeed = createAction(DELETE_FEED,PostAPI.deleteFeed);
 export const initializeImage = createAction(INITIALIZE_IMAGE);
 export const initializeFilelist = createAction(INITIALIZE_FILELIST);
@@ -53,8 +55,10 @@ const initialState = Map({
     display : 'none',
     writeDisplay : 'none',
     postId : -1,
+    clear : 0,
     result : Map({}),
-    filelist : List()
+    filelist : List(),
+    fileSize : Map({})
 });
 
 
@@ -69,12 +73,14 @@ export default handleActions({
     }),
     ...pender({
         type : UPLOAD_IMAGE,
-        onSuccess : (state,action) => state.set('result',action.payload.data)
+        onSuccess : (state,action) => state.set('clear',2),
+        onFailure : (state,action) => state.set('clear',-1)
     }),
     [UPDATE_FILELIST] : (state,action) => state.update('filelist',item => item.push(Map({
         file : action.payload
     })
     )),
+    [SET_FILE_SIZE] : (state,action) => state.set('fileSize',action.payload),
     [INITIALIZE_IMAGE] :(state,action) => state.set('image',List()),
     [INITIALIZE_FILELIST] :(state,action) => state.set('filelist',List()),
     [SET_WRITE_DISPLAY]: (state,action) => state.set('writeDisplay', action.payload),
