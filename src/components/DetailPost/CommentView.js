@@ -6,7 +6,7 @@ import clickLike from '../../build/static/images/iconmonstr-smiley-8-32.png';
 const CommentBox =styled.div`
 position: relative;
 width: 90%;
-height: 680px;
+height: 660px;
 left: 5%;
 top : 0;
 overflow-y: auto;
@@ -33,18 +33,20 @@ position: absolute;
 width: 45px;
 height: 45px;
 left: 0;
-top: 45px;
+top: 50px;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     border-radius: 50%;
 `;
 const CommentInput = styled.div`
-position: relative;
-max-width: 80%;
+position: absolute;
+width: 80%;
 height: 35px;
 right : 0;
-top: 50px;
+top: 55px;
+border : none;
+outline: none;
 display: inline-block;
 background: #E5E5E5;
 border-radius: 23px;
@@ -65,8 +67,7 @@ const LikeImage = styled.div`
 position: absolute;
 width: 20px;
 height: 20px;
-left: 18px;
-top: 13px;
+left: 0px;
 display : ${props => props.like};
 background-image : url(${like});
     background-size: cover;
@@ -81,8 +82,7 @@ const LikedImage = styled.div`
 position: absolute;
 width: 20px;
 height: 20px;
-left: 18px;
-top: 13px;
+left: 0px;
 background-image : url(${clickLike});
     background-size: cover;
     background-position: center;
@@ -94,7 +94,6 @@ position: absolute;
 width: 53px;
 height: 16px;
 left: 38px;
-top: 15px;
 
 font-family: Noto Sans KR;
 font-style: normal;
@@ -113,7 +112,7 @@ const LikeBox = styled.div`
 position: absolute;
 width: 73px;
 height: 20px;
-left: 18px;
+left: 15px;
 top: 13px;
 `;
 const CommentView = ({userThumbnail,postId,enterComment,islike,cancel,totalLike,children}) => (

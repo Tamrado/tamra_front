@@ -38,7 +38,7 @@ class App extends Component {
             <div>
               <HeaderContainer/>
                 <Route exact path="/" component={Home}/>
-                <Route path = "/feed/@:postid/image" component={ImageDetail}/>
+                <Route path = "/feed/@:postid/image/:index" component={ImageDetail}/>
                 <Route path="/auth/Login" component={AuthLogin}/>
                 <Route path="/auth/Register" component={AuthRegister}/>
                 <Route path="/@:username/password" component={UserPageConfirm}/>

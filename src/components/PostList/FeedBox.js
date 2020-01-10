@@ -386,24 +386,24 @@ return(
         <FeedLine/>
         <Feed>{contents}<br/>
         {`${files}` && count > 3 && <FeedImage>
-            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} src={files[0].original} size ={'250px'}/>
-            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} src={files[1].original} size ={'250px'}/>
-            <Image id = {postId} data-imageid = {files[2].imageId} onClick={handleImage} src={files[2].original} size ={'250px'}>
+            <Image id = {postId} data-imageid = {0} onClick={handleImage} src={files[0].original} size ={'250px'}/>
+            <Image id = {postId} data-imageid = {1} onClick={handleImage} src={files[1].original} size ={'250px'}/>
+            <Image id = {postId} data-imageid = {2} onClick={handleImage} src={files[2].original} size ={'250px'}>
                 <ImageCount>
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>
-            <Image id = {postId} onClick={handleImage} data-imageid = {files[0].imageId} src={files[0].original} size ={'250px'}/>
-            <Image id = {postId} onClick={handleImage} data-imageid = {files[1].imageId} src={files[1].original} size ={'250px'}/>
-            <Image id = {postId} onClick={handleImage} data-imageid = {files[2].imageId} src={files[2].original} size ={'250px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {0} src={files[0].original} size ={'250px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {1} src={files[1].original} size ={'250px'}/>
+            <Image id = {postId} onClick={handleImage} data-imageid = {2} src={files[2].original} size ={'250px'}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[0].original}/>
-            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[1].original}/>
+            <Image id = {postId} data-imageid = {0} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {1} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[1].original}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} left={`26%`} size ={'320px'} margin = {'0 auto'}src={files[0].original}/>
+            <Image id = {postId} data-imageid = {0} onClick={handleImage} left={`26%`} size ={'320px'} margin = {'0 auto'}src={files[0].original}/>
             </FeedImage>}
             </Feed>
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>

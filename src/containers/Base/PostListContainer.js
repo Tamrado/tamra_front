@@ -227,7 +227,8 @@ class PostListContainer extends Component{
 
     handleImage =(e) =>{
         const {id} = e.target;
-        window.location.href =`/feed/@:${id}/image`;
+        const {imageid} = e.target.dataset;
+        this.props.history.push(`/feed/@:${id}/image/:${imageid}`);
     }
     render(){
         

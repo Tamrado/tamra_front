@@ -11,7 +11,7 @@ const CommentList = ({enterComment,comments,mainfeed,handleCommentAdd,addDisplay
             }
         )
         return(
-            <CommentView handleCommentAdd={handleCommentAdd} commentThumbnail = {commentThumbnail}
+            <CommentView handleCommentAdd={handleCommentAdd} userThumbnail = {commentThumbnail}
              enterComment={enterComment} mainfeed={mainfeed} addDisplay={addDisplay}>
                 {commentList}
             </CommentView>

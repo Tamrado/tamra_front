@@ -14,9 +14,10 @@ class Home extends Component {
         }
     }
     render() {
+        const {history} = this.props;
         return (
             <div>
-                <PostListContainer/>
+                <PostListContainer history = {history}/>
                 <WithListContainer/>
                 <WriteBoxContainer/>
                 <TagListContainer/>

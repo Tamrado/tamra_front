@@ -2,11 +2,10 @@ import React from 'react';
 import styled from 'styled-components';
 import leftArrow from '../../build/static/images/iconmonstr-arrow-64-48.png';
 import rightArrow from '../../build/static/images/iconmonstr-arrow-25-48.png';
-import exit from '../../build/static/images/iconmonstr-x-mark-1-48.png';
+import exit from '../../build/static/images/iconmonstr-x-mark-1-24.png';
 import publicImage from '../../build/static/images/public.png';
 import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
-
 const Wrapper = styled.div`
 position: fixed;
 width: 100%;
@@ -57,7 +56,7 @@ position: absolute;
 width: 86px;
 height: 86px;
 left: 0px;
-top: 357px;
+top: 277px;
 `;
 const LeftArrow = styled.div`
 position: absolute;
@@ -75,7 +74,7 @@ position: absolute;
 width: 86px;
 height: 86px;
 left: 714px;
-top: 357px;
+top: 277px;
 `;
 const RightArrow = styled.div`
 position: absolute;
@@ -89,17 +88,18 @@ background-position: center;
 background-repeat: no-repeat;
 `;
 const NicknameBox = styled.div`
-position: absolute;
-width: 228px;
+position : absolute;
+width: 346px;
 height: 72px;
-left: 861px;
-top: 28px;
+right: 0;
+top: 10px;
 `;
 const Thumbnail = styled.div`
 position: absolute;
-width: 55px;
-height: 55px;
-left: 0px;
+width: 45px;
+height: 45px;
+left : 30px;
+
 float : left;
 margin-right : 10px;
 top: 2px;
@@ -112,14 +112,13 @@ background-repeat: no-repeat;
 const Name = styled.div`
 position: absolute;
 max-width: 91px;
-height: 48px;
-left: 55px;
+max-height: 48px;
 top: 0px;
-
+left : 84px;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
-font-size: 24px;
+font-size: 19px;
 line-height: 28px;
 display: flex;
 align-items: center;
@@ -128,18 +127,27 @@ letter-spacing: 0.05em;
 
 color: #000000;
 `;
+const ViewBox = styled.div`
+position : absolute;
+width : 150px;
+height: 32px;
+left : 84px;
+    top: 22px;
+display : flex;
+flex: 1;
+    flex-direction: row;
+`;
 const Time = styled.div`
 max-width: 111px;
 height: 32px;
 left: 0;
 float : left;
 margin-right : 10px;
-top: 40px;
 
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
-font-size: 24px;
+font-size: 16px;
 line-height: 28px;
 display: flex;
 align-items: center;
@@ -149,10 +157,9 @@ letter-spacing: 0.05em;
 color: #515250;
 `;
 const ShowLevel = styled.div`
-position : absolute;
+position : relative;
     width: 24px;
     height: 24px;
-    display: flex;
     left :0 ;
     top : 5px;
     float : left;
@@ -165,9 +172,9 @@ position : absolute;
 
 const Exit = styled.div`
 position: absolute;
-width: 48px;
-height: 48px;
-left: 1374px;
+width: 24px;
+height: 24px;
+right: 10px;
 top: 18px;
 background-image : url(${exit});
     background-size: cover;
@@ -178,13 +185,14 @@ background-image : url(${exit});
 const CommentView = styled.div`
 position: absolute;
 width: 346px;
-height: 680px;
+height: 660px;
 left: 800px;
-top: 120px;
+top: 75px;
 border-top : 1px solid #0CA678;
 `;
 
-const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize}) => { 
+const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageIndex,handleLeft,handleRight
+,history}) => { 
     const{
         feed,
         category,
@@ -197,29 +205,46 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize}) => {
         height
     } = fileSize;
     if(!feed) return null;
+    const {
+        postId,
+        content,
+        showLevel,
+        timestamp,
+        totalTag,
+        totalComment,
+        totalLike,
+        profile,
+        files,
+        islike,
+        commentState,
+        tags,
+        dateString
+       } = feed;
     console.log(width);
     return(
         <Wrapper>
             <FeedBox >
                 <ImageBox>
                     <ImageWrapper>
-                    <Image image = {feed.files[0].original} id = {'^^image'} width = {String(width)+'px'}
-                height = {String(height)+'px'}/>
+                    <Image image = {files[`${imageIndex}`].original} id = {'^^image'} width = {String(width*1.5)+'px'}
+                height = {String(height*1.5)+'px'}/>
                 </ImageWrapper>
-                    <LeftArrowBox><LeftArrow/></LeftArrowBox>
-                    <RightArrowBox><RightArrow/></RightArrowBox>
+                    <LeftArrowBox onClick={handleLeft}><LeftArrow/></LeftArrowBox>
+                    <RightArrowBox onClick={handleRight}><RightArrow/></RightArrowBox>
                 </ImageBox>
                 <NicknameBox>
-                    <Thumbnail thumbnail={thumbnail}/>
-                    <Name>{name}</Name>
-                    <Time>{feed.dateString}</Time>
-                { `${feed.showLevel}` === 'private' && <ShowLevel showLevel ={privateImage} />}
-           { `${feed.showLevel}` === 'public' && <ShowLevel showLevel ={publicImage} />}
-           { `${feed.showLevel}` === 'followers' && <ShowLevel showLevel ={friendImage} />}
+                    <Thumbnail id = {profileId} thumbnail = {profile.profile}/>
+                    <Name id = {profileId}>{profile.name}</Name>
+                    <ViewBox>
+                    <Time>{dateString}</Time>
+                { `${showLevel}` === 'private' && <ShowLevel showLevel ={privateImage} />}
+           { `${showLevel}` === 'public' && <ShowLevel showLevel ={publicImage} />}
+           { `${showLevel}` === 'followers' && <ShowLevel showLevel ={friendImage} />}
+                </ViewBox>
                 </NicknameBox>
                 <CommentView>{children}</CommentView>
             </FeedBox>
-            <Exit/>
+            <Exit onClick={()=>{history.push('/')}}/>
         </Wrapper>
     );
 }

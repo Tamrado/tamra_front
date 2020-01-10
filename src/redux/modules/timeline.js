@@ -45,8 +45,12 @@ const SET_TIMELINE_COMMENT_TIME = 'timeline/SET_TIMELINE_COMMENT_TIME';
 const SET_SHOW_MENU_VISIBLE = 'timeline/SET_SHOW_MENU_VISIBLE';
 const SET_MENU_VISIBLE = 'timeline/SET_MENU_VISIBLE';
 const DELETE_FEED = 'timeline/DELETE_FEED';
-const SET_DETAIL_COMMENT_TIME = 'timeline//SET_DETAIL_COMMENT_TIME';
+const SET_DETAIL_COMMENT_TIME = 'timeline/SET_DETAIL_COMMENT_TIME';
+const SET_DETAIL_TIME = 'timeline/SET_DETAIL_TIME';
+const SET_IMAGE_ARROW_VISIBLE = 'timeline/SET_IMAGE_ARROW_VISIBLE';
 
+export const setImageArrowVisible = createAction(SET_IMAGE_ARROW_VISIBLE);
+export const setDetailTime = createAction(SET_DETAIL_TIME);
 export const setDetailCommmentTime = createAction(SET_DETAIL_COMMENT_TIME);
 export const deleteFeed = createAction(DELETE_FEED);
 export const setShowMenuVisible = createAction(SET_SHOW_MENU_VISIBLE);
@@ -108,10 +112,12 @@ const initialState = Map({
     commentCategory : '',
     commentdisplay : 'none',
     presentPost : Map({}),
-    commentNum : 0
+    commentNum : 0,
+    imageArrowVisible : 'none'
 });
 
 export default handleActions({
+    [SET_IMAGE_ARROW_VISIBLE] : (state,action) => state.set('imageArrowVisible',action.payload),
     [DELETE_FEED] : (state,action) => state.deleteIn(['mainfeed',action.payload]),
     [SET_MENU_VISIBLE] : (state,action) => {
         return state.setIn(['mainfeed',action.payload.index,'menuVisible'],action.payload.visible);
@@ -210,6 +216,7 @@ export default handleActions({
         return state.setIn(['mainfeed',index,'islike'],action.payload);
     },
     [SET_TIME] : (state,action) => state.setIn(['mainfeed',action.payload.index,'feed','dateString'],action.payload.timestring),
+    [SET_DETAIL_TIME] : (state,action) => state.setIn(['presentPost','feed','dateString'],action.payload),
     ...pender({
         type: GET_MAIN_INFORMATION,
         onSuccess: (state,action) =>state.update('mainfeed',feed => feed.concat(fromJS(action.payload.data.contentlist))) 

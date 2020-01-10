@@ -39,12 +39,16 @@ class PostDetailContainer extends Component{
 		return result.formatted;
 	};
     renderPageInfo=async()=>{
-    const {postid,TimelineActions,PostActions} = this.props;
+    const {postid,TimelineActions,PostActions,imageIndex} = this.props;
+    let index = imageIndex.substr(1);
     const id = postid.substr(1);
     await TimelineActions.getFeedInformationDetail(id);
+    await this.setPostTime();
     const{presentPost} = this.props;
-    let imageSize = await this.getImageSize(presentPost.getIn(['feed','files',0,'original']));
+    let imageSize = await this.getImageSize(presentPost.getIn(['feed','files',index,'original']));
     PostActions.setFileSize(imageSize);
+    if(presentPost.getIn(['feed','files']) > 1)
+        TimelineActions.setImageArrowVisible('block');
     }
     getImageSize= (url)=> {
         return new Promise((resolve, reject) => {
@@ -71,6 +75,13 @@ class PostDetailContainer extends Component{
             await TimelineActions.setCommentList({'commentId' : id,'commentList':comments,'trueComment' :true});
             await this.setCommentTime();
     }
+    setPostTime = async() => {
+        const{presentPost,TimelineActions} = this.props;
+        let time = presentPost.getIn(['feed','timestamp']);
+        let timestring = this.dateTimeToFormatted(time);
+        await TimelineActions.setDetailTime(timestring);
+    }
+
     setCommentTime = async() => {
         const{presentPost,TimelineActions,commentList} = this.props;
         const comments = commentList;
@@ -85,17 +96,34 @@ class PostDetailContainer extends Component{
                     )
                 );
     }
+    handleLeft = () => {
+        const {presentPost,imageIndex,history,postid} = this.props;
+        let index = imageIndex.substr(1);
+        let imageSize = presentPost.getIn(['feed','files']).size;
+        if(parseInt(index) === 0) history.push(`/feed/@${postid}/image/:${imageSize-1}`);
+        else history.push(`/feed/@${postid}/image/:${parseInt(index)-1}`);
+    }
+    handleRight = () => {
+        const {presentPost,imageIndex,history,postid} = this.props;
+        let index = imageIndex.substr(1);
+        let imageSize = presentPost.getIn(['feed','files']).size;
+        if(parseInt(index) === imageSize-1) history.push(`/feed/@${postid}/image/:0`);
+        else history.push(`/feed/@${postid}/image/:${parseInt(index)+1}`);
+    }
     render(){
         if(!storage.get('loggedInfo')) {
             
             return null;
         }
         const {thumbnail,username,nickname} = storage.get('loggedInfo');
-        const {presentPost,commentList,fileSize} = this.props;
+        const {presentPost,commentList,fileSize,imageIndex,history} = this.props;
+        const {handleLeft,handleRight} = this;
+        let index = imageIndex.substr(1);
         return (
-            <DetailPostView mainfeed = {presentPost.toJS()} thumbnail = {thumbnail} name={nickname}
-            userId= {username} fileSize = {fileSize}>
-                <CommentList comments = {commentList}/>
+            <DetailPostView mainfeed = {presentPost.toJS()}  fileSize = {fileSize} imageIndex = {index}
+             history={history} handleLeft={handleLeft} handleRight={handleRight} >
+                <CommentList comments = {commentList} commentThumbnail = {thumbnail} name={nickname}
+            userId= {username}/>
             </DetailPostView>
         )
     }

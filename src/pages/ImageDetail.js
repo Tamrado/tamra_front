@@ -13,10 +13,11 @@ class ImageDetail extends Component {
         }
     }
     render() {
-        const { match } = this.props;
-        const { postid } = match.params;
+        const { match,history } = this.props;
+        const { postid,index } = match.params;
+        console.log(index);
         return (
-            <PostDetailContainer postid={postid}/>
+            <PostDetailContainer postid={postid} imageIndex={index} history={history}/>
             
         )
     }
