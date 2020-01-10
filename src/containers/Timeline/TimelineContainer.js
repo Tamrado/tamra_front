@@ -261,7 +261,7 @@ class TimelineContainer extends Component{
         const {data,TimelineActions,BaseActions} = this.props;
         const {id} = e.target;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
-        console.log(id);
+        if(data.getIn([index,'modifyVisible']) === 'block') return;
         if(data.getIn([index,'menuVisible']) === 'none'){
             TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
             BaseActions.setFollowMenuVisible('none');
@@ -275,16 +275,13 @@ class TimelineContainer extends Component{
         
     }
 
-    modifyClick = (e) => {
+    modifyClick = async(e) => {
         const {id} = e.target;
-        const {data,PostActions,BaseActions,TimelineActions} = this.props;
+        const {data,TimelineActions} = this.props;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
-        PostActions.setWriteDisplay('block');
-        TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
-        BaseActions.setFollowMenuVisible('none');
-        BaseActions.setAlarmMenuVisible('none');
-        BaseActions.setUserMenuVisibility(false);
-        TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
+        
+        await TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
+        await TimelineActions.setModifyVisible({'index' : index,'visible' : 'inline-block'});
     }
 
     deleteClick = async(e) => {
@@ -320,6 +317,72 @@ class TimelineContainer extends Component{
         const {imageid} = e.target.dataset;
         this.props.history.push(`/feed/@:${id}/image/:${imageid}`);
     }
+    unavailableModify =(index,id) => {
+        const {TimelineActions,data} = this.props;
+        for(var i = 0; i < document.getElementsByName('^^content').length; i++){
+            if(parseInt(document.getElementsByName('^^content')[i].id) === parseInt(id)){
+                document.getElementsByName('^^content')[i].textContent = data.getIn([index,'content']);
+                document.getElementsByName('^^content')[i].blur();
+            }
+        }
+        TimelineActions.setModifyVisible({'index' : index,'visible' : 'none'});
+    }
+    
+    handleCancel = (e) => {
+        const {id} = e.target;
+        const {TimelineActions,data} = this.props;
+        const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        this.unavailableModify(index,id);
+    }
+    handleWrite = async(e) => {
+        const {id} = e.target;
+        const {TimelineActions,data,PostActions} = this.props;
+        const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        let showLevel = data.getIn([index,'showLevel']);
+        try{
+        await PostActions.modifyFeedInformation({'showLevel' : showLevel, 'postId' : id, 'content' : data.getIn([index,'modifyText'])});
+        }catch(e){
+
+        }
+        this.unavailableModify(index,id);
+        TimelineActions.setFeedContext({'index': index,'text': data.getIn([index,'modifyText'])});
+        }
+        handleWriteInput = (e) => {
+            const {id,innerText} = e.target;
+            const {TimelineActions,data,PostActions} = this.props;
+            const index = data.findIndex(item => item.get('postId')===parseInt(id));
+            TimelineActions.setModifyText({'index' : index, 'modifyText' : innerText});
+        }
+        
+        handleViewChange = (e) => {
+            const {id} = e.target;
+            const {TimelineActions,data,BaseActions} = this.props;
+            const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        if(data.getIn([index,'showMenuVisible']) === 'none'){
+            TimelineActions.setShowMenuVisible({'index':index, 'visible':'block'});
+            BaseActions.setFollowMenuVisible('none');
+            BaseActions.setAlarmMenuVisible('none');
+            BaseActions.setUserMenuVisibility(false);
+            TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
+        }
+        else{
+            TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
+        }
+        }
+        handleShowLevel = async(e) => {
+            const {id} = e.target;
+            const {postid} = e.target.dataset;
+            console.log(postid);
+            const {data,PostActions,TimelineActions} = this.props;
+            const index = data.findIndex(item => item.get('postId')===parseInt(postid));
+            try{
+            await PostActions.modifyFeedInformation({'showLevel' : id, 'postId' : postid, 'content' : data.getIn([index,'content'])});
+            }catch(e){
+
+            }
+            TimelineActions.setFeedShowlevel({'index':index,'showLevel':id});
+            TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
+        }
 
     render(){
         
@@ -332,7 +395,8 @@ class TimelineContainer extends Component{
         const {hashdisplay,keyid,totalNum} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
         const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
-            ,handleComment,handleMenu,modifyClick,deleteClick,handleImageChange,handleImage} = this;
+            ,handleComment,handleMenu,modifyClick,deleteClick,handleImageChange,handleImage,handleCancel,
+        handleWrite,handleWriteInput,handleViewChange,handleShowLevel} = this;
         return(
             <PageWrapper>
             <FeedList  commentThumbnail = {commentThumbnail} change = {handleImageChange}
@@ -342,7 +406,9 @@ class TimelineContainer extends Component{
              mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
              nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}
              enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory}
-             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {deleteClick} handleImage={handleImage} />
+             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {deleteClick} handleImage={handleImage}
+             handleCancel = {handleCancel} handleWrite={handleWrite} handleWriteInput={handleWriteInput} 
+             handleViewChange = {handleViewChange} handleShowLevel={handleShowLevel}/>
           </PageWrapper>
             );
     }

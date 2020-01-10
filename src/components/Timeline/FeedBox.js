@@ -9,7 +9,10 @@ import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
 import menuImage from '../../build/static/images/iconmonstr-menu-7-24.png';
 import hoverMenuImage from '../../build/static/images/iconmonstr-menu-7-24 (1).png';
+import showmenuImage from '../../build/static/images/iconmonstr-arrow-80-24.png';
 import { shadow } from '../../lib/styleUtils';
+import oc from 'open-color';
+
 const Box = styled.div`
 width: 60%;
 left : 20%;
@@ -83,10 +86,25 @@ position : relative;
     width: 24px;
     height: 24px;
     display: flex;
+    margin-right : 5px;
     left :0 ;
     top : 5px;
     float : left;
     background-image: url(${props => props.showLevel});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+`;
+const ViewChangeButton = styled.div`
+position : relative;
+    width: 13px;
+    height: 13px;
+    display: flex;
+    left :0 ;
+    top : 10px;
+    float : left;
+    background-image: url(${showmenuImage});
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -113,11 +131,87 @@ top: 91px;
 border: 2px solid #12B886;
 `;
 const WriteBox = styled.div`
-position : absolute;
+position : relative;
 width : 100%;
-top : 92px;
+min-height : 200px;
+max-height : 500px; 
+border-radius : 10px;
+top : 40px;
+z-index : 1;
+display : ${props=>props.visible};
+padding-left : 1rem;
+padding-right : 1rem;
+padding-top : 2rem;
+padding-bottom : 4rem;
 background : #ffffff;
-border : 
+${shadow(1)};
+
+
+`;
+const WriteContext = styled.div`
+position : relative;
+width: 90%;
+left : 5%;
+top : 0;
+border-radius : 10px;
+background : rgba(18,184,134,0.05);
+min-height : 100px;
+max-height : 500px; 
+word-break: break-all;
+font-family: Noto Sans KR;
+border : none;
+outline: none;
+font-style: normal;
+font-weight: normal;
+font-size: 18px;
+line-height: 28px;
+align-items: center;
+text-align: center;
+letter-spacing: 0.05em;
+color : black;
+
+overflow-y: auto;
+&::-webkit-scrollbar-track
+{
+	border-radius: 20px;
+	background-color: #FFFFFF;
+}
+&::-webkit-scrollbar
+{
+	width: 10px;
+	background-color: #FFFFFF;
+}
+
+&::-webkit-scrollbar-thumb
+{
+	border-radius: 20px;
+	background-color : rgba(18, 184, 134, 0.1);
+}
+`;
+const WriteButton = styled.div`
+position: absolute;
+width: 12%;
+height: 30px;
+right : ${props => props.right};
+bottom : 15px;
+border-radius: 10px;
+font-size: 18px;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+align-items: center;
+text-align: center;
+background: #FFFFFF;
+border: 1px solid #0CA678;
+box-sizing: border-box;
+&:hover {
+    color: ${oc.teal[5]};
+    ${shadow(0)};
+}
+
+&:active {
+    color: ${oc.teal[7]};
+}
 `;
 const FeedImage = styled.div`
 position : relative;
@@ -319,7 +413,8 @@ background: url(${hoverMenuImage});
 `;
 
 const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,
-    childrenTwo,handleMenu,menu,handleImage}) => {
+    childrenTwo,handleMenu,menu,handleImage,handleWrite,handleCancel,handleWriteInput,showList,
+handleViewChange}) => {
     
     const {
         postId,
@@ -336,6 +431,7 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,li
         dateString,
         menuVisible,
         showMenuVisible,
+        modifyVisible,
         tags
     } = mainfeed.toJS();
     if(!profile || !postId) return null;
@@ -357,12 +453,22 @@ return(
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
            { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
            { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
+           <ViewChangeButton id = {postId} onClick={handleViewChange}/>
+           {showList}
             </ViewBox>
             <MenuButton id = {postId} onClick={handleMenu}/>
             {menu}
         </NickNameBox>
         <FeedLine/>
-         <Feed>{contents}<br/>
+         <Feed>
+             <WriteBox visible = {modifyVisible}>
+                 <WriteContext id = {postId} name={'^^content'} role = "textbox" spellcheck = "true" 
+                  aria-autocomplete="list" data-content = "true" contentEditable = "true" aria-label = {content} suppressContentEditableWarning={true}
+                  aria-multiline="true" onInput={handleWriteInput}>{content}</WriteContext>
+                 <WriteButton id = {postId} data-category = {'write'} onClick = {handleWrite} right={'23%'}>수정</WriteButton>
+                 <WriteButton id = {postId} data-category = {'cancel'} onClick = {handleCancel} right={'5%'}>취소</WriteButton>
+             </WriteBox>
+         {contents}<br/>
         {`${files}` && count > 3 && <FeedImage>
             <Image id = {postId} data-imageid = {0} onClick={handleImage} src={files[0].original} size ={'250px'} left={'10px'} />
             <Image id = {postId} data-imageid = {1} onClick={handleImage} src={files[1].original} size ={'250px'}left={'10px'}/>

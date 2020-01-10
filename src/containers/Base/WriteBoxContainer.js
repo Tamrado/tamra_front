@@ -157,7 +157,7 @@ class WriteBoxContainer extends Component{
             <WriteBox withdisplay = {withdisplay}  withclick = {handleWithBox} friend = {withfriend} username = {username} 
             onclick = {handleWriteBox} opacity = {opacity} click={openModal} display = {writeDisplay} 
             close = {closeWriteModal} showClick = {handleShowClick} showLevel={level} writeClick={handleWriteClick} >
-                <ShowLevelMenu showDisplay = {showLevelDisplay} onclick = {handleLevelClick}/>
+                <ShowLevelMenu showDisplay = {showLevelDisplay} onclick = {handleLevelClick} top = {'59px'} left = {'800px'}/>
                 <ImageList image = {images} cancel = {handleImageCancel} change = {handleImageChange}/>
                 </WriteBox>
         );

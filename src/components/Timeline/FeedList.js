@@ -3,16 +3,22 @@ import FeedBox from './FeedBox';
 import Profile from './Profile';
 import CommentList from './CommentList';
 import PostMenu from './PostMenu';
+import ShowLevelMenu from '../Post/ShowLevelMenu';
 
 const FeedList = ({followclick,postNum,followerNum,followNum,comment,nickname,username,thumbnail,enterComment,commentThumbnail
     ,followdisplay,isfollow,mainfeed,hover,nothover,hashdisplay,keyid,cancel,like,handleComment,handleCommentAdd,
-handleMenu,modifyClick,deleteClick,change,handleImage}) => {
+handleMenu,modifyClick,deleteClick,change,handleImage,handleWrite,handleCancel,
+handleWriteInput,handleViewChange,handleShowLevel}) => {
         
     const feedList = mainfeed.map(
         (feeds) => {
+            const showLevelMenu = 
+            <ShowLevelMenu showDisplay = {feeds.get('showMenuVisible')} key = {'showLevelMenu'} postId={feeds.get('postId')}
+            top = {'30px'} left = {'0'} onclick={handleShowLevel} />
             const commentList= 
             <CommentList key = {'commentlist'} thumbnail = {thumbnail} commentThumbnail = {commentThumbnail}
-             handleCommentAdd = {handleCommentAdd} enterComment={enterComment} mainfeed={feeds} comments = {feeds.get('commentList')}/>;
+             handleCommentAdd = {handleCommentAdd} enterComment={enterComment} mainfeed={feeds}
+              comments = {feeds.get('commentList')}/>;
             const postMenu =
             <PostMenu key = {'postMenu' + feeds.get('postId').toString()} mainfeed= {feeds} modifyClick = {modifyClick}
             deleteClick = {deleteClick}/>
@@ -27,14 +33,18 @@ handleMenu,modifyClick,deleteClick,change,handleImage}) => {
                      return <FeedBox key = {parseInt(feeds.get('postId'))} thumbnail = {thumbnail}
                      count = {feeds &&feeds.get('files').size} mainfeed={feeds} handleComment = {handleComment}
                 hashdisplay = {hashdisplay} childrenTwo={commentList} hover = {hover} nothover = {nothover}
-                 like={like} cancel={cancel} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}>{hashTagList}</FeedBox>
+                 like={like} cancel={cancel} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}
+                 handleWrite={handleWrite} handleCancel = {handleCancel} handleWriteInput={handleWriteInput}
+                 handleViewChange = {handleViewChange} showList={showLevelMenu}
+                 >{hashTagList}</FeedBox>
                 }
                 else{
                     return <FeedBox key = {parseInt(feeds.get('postId'))}
                     count = {feeds && feeds.get('files').size} handleComment = {handleComment} thumbnail = {thumbnail}
                      mainfeed={feeds} hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} 
                      like={like} cancel={cancel} childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu}
-                     handleImage={handleImage} >
+                     handleImage={handleImage} handleViewChange = {handleViewChange} showList={showLevelMenu}
+                     handleWrite={handleWrite} handleCancel = {handleCancel} handleWriteInput={handleWriteInput}>
                     <div key = {parseInt(feeds.get('postId'))+'gdg'}>태그된 사람이 없습니다.<br/></div></FeedBox>
                 }   
             }
@@ -42,7 +52,9 @@ handleMenu,modifyClick,deleteClick,change,handleImage}) => {
             return  <FeedBox key = {parseInt(feeds.get('postId')).toString()} handleComment = {handleComment}
             count = {feeds.get('files') && feeds.get('files').size} mainfeed={feeds} thumbnail = {thumbnail}
             hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like} cancel={cancel} 
-            childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}/>
+            childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}
+            handleWrite={handleWrite} handleCancel = {handleCancel} handleWriteInput={handleWriteInput}
+            handleViewChange = {handleViewChange} showList={showLevelMenu}/>
             }
         }
     )

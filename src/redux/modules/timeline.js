@@ -53,7 +53,17 @@ const SET_DETAIL_COMMENT_LIST = 'timeline/SET_DETAIL_COMMENT_LIST';
 const SET_DETAIL_COMMENT_PAGE = 'timelne/SET_DETAIL_COMMENT_PAGE';
 const SET_DETAIL_LIKE = 'timeline/SET_DETAIL_LIKE';
 const SET_DETAIL_LIKE_NUM = 'timeline/SET_DETAIL_LIKE_NUM';
+const SET_MODIFY_VISIBLE = 'timeline/SET_MODIFY_VISIBLE';
+const RENEW_TIMELINE_INFORMATION = 'timeline/RENEW_TIMELINE_INFORMATION';
+const SET_MODIFY_TEXT = 'timeline/SET_MODIFY_TEXT';
+const SET_FEED_CONTEXT = 'timeline/SET_FEED_CONTEXT';
+const SET_FEED_SHOWLEVEL = 'timeline/SET_FEED_SHOWLEVEL';
 
+export const setFeedShowlevel = createAction(SET_FEED_SHOWLEVEL);
+export const setFeedContext = createAction(SET_FEED_CONTEXT);
+export const setModifyText = createAction(SET_MODIFY_TEXT);
+export const renewTimelineInformation=createAction(RENEW_TIMELINE_INFORMATION);
+export const setModifyVisible = createAction(SET_MODIFY_VISIBLE);
 export const setDetailLikeNum = createAction(SET_DETAIL_LIKE_NUM);
 export const setDetailLike = createAction(SET_DETAIL_LIKE);
 export const setDetailCommentPage = createAction(SET_DETAIL_COMMENT_PAGE);
@@ -127,6 +137,10 @@ const initialState = Map({
 });
 
 export default handleActions({
+    [SET_FEED_CONTEXT] : (state,action) => state.setIn(['mainfeed',action.payload.index,'content'],action.payload.text),
+    [SET_FEED_SHOWLEVEL] : (state,action) => state.setIn(['mainfeed',action.payload.index,'showLevel'],action.payload.showLevel),
+    [SET_MODIFY_TEXT] : (state,action) => state.setIn(['mainfeed',action.payload.index,'modifyText'],action.payload.modifyText),
+    [SET_MODIFY_VISIBLE] : (state,action) => state.setIn(['mainfeed',action.payload.index,'modifyVisible'],action.payload.visible),
     [SET_DETAIL_LIKE_NUM] : (state,action) => state.setIn(['presentPost','feed','totalLike'],action.payload),
     [SET_DETAIL_COMMENT_PAGE] : (state,action) => state.setIn(['presentPost','feed','commentPage'],state.getIn(['presentPost','feed','commentPage'])+1),
     [SET_IMAGE_ARROW_VISIBLE] : (state,action) => state.set('imageArrowVisible',action.payload),
@@ -183,7 +197,9 @@ export default handleActions({
     [RENEW_MAIN_INFORMATION] : (state,action) =>{ 
         return state.set('mainfeed',state.get('mainfeed').unshift(state.get('presentPost')));
     }, 
-    
+    [RENEW_TIMELINE_INFORMATION] : (state,action) =>{
+        return state.setIn(['mainfeed',action.payload],state.getIn(['presentPost','feed']));
+    },
     [SET_COMMENT_CATEGORY] : (state,action) => state.set('commentCategory',action.payload),
     [SET_COMMENT_DISPLAY] : (state,action) =>{
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(action.payload)

@@ -22,7 +22,9 @@ const INITIALIZE_FILELIST = 'post/INITIALIZE_FILELIST';
 const INITIALIZE_IMAGE = 'post/INITIALIZE_IMAGE';
 const DELETE_FEED = 'post/DELETE_FEED';
 const SET_FILE_SIZE = 'post/SET_FILE_SIZE';
+const MODIFY_FEED_INFORMATION = 'post/MODIFY_FEED_INFORMATION';
 
+export const modifyFeedInformation = createAction(MODIFY_FEED_INFORMATION,PostAPI.modifyFeedInformation);
 export const setFileSize = createAction(SET_FILE_SIZE);
 export const deleteFeed = createAction(DELETE_FEED,PostAPI.deleteFeed);
 export const initializeImage = createAction(INITIALIZE_IMAGE);
@@ -64,8 +66,12 @@ const initialState = Map({
 
 export default handleActions({
     ...pender({
+        type : MODIFY_FEED_INFORMATION,
+        onSuccess : (state,action) => state.set('result',action.payload)
+    }),
+    ...pender({
         type : DELETE_FEED,
-        onSucces : (state,action) => state.set('result',action.payload)
+        onSuccess : (state,action) => state.set('result',action.payload)
     }),
     ...pender({
         type : UPLOAD_FEED,
