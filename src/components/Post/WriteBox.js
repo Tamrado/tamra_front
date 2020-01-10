@@ -2,6 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import cancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24 (1).png';
 import hoverCancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24.png';
+import oc from 'open-color';
+import { shadow } from '../../lib/styleUtils';
 const Wrapper = styled.div`
 position: absolute;
 top : 0;
@@ -129,11 +131,12 @@ border-radius: 10px;
 `;
 const WriteButton = styled.div`
 position: absolute;
-width: 1000px;
+width: 12%;
 height: 40px;
-left : 5%;
+right : 5%;
 top: 470px;
-font-size: 20px;
+border-radius: 10px;
+font-size: 18px;
 line-height: 2;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -141,8 +144,16 @@ font-weight: normal;
 align-items: center;
 text-align: center;
 background: #FFFFFF;
-border: 2px solid #0CA678;
+border: 1px solid #0CA678;
 box-sizing: border-box;
+&:hover {
+    color: ${oc.teal[5]};
+    ${shadow(0)};
+}
+
+&:active {
+    color: ${oc.teal[7]};
+}
 `;
 const CancelButton = styled.div`
 width: 20px;

@@ -2,8 +2,8 @@ import React from 'react';
 import CommentBox from './CommentBox';
 import CommentView from './CommentView';
 
-const CommentList = ({enterComment,comments,mainfeed,handleCommentAdd,addDisplay,commentThumbnail})=>{
-    console.log(comments);
+const CommentList = ({comments,mainfeed,addDisplay,commentThumbnail,enterComment,postId,like,cancel,
+    handleCommentAdd,trueComment})=>{
     const commentList = comments&& comments.size > 0 &&comments.map(
             (comment) => {
                  
@@ -11,8 +11,9 @@ const CommentList = ({enterComment,comments,mainfeed,handleCommentAdd,addDisplay
             }
         )
         return(
-            <CommentView handleCommentAdd={handleCommentAdd} userThumbnail = {commentThumbnail}
-             enterComment={enterComment} mainfeed={mainfeed} addDisplay={addDisplay}>
+            <CommentView handleCommentAdd={handleCommentAdd} userThumbnail = {commentThumbnail} postId={postId}
+             enterComment={enterComment} mainfeed={mainfeed} addDisplay={addDisplay} enterComment={enterComment}
+             handleCommentAdd = {handleCommentAdd} trueComment={trueComment} like={like} cancel={cancel}>
                 {commentList}
             </CommentView>
         );

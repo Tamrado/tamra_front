@@ -9,7 +9,7 @@ import friendImage from '../../build/static/images/friend.png';
 import privateImage from '../../build/static/images/private.png';
 import menuImage from '../../build/static/images/iconmonstr-menu-7-24.png';
 import hoverMenuImage from '../../build/static/images/iconmonstr-menu-7-24 (1).png';
-
+import { shadow } from '../../lib/styleUtils';
 const Box = styled.div`
 width: 60%;
 left : 20%;
@@ -110,8 +110,14 @@ const FeedLine = styled.div`
 position : absolute;
 width: 100%;
 top: 91px;
-
 border: 2px solid #12B886;
+`;
+const WriteBox = styled.div`
+position : absolute;
+width : 100%;
+top : 92px;
+background : #ffffff;
+border : 
 `;
 const FeedImage = styled.div`
 position : relative;
@@ -311,6 +317,7 @@ background-repeat: no-repeat;
 background: url(${hoverMenuImage});
 }
 `;
+
 const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,
     childrenTwo,handleMenu,menu,handleImage}) => {
     
@@ -357,24 +364,24 @@ return(
         <FeedLine/>
          <Feed>{contents}<br/>
         {`${files}` && count > 3 && <FeedImage>
-            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} src={files[0].original} size ={'250px'} left={'10px'} />
-            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} src={files[1].original} size ={'250px'}left={'10px'}/>
-            <Image id = {postId} data-imageid = {files[2].imageId} onClick={handleImage} src={files[2].original} size ={'250px'}left={'10px'}>
-                <ImageCount>
+            <Image id = {postId} data-imageid = {0} onClick={handleImage} src={files[0].original} size ={'250px'} left={'10px'} />
+            <Image id = {postId} data-imageid = {1} onClick={handleImage} src={files[1].original} size ={'250px'}left={'10px'}/>
+            <Image id = {postId} data-imageid = {2} onClick={handleImage} src={files[2].original} size ={'250px'}left={'10px'}>
+                <ImageCount id = {postId} data-imageid = {2} size ={'250px'} >
                    +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>
-            <Image id = {postId} onClick={handleImage} data-imageid = {files[0].imageId} src={files[0].original} size ={'250px'} left={'10px'}/>
-            <Image id = {postId} onClick={handleImage} data-imageid = {files[1].imageId} src={files[1].original} size ={'250px'}left={'10px'}/>
-            <Image id = {postId} onClick={handleImage} data-imageid = {files[2].imageId} src={files[2].original}  size ={'250px'}left={'10px'}/>
+        <Image id = {postId} data-imageid = {0} onClick={handleImage} src={files[0].original} size ={'250px'} left={'10px'} />
+            <Image id = {postId} data-imageid = {1} onClick={handleImage} src={files[1].original} size ={'250px'}left={'10px'}/>
+            <Image id = {postId} data-imageid = {2} onClick={handleImage} src={files[2].original} size ={'250px'}left={'10px'}/>
             </FeedImage>}
             {`${files}` && count === 2 && <FeedImage>
-            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage} size ={'320px'} margin = {'0 auto'} src={files[0].original}/>
-            <Image id = {postId} data-imageid = {files[1].imageId} onClick={handleImage} size ={'320px'} margin = {'0 auto'} src={files[1].original}/>
+            <Image id = {postId} data-imageid = {0} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {1} onClick={handleImage} left = {`5%`} size ={'320px'} src={files[1].original}/>
             </FeedImage>}
             {`${files}` && count === 1 && <FeedImage>
-            <Image id = {postId} data-imageid = {files[0].imageId} onClick={handleImage}  size ={'320px'} margin = {'0 auto'} src={files[0].original}/>
+            <Image id = {postId} data-imageid = {0} onClick={handleImage} left={`26%`} size ={'320px'} margin = {'0 auto'}src={files[0].original}/>
             </FeedImage>}
             </Feed>
             <HashNum id={postId} display={hashdisplay}>{totalTag}명<br/>{children}</HashNum>

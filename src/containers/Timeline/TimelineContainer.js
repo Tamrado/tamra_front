@@ -315,8 +315,10 @@ class TimelineContainer extends Component{
         window.location.reload();
       }
 
-      handleImage = (e) => {
+      handleImage =(e) =>{
         const {id} = e.target;
+        const {imageid} = e.target.dataset;
+        this.props.history.push(`/feed/@:${id}/image/:${imageid}`);
     }
 
     render(){

@@ -5,10 +5,10 @@ import clickLike from '../../build/static/images/iconmonstr-smiley-8-32.png';
 
 const CommentBox =styled.div`
 position: relative;
-width: 90%;
-height: 660px;
-left: 5%;
-top : 0;
+width: 100%;
+height: 480px;
+
+top : 110px;
 overflow-y: auto;
 &::-webkit-scrollbar-track
 {
@@ -32,7 +32,7 @@ background-image: url(${props => props.thumbnail});
 position: absolute;
 width: 45px;
 height: 45px;
-left: 0;
+left: 18px;
 top: 50px;
     background-size: cover;
     background-position: center;
@@ -41,12 +41,14 @@ top: 50px;
 `;
 const CommentInput = styled.div`
 position: absolute;
-width: 80%;
-height: 35px;
-right : 0;
-top: 55px;
+width: 70%;
+    height: 35px;
+    right: 18px;
+    top: 54px;
 border : none;
 outline: none;
+text-overflow : ellipsis;
+overflow : hidden;
 display: inline-block;
 background: #E5E5E5;
 border-radius: 23px;
@@ -61,6 +63,10 @@ padding-right: 10px;
     font-size: 16px;
     line-height: 20px;
     word-wrap: break-word;
+    &:empty&:not(:focus)&:before {
+        content : attr(aria-label);
+        color : #90949c;
+    }
     
 `;
 const LikeImage = styled.div`
@@ -115,17 +121,65 @@ height: 20px;
 left: 15px;
 top: 13px;
 `;
-const CommentView = ({userThumbnail,postId,enterComment,islike,cancel,totalLike,children}) => (
-<CommentBox>
+const CommentAdd = styled.div`
+display: flex;
+    flex: 1 1 auto;
+width: 121px;
+height: 29px;
+left: 38px;
+bottom : 0;
+font-family: Noto Sans KR;
+font-style: normal;
+font-weight: normal;
+font-size: 16px;
+line-height: 33px;
+align-items: center;
+color: #0A825E;
+&:hover {
+    text-decoration-line: underline;
+}
+`;
+const CommentView = ({userThumbnail,children,enterComment,like,cancel,
+handleCommentAdd,mainfeed}) => {
+    const{
+        feed,
+        category,
+        sender,
+        message,
+        profileId
+    } = mainfeed;
+    if(!feed) return null;
+    const {
+        postId,
+        content,
+        showLevel,
+        timestamp,
+        totalTag,
+        totalComment,
+        totalLike,
+        profile,
+        files,
+        islike,
+        commentState,
+        tags,
+        trueComment,
+        dateString
+       } = feed;
+    return(
+<div>
     <LikeBox>
     <LikeImage id = {postId} onClick = {like} like = {islike}/>
         {islike === 'none' &&<LikedImage id = {postId} onClick = {cancel} />}
         <LikeNum>{totalLike}</LikeNum>
     </LikeBox>
     <CommentThumbnail thumbnail = {userThumbnail}/>
-    <CommentInput id={postId} name = {'^^comment'}value={postId} role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
+    <CommentInput id={postId} name = {'^^comment'} value={postId} role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {'댓글을 입력하세요'}
          onKeyUp={enterComment} />
+    <CommentBox>
          {children}
+         {trueComment &&<CommentAdd onClick = {handleCommentAdd} id={postId}>댓글 더보기</CommentAdd>}
 </CommentBox>
+</div>
 );
+}
 export default CommentView;

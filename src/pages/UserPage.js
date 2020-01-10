@@ -17,11 +17,11 @@ class UserPage extends Component {
         const { match } = this.props;
         const { username } = match.params;
         return(
-            <ModifyWrapper>
+            
                 <ConfirmContent>
                 <UserModify username = {username}/>
                 </ConfirmContent>
-            </ModifyWrapper>
+          
         );
     }
 

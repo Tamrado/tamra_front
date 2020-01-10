@@ -10,15 +10,20 @@ const Wrapper = styled.div`
 `;
 
 const Label = styled.div`
-    font-size: 1rem;
-    font-family: Noto Sans KR;
-    font-style: normal;
-    color: ${oc.gray[6]};
-    margin-bottom: 0.25rem;
+font-size: 1rem;
+width: 80%;
+left: 10%;
+position: relative;
+font-family: Noto Sans KR;
+font-style: normal;
+color: #868e96;
+margin-bottom: 0.25rem;
 `;
 
 const Input = styled.input`
-    width: 100%;
+width: 80%;
+left: 10%;
+position: relative;
     border: 1px solid ${oc.gray[3]};
     outline: none;
     border-radius: 0px;

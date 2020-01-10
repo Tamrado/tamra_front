@@ -14,11 +14,11 @@ class MyPost extends Component {
         }
     }
     render() {
-        const { match } = this.props;
+        const { match,history } = this.props;
         const { username } = match.params;
         return (
             <div>
-            <TimelineContainer userid={username}/>
+            <TimelineContainer userid={username} history={history}/>
             </div>
         )
     }

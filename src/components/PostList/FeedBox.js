@@ -181,8 +181,8 @@ background-repeat: no-repeat;
 `;
 const ImageCount = styled.div`
 overflow: hidden;
-width : 250px;
-height : 250px;
+width : ${props=>props.size};
+height : ${props=>props.size};
 display : block;
 background: rgba(196, 196, 196, 0.75);
 font-family: Roboto;
@@ -190,10 +190,6 @@ font-style: normal;
 font-weight: normal;
 font-size: 96px;
 line-height: 250px;
-
-align-items: center;
-text-align: center;
-
 color: #FFFFFF;
 `;
 const FeedSubMenu = styled.div`
@@ -366,7 +362,7 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
     lineHeight: '160%'
 };
 
-   const contents=content.split('\n').map( (line,index) => {
+   const contents= content&&content.split('\n').map( (line,index) => {
     return (<div key={index} style={style} >{line}<br/></div>)
   }); 
 return(
@@ -389,8 +385,8 @@ return(
             <Image id = {postId} data-imageid = {0} onClick={handleImage} src={files[0].original} size ={'250px'}/>
             <Image id = {postId} data-imageid = {1} onClick={handleImage} src={files[1].original} size ={'250px'}/>
             <Image id = {postId} data-imageid = {2} onClick={handleImage} src={files[2].original} size ={'250px'}>
-                <ImageCount>
-                   +{`${count}` - 3}
+                <ImageCount id = {postId} data-imageid = {2} size ={'250px'}>
+                +{`${count}` - 3}
                 </ImageCount></Image>
             </FeedImage>}
         {`${files}` && count === 3 && <FeedImage>

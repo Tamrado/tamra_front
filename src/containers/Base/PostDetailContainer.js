@@ -5,6 +5,7 @@ import storage from '../../lib/storage';
 import * as timelineActions from '../../redux/modules/timeline';
 import * as commentActions from '../../redux/modules/comment';
 import * as postActions from '../../redux/modules/post';
+import * as likeActions from '../../redux/modules/like';
 import {CommentList,DetailPostView} from '../../components/DetailPost';
 class PostDetailContainer extends Component{
     componentDidMount=async()=>{
@@ -37,7 +38,12 @@ class PostDetailContainer extends Component{
             result.formatted = result.month;
         }
 		return result.formatted;
-	};
+    };
+    setImageSize=async(index)=>{
+        const{presentPost,PostActions} = this.props;
+        let imageSize = await this.getImageSize(presentPost.getIn(['feed','files',index,'original']));
+        await PostActions.setFileSize(imageSize);
+    }
     renderPageInfo=async()=>{
     const {postid,TimelineActions,PostActions,imageIndex} = this.props;
     let index = imageIndex.substr(1);
@@ -45,8 +51,7 @@ class PostDetailContainer extends Component{
     await TimelineActions.getFeedInformationDetail(id);
     await this.setPostTime();
     const{presentPost} = this.props;
-    let imageSize = await this.getImageSize(presentPost.getIn(['feed','files',index,'original']));
-    PostActions.setFileSize(imageSize);
+    await this.setImageSize(index);
     if(presentPost.getIn(['feed','files']) > 1)
         TimelineActions.setImageArrowVisible('block');
     }
@@ -67,12 +72,12 @@ class PostDetailContainer extends Component{
         const id = postid.substr(1);
         let page = presentPost.getIn(['feed','commentPage']);
             await CommentActions.showPostCommentList(id,page);
-            await TimelineActions.setCommentPage(id);
+            await TimelineActions.setDetailCommentPage(id);
             const{comments,lastComment}=this.props;
             if(lastComment)
-            await TimelineActions.setCommentList({'commentId' : id,'commentList':comments,'trueComment' :false});
+            await TimelineActions.setDetailCommentList({'commentId' : id,'commentList':comments,'trueComment' :false});
             else
-            await TimelineActions.setCommentList({'commentId' : id,'commentList':comments,'trueComment' :true});
+            await TimelineActions.setDetailCommentList({'commentId' : id,'commentList':comments,'trueComment' :true});
             await this.setCommentTime();
     }
     setPostTime = async() => {
@@ -88,7 +93,6 @@ class PostDetailContainer extends Component{
                 await Promise.all(
                     comments.map(
                         async(comment,commentIndex) => {
-                            console.log(comment.timestamp);
                             let time = comment.timestamp;
                             let timestring = this.dateTimeToFormatted(time);
                             await TimelineActions.setDetailCommentTime({timestring:timestring,commentIndex:commentIndex});
@@ -96,34 +100,129 @@ class PostDetailContainer extends Component{
                     )
                 );
     }
-    handleLeft = () => {
-        const {presentPost,imageIndex,history,postid} = this.props;
+    handleLeft = async() => {
+        const {presentPost,imageIndex,history,postid,PostActions} = this.props;
         let index = imageIndex.substr(1);
         let imageSize = presentPost.getIn(['feed','files']).size;
-        if(parseInt(index) === 0) history.push(`/feed/@${postid}/image/:${imageSize-1}`);
-        else history.push(`/feed/@${postid}/image/:${parseInt(index)-1}`);
+        if(parseInt(index) === 0) {
+            await this.setImageSize(imageSize -1);
+            history.push(`/feed/@${postid}/image/:${imageSize-1}`);
+        }
+        else {
+            await this.setImageSize(parseInt(index)-1);
+            history.push(`/feed/@${postid}/image/:${parseInt(index)-1}`);
+        }
     }
-    handleRight = () => {
-        const {presentPost,imageIndex,history,postid} = this.props;
+    handleRight = async() => {
+        const {presentPost,imageIndex,history,postid,PostActions} = this.props;
         let index = imageIndex.substr(1);
+        let size = await this.getImageSize(presentPost.getIn(['feed','files',index,'original']));
+        PostActions.setFileSize(size);
         let imageSize = presentPost.getIn(['feed','files']).size;
-        if(parseInt(index) === imageSize-1) history.push(`/feed/@${postid}/image/:0`);
-        else history.push(`/feed/@${postid}/image/:${parseInt(index)+1}`);
+        if(parseInt(index) === imageSize-1) {
+            await this.setImageSize(0);
+            history.push(`/feed/@${postid}/image/:0`);
+        }
+        else {
+            await this.setImageSize(parseInt(index)+1);
+            history.push(`/feed/@${postid}/image/:${parseInt(index)+1}`);
+        }
     }
+    handleCommentAdd = async() =>{
+        const {TimelineActions,CommentActions,presentPost,postid} = this.props;
+        const id = postid.substr(1);
+        if(presentPost.getIn(['feed','trueComment'])){
+            
+            const page = presentPost.getIn(['feed','commentPage']);
+            try{
+                await CommentActions.showPostCommentList(id,page);
+                await TimelineActions.setDetailCommentPage(id);
+                const{comments,lastComment}=this.props;
+            if(lastComment)
+            await TimelineActions.setDetailCommentList({'commentId':id,'commentList':comments,'trueComment' :false});
+            else
+            await TimelineActions.setDetailCommentList({'commentId':id,'commentList':comments,'trueComment' :true});
+            await this.setCommentTime(id);
+            }catch(e){
+                TimelineActions.setCommentFalse(id);
+            }
+        } 
+    }
+    enterComment = async(e) =>{
+        if(window.event.keyCode === 13){
+            const {CommentActions,TimelineActions,postid} = this.props;
+            const {innerText} = e.target;
+            const id = postid.substr(1);
+            var content = innerText;
+            content = content.replace(/\r/g, "");
+            content = content.replace(/\n/g, "");
+            await CommentActions.writeComment({id,content});
+            await CommentActions.showPostCommentList(id,1);
+            this.renewComment(id);
+            
+            for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
+                console.log(document.getElementsByName('^^comment')[i].id);
+                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(id)){
+                    document.getElementsByName('^^comment')[i].textContent = '';
+                    document.getElementsByName('^^comment')[i].blur();
+                }
+            }
+            await CommentActions.getCommentNum(id);
+            var {commentNum} = this.props;
+            await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':id});
+            await this.setCommentTime(id);
+            
+        }
+    }
+    renewComment=(id)=>
+        setTimeout(async()=>{
+            const {presentComment,TimelineActions} = this.props;
+            await TimelineActions.renewDetailComment({'commentId' : id,'presentComment':presentComment});
+            await this.setCommentTime(id);
+        },2000);
+        handleLikeClick = async(e) =>{
+            const {LikeActions,TimelineActions} = this.props;
+            const id = e.target.id;
+            await TimelineActions.setLikeKey(id);
+            await LikeActions.clickLike(id);
+            await TimelineActions.setDetailLike('none');
+            try{
+            await LikeActions.getLikeAndUserList(id,1);
+            }catch(e){}
+            const {totalNum} = this.props;
+            await TimelineActions.setDetailLikeNum(totalNum);
+               
+        }
+        handleCancelClick =async(e) => {
+            const {LikeActions,TimelineActions} = this.props;
+            const id = e.target.id;
+            await TimelineActions.setLikeKey(id);
+            await LikeActions.cancelLike(id);
+            await TimelineActions.setDetailLike('block');
+            try{
+            await LikeActions.getLikeAndUserList(id,1);
+            }catch(e){}
+            const {totalNum} = this.props;
+            await TimelineActions.setDetailLikeNum(totalNum);
+        }
     render(){
         if(!storage.get('loggedInfo')) {
             
             return null;
         }
         const {thumbnail,username,nickname} = storage.get('loggedInfo');
-        const {presentPost,commentList,fileSize,imageIndex,history} = this.props;
-        const {handleLeft,handleRight} = this;
+        const {presentPost,commentList,fileSize,imageIndex,history,trueComment,postid} = this.props;
+        const {handleLeft,handleRight,enterComment,handleCommentAdd,handleCancelClick,
+            handleLikeClick} = this;
         let index = imageIndex.substr(1);
+        let postId = postid.substr(1);
         return (
             <DetailPostView mainfeed = {presentPost.toJS()}  fileSize = {fileSize} imageIndex = {index}
-             history={history} handleLeft={handleLeft} handleRight={handleRight} >
+             history={history} handleLeft={handleLeft} handleRight={handleRight} > 
                 <CommentList comments = {commentList} commentThumbnail = {thumbnail} name={nickname}
-            userId= {username}/>
+            userId= {username} enterComment = {enterComment} handleCommentAdd = {handleCommentAdd}
+            trueComment = {trueComment} postId={postId} mainfeed = {presentPost.toJS()} cancel={handleCancelClick}
+            like = {handleLikeClick}/>
             </DetailPostView>
         )
     }
@@ -134,11 +233,16 @@ export default connect(
         lastComment : state.comment.get('lastComment'),
         comments : state.comment.get('commentList'),
         commentList : state.timeline.getIn(['presentPost','feed','commentList']),
-        fileSize : state.post.get('fileSize')
+        fileSize : state.post.get('fileSize'),
+        commentNum : state.comment.get('commentNum'),
+        trueComment : state.timeline.getIn(['presentPost','feed','trueComment']),
+        totalNum : state.like.get('totalNum'),
+        presentComment : state.comment.get('presentComment')
     }),
     (dispatch) => ({
         TimelineActions : bindActionCreators(timelineActions,dispatch),
         CommentActions : bindActionCreators(commentActions,dispatch),
-        PostActions : bindActionCreators(postActions,dispatch)
+        PostActions : bindActionCreators(postActions,dispatch),
+        LikeActions : bindActionCreators(likeActions,dispatch)
     })
 )(PostDetailContainer);

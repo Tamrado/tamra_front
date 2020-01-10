@@ -48,10 +48,20 @@ const DELETE_FEED = 'timeline/DELETE_FEED';
 const SET_DETAIL_COMMENT_TIME = 'timeline/SET_DETAIL_COMMENT_TIME';
 const SET_DETAIL_TIME = 'timeline/SET_DETAIL_TIME';
 const SET_IMAGE_ARROW_VISIBLE = 'timeline/SET_IMAGE_ARROW_VISIBLE';
+const RENEW_DETAIL_COMMENT = 'timeline/RENEW_DETAIL_COMMENT';
+const SET_DETAIL_COMMENT_LIST = 'timeline/SET_DETAIL_COMMENT_LIST';
+const SET_DETAIL_COMMENT_PAGE = 'timelne/SET_DETAIL_COMMENT_PAGE';
+const SET_DETAIL_LIKE = 'timeline/SET_DETAIL_LIKE';
+const SET_DETAIL_LIKE_NUM = 'timeline/SET_DETAIL_LIKE_NUM';
 
+export const setDetailLikeNum = createAction(SET_DETAIL_LIKE_NUM);
+export const setDetailLike = createAction(SET_DETAIL_LIKE);
+export const setDetailCommentPage = createAction(SET_DETAIL_COMMENT_PAGE);
+export const setDetailCommentList = createAction(SET_DETAIL_COMMENT_LIST);
+export const renewDetailComment = createAction(RENEW_DETAIL_COMMENT);
 export const setImageArrowVisible = createAction(SET_IMAGE_ARROW_VISIBLE);
 export const setDetailTime = createAction(SET_DETAIL_TIME);
-export const setDetailCommmentTime = createAction(SET_DETAIL_COMMENT_TIME);
+export const setDetailCommentTime = createAction(SET_DETAIL_COMMENT_TIME);
 export const deleteFeed = createAction(DELETE_FEED);
 export const setShowMenuVisible = createAction(SET_SHOW_MENU_VISIBLE);
 export const setMenuVisible = createAction(SET_MENU_VISIBLE);
@@ -117,6 +127,8 @@ const initialState = Map({
 });
 
 export default handleActions({
+    [SET_DETAIL_LIKE_NUM] : (state,action) => state.setIn(['presentPost','feed','totalLike'],action.payload),
+    [SET_DETAIL_COMMENT_PAGE] : (state,action) => state.setIn(['presentPost','feed','commentPage'],state.getIn(['presentPost','feed','commentPage'])+1),
     [SET_IMAGE_ARROW_VISIBLE] : (state,action) => state.set('imageArrowVisible',action.payload),
     [DELETE_FEED] : (state,action) => state.deleteIn(['mainfeed',action.payload]),
     [SET_MENU_VISIBLE] : (state,action) => {
@@ -146,6 +158,9 @@ export default handleActions({
     return state.setIn(['mainfeed',index,'commentList']
     ,state.getIn(['mainfeed',index,'commentList']).unshift(action.payload.presentComment.toJS()));
 },
+[RENEW_DETAIL_COMMENT] : (state,action) => state.setIn(['presentPost','feed','commentList'],state.getIn(['presentPost','feed','commentList']).unshift(action.payload.presentComment.toJS())),
+[SET_DETAIL_COMMENT_LIST] : (state,action) =>state.setIn(['presentPost','feed','commentList'], state.getIn(['presentPost','feed','commentList']).concat(action.payload.commentList.toJS()))
+.setIn(['presentPost','feed','trueComment'],action.payload.trueComment),
     [SET_COMMENT_LIST] : (state,action) => {
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId']) ===parseInt(action.payload.commentId));
         return state.setIn(['mainfeed',index,'feed','commentList'], state.getIn(['mainfeed',index,'feed','commentList']).concat(action.payload.commentList.toJS()))
@@ -211,6 +226,7 @@ export default handleActions({
         const index = state.get('mainfeed').findIndex(item => item.getIn(['feed','postId'])===parseInt(state.get('likeKey')))
         return state.setIn(['mainfeed',index,'feed','islike'],action.payload);
     },
+    [SET_DETAIL_LIKE] : (state,action) => state.setIn(['presentPost','feed','islike'],action.payload),
     [SET_TIMELINE_LIKE] : (state,action) => {
         const index = state.get('mainfeed').findIndex(item => item.get('postId')===parseInt(state.get('likeKey')))
         return state.setIn(['mainfeed',index,'islike'],action.payload);

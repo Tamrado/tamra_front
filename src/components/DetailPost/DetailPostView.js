@@ -17,6 +17,7 @@ background: #000000;
 `;
 const FeedBox = styled.div`
 position: absolute;
+overflow : hidden;
 width: 1146px;
 height: 90%;
 left: 147px;
@@ -174,8 +175,8 @@ const Exit = styled.div`
 position: absolute;
 width: 24px;
 height: 24px;
-right: 10px;
-top: 18px;
+right : 5px;
+top: 10px;
 background-image : url(${exit});
     background-size: cover;
     background-position: center;
@@ -185,7 +186,7 @@ background-image : url(${exit});
 const CommentView = styled.div`
 position: absolute;
 width: 346px;
-height: 660px;
+height: 40px;
 left: 800px;
 top: 75px;
 border-top : 1px solid #0CA678;
@@ -220,14 +221,13 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
         tags,
         dateString
        } = feed;
-    console.log(width);
     return(
         <Wrapper>
             <FeedBox >
                 <ImageBox>
                     <ImageWrapper>
-                    <Image image = {files[`${imageIndex}`].original} id = {'^^image'} width = {String(width*1.5)+'px'}
-                height = {String(height*1.5)+'px'}/>
+                    <Image image = {files[`${imageIndex}`].original} id = {'^^image'} width = {String(width)+'px'}
+                height = {String(height)+'px'}/>
                 </ImageWrapper>
                     <LeftArrowBox onClick={handleLeft}><LeftArrow/></LeftArrowBox>
                     <RightArrowBox onClick={handleRight}><RightArrow/></RightArrowBox>
@@ -244,7 +244,7 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
                 </NicknameBox>
                 <CommentView>{children}</CommentView>
             </FeedBox>
-            <Exit onClick={()=>{history.push('/')}}/>
+            <Exit onClick={()=>{window.history.back()}}/>
         </Wrapper>
     );
 }

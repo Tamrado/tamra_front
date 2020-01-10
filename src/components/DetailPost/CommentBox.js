@@ -4,13 +4,13 @@ import styled from 'styled-components';
 const CommentView = styled.div`
 position: relative;
 width: 100%;
-height: 90px;
+max-height: 90%;
 left: 0px;
-top: 111px;
+top: 0px;
 display : inline-block;
+background: #ffffff;
 padding-bottom: 5px;
 padding-top: 5px;
-margin-bottom : 0.8rem;
 `;
 
 const CommentThumbnail = styled.div`
@@ -53,8 +53,6 @@ position: relative;
 width: 103px;
 height: 32px;
 left: 95px;
-top: 50px;
-
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;
