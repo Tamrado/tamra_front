@@ -13,28 +13,28 @@ I plan to complete the refactoring in early 2020.
 
 # OpenSource
 
-#### redux
+- redux
 
-#### redux-pender
+- redux-pender
 
-#### react
+- react
 
-#### react-router-dom
+- react-router-dom
 
-#### react-redux
+- react-redux
 
-#### redux-actions
+- redux-actions
 
-#### immutable
+- immutable
 
-#### styled-components
+- styled-components
 
-#### axios
+- axios
 
-#### lodash
+- lodash
 
-#### query-string
+- query-string
 
-#### styled-components
+- styled-components
 
-#### open-color
+- open-color
