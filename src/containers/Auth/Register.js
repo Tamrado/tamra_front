@@ -75,8 +75,8 @@ class Register extends Component{
         },
         password: (value) => {
             
-            if(!new RegExp(/^(?=.*\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z])(?=.*[A-Z]).{8,12}$/).test(value)){
-                this.setError('비밀번호는 8~12 글자의 알파벳 (대소문자 구분), 숫자, 특수문자로 이루어져야 합니다.','password');
+            if(!new RegExp(/^(?=.*\d)(?=.*[~`!@#$%\\^&*()-])(?=.*[a-z])(?=.*[A-Z]).{9,12}$/).test(value)){
+                this.setError('비밀번호는 9~12 글자의 알파벳 (대소문자 구분), 숫자, 특수문자로 이루어져야 합니다.','password');
                 return false;
             }
             else if(new RegExp(/(\w)\1\1\1/).test(value)){
@@ -236,6 +236,20 @@ handleLocalRegister = async() => {
           this.handleLocalRegister();
     }
     render(){
+        const inputStyle = {
+            width: '15%',
+            left: '5%',
+            position: 'relative',
+    outline: 'none',
+    borderRadius: '0px',
+    lineHeight: '2.5rem',
+    fontSize: '1.2rem',
+    paddingLeft: '0.5rem',
+    fontFamily: 'Noto Sans KR',
+    fontStyle: 'normal',
+    paddingRight: '1rem',
+    marginRight : '1rem'
+        }
         const {error,errorId} = this.props;
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} = this.props.form.toJS();
         const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange,enterRegister} = this;
@@ -293,9 +307,9 @@ handleLocalRegister = async() => {
                 } 
                  <br/>
                 <Label label = "성별"></Label>
-                <input name= "gender" type="radio" value='0' onKeyUp = {enterRegister} onChange={checkedChange} />여성
-                <input name="gender" type="radio" value ={1} onKeyUp = {enterRegister}  onChange={checkedChange}/>남성
-                <input name="gender" type="radio"value={2} onKeyUp = {enterRegister} onChange={checkedChange} />others
+                <input style={inputStyle}  name= "gender" type="radio" value='0' onKeyUp = {enterRegister} onChange={checkedChange} />여성
+                <input style={inputStyle} name="gender" type="radio" value ={1} onKeyUp = {enterRegister}  onChange={checkedChange}/>남성
+                <input style={inputStyle} name="gender" type="radio"value={2} onKeyUp = {enterRegister} onChange={checkedChange} />others
                 {
                     errorId === 'gender' &&error && <AuthError>{error}</AuthError>
                 } 
@@ -303,7 +317,7 @@ handleLocalRegister = async() => {
                 {
                     errorId === 'address' &&error && <AuthError>{error}</AuthError>
                 } 
-                <InputWithLabel enter = {enterRegister} label = "프로필 사진" name ="image" type="file" onChange={handleFileInput}></InputWithLabel>
+                <InputWithLabel enter = {enterRegister} label = "프로필 사진" name ="image" type="file" accept=".gif, .jpg, .png" onChange={handleFileInput}></InputWithLabel>
                
                 <AuthButton onClick={handleLocalRegister} enter = {enterRegister}>회원가입</AuthButton>
                 <RightAlignedLink to="/auth/login">로그인</RightAlignedLink>

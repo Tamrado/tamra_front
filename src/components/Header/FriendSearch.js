@@ -89,7 +89,7 @@ const FriendSearch = ({onclick,nickname,children}) => (
         <SearchlineRectangle role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {`검색`}
         onInput={onclick}/>
         </SearchBox>
-        <SearchButton to = {`/search/${nickname}`}/>
+        <SearchButton onClick={()=>{window.location.href=`/search/${nickname}`}}/>
         <SearchContent>{children}</SearchContent>
     </FriendBox>
 );

@@ -361,13 +361,12 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
    const style = {
     lineHeight: '160%'
 };
-
    const contents= content&&content.split('\n').map( (line,index) => {
     return (<div key={index} style={style} >{line}<br/></div>)
   }); 
 return(
     <div>
-    {`${message}`&&<PostStateBox onClick = {stateclick}>{message}</PostStateBox>}
+    {`${message}`&&<PostStateBox id = {sender[0]&&sender[0].username} onClick = {stateclick}>{message}</PostStateBox>}
     <Box bottom ={bottom}>
         <NickNameBox>
             <Profile id = {profileId} thumbnail = {profile.profile}/>

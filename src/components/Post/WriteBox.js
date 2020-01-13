@@ -26,7 +26,7 @@ background:rgba(196, 196, 196,${props=>props.opacity});
 const Box = styled.div`
 position: absolute;
 width: 1100px;
-height: 550px;
+height: 510px;
 left: 20px;
 top: 72px;
 z-index: 15;
@@ -134,7 +134,7 @@ position: absolute;
 width: 12%;
 height: 40px;
 right : 5%;
-top: 470px;
+top: 430px;
 border-radius: 10px;
 font-size: 18px;
 line-height: 2;

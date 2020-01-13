@@ -13,7 +13,7 @@ display : ${props=>props.display};
 `;
 const Fixed = styled.div`
 width: 1100px;
-height: 550px;
+height: 510px;
 left: 20px;
 top: 72px;
 z-index: 20;

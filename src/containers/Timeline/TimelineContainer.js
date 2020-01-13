@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import PageWrapper from '../../components/PageWrapper';
 import {FeedList} from '../../components/Timeline';
+import {PostPopup,Popup} from '../../components/Popup';
 import * as friendActions from '../../redux/modules/friend';
 import * as timelineActions from '../../redux/modules/timeline';
 import * as likeActions from '../../redux/modules/like';
@@ -30,7 +31,6 @@ class TimelineContainer extends Component{
             try{
                  await TimelineActions.getTimelineInformation(username,page);
             }catch(e){
-                console.log(e);
                 await TimelineActions.setFalsePost();
             }
             
@@ -55,16 +55,18 @@ class TimelineContainer extends Component{
         else TimelineActions.setFollowDisplay('block');
         try{
         await FriendActions.getOtherInfoNum(id);
-        TimelineActions.getTimelinePostNum(id);
+        await TimelineActions.getTimelinePostNum(id);
+        await FriendActions.notifyIsFollowUser(id);
         }catch(e){
-            window.location.replace('/');
+            console.log(e);
+            
         }
         const{result} = this.props;
         TimelineActions.setComment(result.comment);
         TimelineActions.setThumbnail(result.thumbnail);
         TimelineActions.setUsername(result.username);
         TimelineActions.setNickname(result.nickname);
-        await FriendActions.notifyIsFollowUser(id);
+        
 
     }
 
@@ -254,7 +256,8 @@ class TimelineContainer extends Component{
         this.props.followDisplay !== nextProps.followDisplay || this.props.comment !== nextProps.comment ||
         this.props.username !== nextProps.username || this.props.nickname !== nextProps.nickname || 
         this.props.thumbnail !== nextProps.thumbnail || this.props.hashdisplay !== nextProps.hashdisplay
-        || this.props.postNum !== nextProps.postNum;
+        || this.props.postNum !== nextProps.postNum || this.props.popupDisplay !== nextProps.popupDisplay ||
+         this.props.postPopupDisplay !== nextProps.postPopupDisplay;
     }
 
     handleMenu = (e) => {
@@ -277,20 +280,35 @@ class TimelineContainer extends Component{
 
     modifyClick = async(e) => {
         const {id} = e.target;
-        const {data,TimelineActions} = this.props;
+        const {data,TimelineActions,PostActions} = this.props;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
         
         await TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
         await TimelineActions.setModifyVisible({'index' : index,'visible' : 'inline-block'});
     }
-
-    deleteClick = async(e) => {
+    get = (type) => {
+        return {
+            'modify' : '수정하시겠습니까?',
+            'delete' : '삭제하시겠습니까?'
+        }[type];
+    }
+    buttonClick = (e) => {
+        const {PostActions,TimelineActions,data} = this.props;
         const {id} = e.target;
-        const {PostActions,TimelineActions,data,userid} = this.props;
+        const {category} = e.target.dataset;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
+        PostActions.setPopupId(id);
+        PostActions.setPostPopupDisplay('block');
+        PostActions.setPopupCategory(category);
+        PostActions.setPopupText(this.get(category));
+    }
+    deleteClick = async() => {
+        const {PostActions,TimelineActions,data,userid,popupId} = this.props;
+        const index = data.findIndex(item => item.get('postId')===parseInt(popupId));
         const userId = userid.substr(1);
         try{
-            await PostActions.deleteFeed(id);
+            await PostActions.deleteFeed(popupId);
             await TimelineActions.deleteFeed(index);
             await TimelineActions.getTimelinePostNum(userId);
         }catch(e){
@@ -327,24 +345,26 @@ class TimelineContainer extends Component{
         }
         TimelineActions.setModifyVisible({'index' : index,'visible' : 'none'});
     }
-    
     handleCancel = (e) => {
-        const {id} = e.target;
-        const {TimelineActions,data} = this.props;
-        const index = data.findIndex(item => item.get('postId')===parseInt(id));
-        this.unavailableModify(index,id);
-    }
-    handleWrite = async(e) => {
         const {id} = e.target;
         const {TimelineActions,data,PostActions} = this.props;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
+        this.unavailableModify(index,id);
+    }
+    handleWrite = async() => {
+        const {TimelineActions,data,PostActions,popupId} = this.props;
+        const index = data.findIndex(item => item.get('postId')===parseInt(popupId));
         let showLevel = data.getIn([index,'showLevel']);
         try{
-        await PostActions.modifyFeedInformation({'showLevel' : showLevel, 'postId' : id, 'content' : data.getIn([index,'modifyText'])});
+        await PostActions.modifyFeedInformation({'showLevel' : showLevel, 'postId' : popupId, 'content' : data.getIn([index,'modifyText'])});
         }catch(e){
-
+            if(e.response.status === 409){
+                PostActions.setPopupText('글은 1000자 이하여야 합니다. 다시 입력해주세요.');
+                PostActions.setPopupDisplay('block');
+                return;
+            }
         }
-        this.unavailableModify(index,id);
+        this.unavailableModify(index,popupId);
         TimelineActions.setFeedContext({'index': index,'text': data.getIn([index,'modifyText'])});
         }
         handleWriteInput = (e) => {
@@ -384,6 +404,24 @@ class TimelineContainer extends Component{
             TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
         }
 
+        handleOk = () => {
+            const {popupCategory,PostActions} = this.props;
+            PostActions.setPostPopupDisplay('none');
+            if(popupCategory === 'modify')
+                this.handleWrite();
+
+            if(popupCategory === 'delete')
+                this.deleteClick();
+        }
+        handlePopupCancel = () => {
+        const {PostActions} = this.props;
+        PostActions.setPostPopupDisplay('none');
+        }
+        handlePopupOk = () => {
+            const {PostActions} = this.props;
+        PostActions.setPopupDisplay('none');
+        }
+
     render(){
         
         const {data} = this.props;
@@ -392,12 +430,13 @@ class TimelineContainer extends Component{
             return null;
         }
         const commentThumbnail = storage.get('loggedInfo').thumbnail; 
-        const {hashdisplay,keyid,totalNum} = this.props;
+        const {hashdisplay,keyid,totalNum,postPopupDisplay,popupText,popupDisplay} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
         const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
-            ,handleComment,handleMenu,modifyClick,deleteClick,handleImageChange,handleImage,handleCancel,
-        handleWrite,handleWriteInput,handleViewChange,handleShowLevel} = this;
+            ,handleComment,handleMenu,handleImageChange,handleImage,handleCancel,modifyClick,handlePopupOk,
+        handleWrite,handleWriteInput,handleViewChange,handleShowLevel,handleOk,handlePopupCancel,buttonClick} = this;
         return(
+            <div>
             <PageWrapper>
             <FeedList  commentThumbnail = {commentThumbnail} change = {handleImageChange}
             thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
@@ -406,10 +445,14 @@ class TimelineContainer extends Component{
              mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
              nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}
              enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory}
-             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {deleteClick} handleImage={handleImage}
-             handleCancel = {handleCancel} handleWrite={handleWrite} handleWriteInput={handleWriteInput} 
+             handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {buttonClick} handleImage={handleImage}
+             handleCancel = {handleCancel} handleWrite={buttonClick} handleWriteInput={handleWriteInput} 
              handleViewChange = {handleViewChange} handleShowLevel={handleShowLevel}/>
           </PageWrapper>
+          <PostPopup handleOk={handleOk} right={'40%'} handleCancel={handlePopupCancel}
+             text={popupText} display={postPopupDisplay} />
+             <Popup handlePopupOk = {handlePopupOk} display={popupDisplay} text={popupText} />
+          </div>
             );
     }
 }
@@ -439,7 +482,12 @@ export default connect(
         postId : state.post.get('postId'),
         presentComment : state.comment.get('presentComment'),
         lastComment : state.comment.get('lastComment'),
-        userResult : state.userPage.get('result')
+        userResult : state.userPage.get('result'),
+        postPopupDisplay : state.post.get('postPopupDisplay'),
+        popupText : state.post.get('popupText'),
+        popupId : state.post.get('popupId'),
+        popupDisplay : state.post.get('popupDisplay'),
+        popupCategory : state.post.get('popupCategory')
 
     }),
     (dispatch) => ({

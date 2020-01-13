@@ -4,6 +4,8 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as baseActions from '../../redux/modules/base';
 import * as userActions from '../../redux/modules/user';
+import * as postActions from '../../redux/modules/post';
+import {PostPopup} from '../../components/Popup';
 import PropTypes from 'prop-types';
 import storage from '../../lib/storage';
 class UserMenuContainer extends Component{
@@ -12,13 +14,10 @@ class UserMenuContainer extends Component{
         router: PropTypes.object
     }
 
-
-    handleSetUserInfo = async() => {
-        const {username} = this.props;
-        window.location.href = '/@' + username+'/password';
-        
+    handleLogoutButtonClick = () => {
+        const {PostActions,BaseActions} = this.props;
+        PostActions.setPostPopupDisplay('block');
     }
-
 
     handleLogout = async()=> {
         const {UserActions} = this.props;
@@ -32,10 +31,15 @@ class UserMenuContainer extends Component{
         storage.remove('loggedInfo');
         window.location.href='/auth/Login';
     }
+    handleCancel = async() => {
+        const {PostActions,BaseActions} = this.props;
+        PostActions.setPostPopupDisplay('none');
+        BaseActions.setUserMenuVisibility(false);
+    }
 
     render(){
-        const{visible, username,BaseActions} = this.props;
-        const {handleLogout,handleSetUserInfo} = this;
+        const{visible, username,BaseActions,postPopupDisplay} = this.props;
+        const {handleLogout,handleLogoutButtonClick,handleCancel} = this;
 
         if(!visible){
             return null;
@@ -45,10 +49,14 @@ class UserMenuContainer extends Component{
             BaseActions.setAlarmMenuVisible('none');
         }
         return (
+            <div>
             <UserMenu>
                 <Username username={username}/>
-                <UserMenuItem onClick={handleLogout}>로그아웃</UserMenuItem>
+                <UserMenuItem onClick={handleLogoutButtonClick}>로그아웃</UserMenuItem>
                 </UserMenu>
+            <PostPopup handleOk={handleLogout} right={'40%'} handleCancel={handleCancel}
+             text={'로그아웃하시겠습니까?'} display={postPopupDisplay} />
+                </div>
         );
     }
 }
@@ -57,10 +65,13 @@ export default connect(
 
     (state) => ({
         visible : state.base.getIn(['userMenu','visible']),
-        username: state.user.getIn(['loggedInfo','username'])
+        username: state.user.getIn(['loggedInfo','username']),
+        display : state.post.get('popupDisplay'),
+        postPopupDisplay : state.post.get('postPopupDisplay')
     }),
     (dispatch) => ({
         BaseActions: bindActionCreators(baseActions, dispatch),
-        UserActions: bindActionCreators(userActions, dispatch)
+        UserActions: bindActionCreators(userActions, dispatch),
+        PostActions : bindActionCreators(postActions, dispatch)
     })
 )(UserMenuContainer);

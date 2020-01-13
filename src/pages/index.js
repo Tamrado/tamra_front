@@ -4,4 +4,6 @@ export {default as AuthLogin} from './AuthLogin'
 export {default as UserPageConfirm} from './UserPageConfirm'
 export {default as UserPage} from './UserPage'
 export {default as Timeline} from './Timeline'
-export {default as ImageDetail} from './ImageDetail';
+export {default as ImageDetail} from './ImageDetail'
+export {default as Search} from './Search'
+export {default as NotFound} from './NotFound'

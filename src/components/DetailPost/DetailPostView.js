@@ -193,7 +193,7 @@ border-top : 1px solid #0CA678;
 `;
 
 const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageIndex,handleLeft,handleRight
-,history}) => { 
+,history,pageCount}) => { 
     const{
         feed,
         category,
@@ -244,7 +244,7 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
                 </NicknameBox>
                 <CommentView>{children}</CommentView>
             </FeedBox>
-            <Exit onClick={()=>{window.history.back()}}/>
+            <Exit onClick={()=>{window.history.go(-(parseInt(pageCount)+1))}}/>
         </Wrapper>
     );
 }

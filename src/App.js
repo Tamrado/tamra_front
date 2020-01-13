@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
-import { Home, AuthLogin,AuthRegister, UserPageConfirm,UserPage,Timeline,ImageDetail} from './pages';
+import { Switch,Route } from 'react-router-dom';
+import { Home, AuthLogin,AuthRegister, UserPageConfirm,UserPage,Timeline,ImageDetail,Search,NotFound} from './pages';
 import HeaderContainer from './containers/Base/HeaderContainer';
 
 import storage from './lib/storage';
@@ -37,14 +37,18 @@ class App extends Component {
         return (
             <div>
               <HeaderContainer/>
+              <Switch>
                 <Route exact path="/" component={Home}/>
                 <Route path = "/feed/@:postid/image/:index" component={ImageDetail}/>
                 <Route path="/auth/Login" component={AuthLogin}/>
                 <Route path="/auth/Register" component={AuthRegister}/>
-                <Route path="/@:username/password" component={UserPageConfirm}/>
-                <Route path="/@:username/info"component={UserPage}/>
+                <Route exact path="/@:username/password" component={UserPageConfirm}/>
+                <Route exact path="/@:username/info"component={UserPage}/>
                 <Route exact path="/@:username"component={Timeline}/>
-               
+                <Route exact path = "/search/:nickname" component={Search}/>
+                <Route exact path = "/notfound" component={NotFound}/>
+                <Route component={NotFound}/>
+                </Switch>
             </div>
         );
     }

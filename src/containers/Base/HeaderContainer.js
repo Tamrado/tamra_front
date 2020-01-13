@@ -188,6 +188,7 @@ class HeaderContainer extends Component {
     handleSearchClick = async() => {
         const {SearchActions,page,headerContent} = this.props;
         await SearchActions.searchInHeader(headerContent,page,10);
+        await SearchActions.setEmptyUserlist();
         await SearchActions.setAddPage();
     }
 

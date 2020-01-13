@@ -9,7 +9,7 @@ class Home extends Component {
     initializeUserInfo = async () => {
         const loggedInfo = storage.get('loggedInfo');
         if(!loggedInfo){
-            window.location.href = '/auth/login?expired';
+            window.location.replace('/auth/login?expired');
             return;
         }
     }

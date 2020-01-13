@@ -156,7 +156,7 @@ top : 0;
 border-radius : 10px;
 background : rgba(18,184,134,0.05);
 min-height : 100px;
-max-height : 500px; 
+max-height : 400px; 
 word-break: break-all;
 font-family: Noto Sans KR;
 border : none;
@@ -465,7 +465,7 @@ return(
                  <WriteContext id = {postId} name={'^^content'} role = "textbox" spellcheck = "true" 
                   aria-autocomplete="list" data-content = "true" contentEditable = "true" aria-label = {content} suppressContentEditableWarning={true}
                   aria-multiline="true" onInput={handleWriteInput}>{content}</WriteContext>
-                 <WriteButton id = {postId} data-category = {'write'} onClick = {handleWrite} right={'23%'}>수정</WriteButton>
+                 <WriteButton id = {postId} data-category = {'modify'} onClick = {handleWrite} right={'23%'}>수정</WriteButton>
                  <WriteButton id = {postId} data-category = {'cancel'} onClick = {handleCancel} right={'5%'}>취소</WriteButton>
              </WriteBox>
          {contents}<br/>

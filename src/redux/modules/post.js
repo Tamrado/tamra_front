@@ -23,7 +23,19 @@ const INITIALIZE_IMAGE = 'post/INITIALIZE_IMAGE';
 const DELETE_FEED = 'post/DELETE_FEED';
 const SET_FILE_SIZE = 'post/SET_FILE_SIZE';
 const MODIFY_FEED_INFORMATION = 'post/MODIFY_FEED_INFORMATION';
+const DELETE_FILE = 'post/DELETE_FILE';
+const SET_POST_POPUP_DISPLAY = 'post/SET_POST_POPUP_DISPLAY';
+const SET_POPUP_DISPLAY = 'post/SET_POPUP_DISPLAY';
+const SET_POPUP_TEXT = 'post/SET_POPUP_TEXT';
+const SET_POPUP_ID = 'post/SET_POPUP_ID';
+const SET_POPUP_CATEGORY = 'post/SET_POPUP_CATEGORY';
 
+export const setPopupCategory = createAction(SET_POPUP_CATEGORY);
+export const setPopupId = createAction(SET_POPUP_ID);
+export const setPopupText = createAction(SET_POPUP_TEXT);
+export const setPostPopupDisplay = createAction(SET_POST_POPUP_DISPLAY);
+export const setPopupDisplay = createAction(SET_POPUP_DISPLAY);
+export const deleteFile = createAction(DELETE_FILE);
 export const modifyFeedInformation = createAction(MODIFY_FEED_INFORMATION,PostAPI.modifyFeedInformation);
 export const setFileSize = createAction(SET_FILE_SIZE);
 export const deleteFeed = createAction(DELETE_FEED,PostAPI.deleteFeed);
@@ -60,7 +72,12 @@ const initialState = Map({
     clear : 0,
     result : Map({}),
     filelist : List(),
-    fileSize : Map({})
+    fileSize : Map({}),
+    popupDisplay : 'none',
+    postPopupDisplay : 'none',
+    popupText : '',
+    popupId : -1,
+    popupCategory : ''
 });
 
 
@@ -82,10 +99,19 @@ export default handleActions({
         onSuccess : (state,action) => state.set('clear',2),
         onFailure : (state,action) => state.set('clear',-1)
     }),
+    [SET_POPUP_CATEGORY] : (state,action) => state.set('popupCategory',action.payload),
+    [SET_POPUP_ID] : (state,action) => state.set('popupId',action.payload),
+    [SET_POPUP_TEXT] : (state,action) => state.set('popupText',action.payload),
+    [SET_POPUP_DISPLAY] : (state,action) => state.set('popupDisplay',action.payload),
+    [SET_POST_POPUP_DISPLAY ] : (state,action) => state.set('postPopupDisplay',action.payload),
     [UPDATE_FILELIST] : (state,action) => state.update('filelist',item => item.push(Map({
         file : action.payload
     })
     )),
+    [DELETE_FILE] : (state,action) => {
+        const index = state.get('image').findIndex(item => item.get('url') === action.payload);
+        return state.deleteIn(['image',index]).deleteIn(['filelist',index]);
+    },
     [SET_FILE_SIZE] : (state,action) => state.set('fileSize',action.payload),
     [INITIALIZE_IMAGE] :(state,action) => state.set('image',List()),
     [INITIALIZE_FILELIST] :(state,action) => state.set('filelist',List()),

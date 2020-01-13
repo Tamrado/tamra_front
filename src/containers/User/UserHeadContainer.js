@@ -65,23 +65,27 @@ class UserHeadContainer extends Component {
         window.location.href =  '/@' + username+'/info';
         
     } 
+    enter = () => {
+        if(window.event.keyCode === 13)
+        this.handleClick();
+    }
 
     render(){
         const { error } = this.props;
         const {username,thumbnail,fetched,password} = this.props;
-        const {handleChange,handleClick} = this;
+        const {handleChange,handleClick,enter} = this;
         if(!fetched) return null;
         return (
             <AuthContent title='MY PAGE'>
             <UserHead username={username} thumbnail={thumbnail}/>
             <InputWithLabel label = "비밀번호 입력" name="password" placeholder="비밀번호"
                 type="password"
-                value={password} onChange={handleChange}
+                value={password} onChange={handleChange} enter={enter}
                 />
                 {
                     error && <AuthError>{error}</AuthError>
                 }
-                <AuthButton onClick={handleClick}>확인</AuthButton>
+                <AuthButton onClick={handleClick} >확인</AuthButton>
                 
             </AuthContent>
 

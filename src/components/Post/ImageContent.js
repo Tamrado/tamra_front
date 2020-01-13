@@ -65,7 +65,7 @@ const ImageContent = ({children,change}) =>(
             <PhotoText>
                 +
             </PhotoText>
-            <Photo type='file' onChange={change}/>
+            <Photo type='file' accept=".gif, .jpg, .png" onChange={change}/>
         </PhotoBox>
     </Wrapper>
 );

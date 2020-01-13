@@ -8,6 +8,9 @@ import * as postActions from '../../redux/modules/post';
 import * as likeActions from '../../redux/modules/like';
 import {CommentList,DetailPostView} from '../../components/DetailPost';
 class PostDetailContainer extends Component{
+    state = {
+        pageCount : 0
+    }
     componentDidMount=async()=>{
         await this.renderPageInfo();
         await this.renderCommentInfo();
@@ -104,6 +107,9 @@ class PostDetailContainer extends Component{
         const {presentPost,imageIndex,history,postid,PostActions} = this.props;
         let index = imageIndex.substr(1);
         let imageSize = presentPost.getIn(['feed','files']).size;
+        this.setState({
+            pageCount : this.state.pageCount + 1
+        });
         if(parseInt(index) === 0) {
             await this.setImageSize(imageSize -1);
             history.push(`/feed/@${postid}/image/:${imageSize-1}`);
@@ -118,6 +124,9 @@ class PostDetailContainer extends Component{
         let index = imageIndex.substr(1);
         let size = await this.getImageSize(presentPost.getIn(['feed','files',index,'original']));
         PostActions.setFileSize(size);
+        this.setState({
+            pageCount : this.state.pageCount + 1
+        });
         let imageSize = presentPost.getIn(['feed','files']).size;
         if(parseInt(index) === imageSize-1) {
             await this.setImageSize(0);
@@ -186,11 +195,13 @@ class PostDetailContainer extends Component{
             await TimelineActions.setLikeKey(id);
             await LikeActions.clickLike(id);
             await TimelineActions.setDetailLike('none');
+            await TimelineActions.setLike('none');
             try{
             await LikeActions.getLikeAndUserList(id,1);
             }catch(e){}
             const {totalNum} = this.props;
             await TimelineActions.setDetailLikeNum(totalNum);
+            await TimelineActions.setLikeNum(totalNum);
                
         }
         handleCancelClick =async(e) => {
@@ -199,11 +210,13 @@ class PostDetailContainer extends Component{
             await TimelineActions.setLikeKey(id);
             await LikeActions.cancelLike(id);
             await TimelineActions.setDetailLike('block');
+            await TimelineActions.setLike('block');
             try{
             await LikeActions.getLikeAndUserList(id,1);
             }catch(e){}
             const {totalNum} = this.props;
             await TimelineActions.setDetailLikeNum(totalNum);
+            await TimelineActions.setLikeNum(totalNum);
         }
     render(){
         if(!storage.get('loggedInfo')) {
@@ -218,7 +231,7 @@ class PostDetailContainer extends Component{
         let postId = postid.substr(1);
         return (
             <DetailPostView mainfeed = {presentPost.toJS()}  fileSize = {fileSize} imageIndex = {index}
-             history={history} handleLeft={handleLeft} handleRight={handleRight} > 
+             history={history} handleLeft={handleLeft} handleRight={handleRight} pageCount = {this.state.pageCount} > 
                 <CommentList comments = {commentList} commentThumbnail = {thumbnail} name={nickname}
             userId= {username} enterComment = {enterComment} handleCommentAdd = {handleCommentAdd}
             trueComment = {trueComment} postId={postId} mainfeed = {presentPost.toJS()} cancel={handleCancelClick}

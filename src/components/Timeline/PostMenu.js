@@ -60,8 +60,8 @@ const PostMenu = ({modifyClick,deleteClick,mainfeed}) => {
     return(
 
     <MenuBox display = {menuVisible}>
-        <Menu onClick = {modifyClick} id = {postId}>수정하기</Menu>
-        <Menu onClick = {deleteClick} id = {postId}>삭제하기</Menu>
+        <Menu onClick = {modifyClick} id = {postId} data-category = {'modify'}>수정하기</Menu>
+        <Menu onClick = {deleteClick} id = {postId} data-category = {'delete'}>삭제하기</Menu>
     </MenuBox>
 );
 }

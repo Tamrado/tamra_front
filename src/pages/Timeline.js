@@ -16,6 +16,7 @@ class MyPost extends Component {
     render() {
         const { match,history } = this.props;
         const { username } = match.params;
+        if(username.substr(1) === '') window.location.href = '/notfound';
         return (
             <div>
             <TimelineContainer userid={username} history={history}/>
