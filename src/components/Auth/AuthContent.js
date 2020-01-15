@@ -9,6 +9,8 @@ color: #000000;
 font-family: 'Rajdhani';
 text-decoration: none;
 margin-bottom: 1rem;
+padding-top : 1rem;
+border-top : 1px solid rgba(0, 0, 0, 0.1);
 `;
 
 const AuthContent = ({title, children}) => (

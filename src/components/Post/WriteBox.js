@@ -134,7 +134,7 @@ position: absolute;
 width: 12%;
 height: 40px;
 right : 5%;
-top: 430px;
+top: 450px;
 border-radius: 10px;
 font-size: 18px;
 line-height: 2;
@@ -176,7 +176,7 @@ background-repeat: no-repeat;
 const WithBox = styled.div`
 position: absolute;
 width: 349px;
-height: 61px;
+max-height: 61px;
 top : 400px;
 right : 0;
 font-family: Noto Sans KR;

@@ -15,9 +15,7 @@ const initialState = Map({
     header: Map({
         visible: true
     }),
-    userMenu: Map({
-        visible: false
-    }),
+    userMenuVisible : 'none',
     followMenuVisible : 'none',
     alarmMenuVisible : 'none'
 });
@@ -26,5 +24,5 @@ export default handleActions({
     [SET_FOLLOW_MENU_VISIBLE] : (state,action) => state.set('followMenuVisible',action.payload),
     [SET_ALARM_MENU_VISIBLE] : (state,action) => state.set('alarmMenuVisible',action.payload),
     [SET_HEADER_VISIBILITY]: (state, action) => state.setIn(['header', 'visible'], action.payload),
-    [SET_USER_MENU_VISIBILITY]: (state,action) => state.setIn(['userMenu','visible'], action.payload)
+    [SET_USER_MENU_VISIBILITY]: (state,action) => state.set('userMenuVisible', action.payload)
 }, initialState);

@@ -70,6 +70,7 @@ class Login extends Component {
 
         return (
             <AuthContent title="SIGN IN">
+                
                 <InputWithLabel 
                 enter = {enterLogin}
                     label="아이디" 

@@ -15,6 +15,9 @@ const LOCAL_LOGIN = 'auth/LOCAL_LOGIN';
 const LOCAL_REGISTER_IMAGE = 'auth/LOCAL_REGISTER_IMAGE';
 const LOGOUT = 'auth/LOGOUT';
 
+const KAKAO_LOGIN = 'auth/KAKAO_LOGIN';
+const KAKAO_REGISTER = 'auth/KAKAO_REGISTER';
+
 const CHANGE_INPUT = 'auth/CHANGE_INPUT';// input 값 변경
 const INITIALIZE_FORM = 'auth/INITIALIZE_FORM'; // form 초기화
 
@@ -25,6 +28,8 @@ export const checkPhoneExists = createAction(CHECK_PHONE_EXISTS, AuthAPI.checkPh
 export const localRegister = createAction(LOCAL_REGISTER, AuthAPI.localRegister);
 export const localLogin = createAction(LOCAL_LOGIN,AuthAPI.localLogin);
 export const localRegisterImage = createAction(LOCAL_REGISTER_IMAGE,AuthAPI.localRegisterImage);
+export const kakaoLogin = createAction(KAKAO_LOGIN,AuthAPI.kakaoLogin);
+export const kakaoRegister = createAction(KAKAO_REGISTER,AuthAPI.kakaoRegister);
 
 export const logout = createAction(LOGOUT, AuthAPI.logout);
 
@@ -105,6 +110,14 @@ export default handleActions({
     }),
     ...pender({
         type: LOCAL_REGISTER,
+        onSuccess: (state,action) => state.set('result',Map(action.payload.data))
+    }),
+    ...pender({
+        type: KAKAO_LOGIN,
+        onSuccess : (state,action) => state.set('result',Map(action.payload.data))
+    }),
+    ...pender({
+        type: KAKAO_REGISTER,
         onSuccess: (state,action) => state.set('result',Map(action.payload.data))
     })
 }, initialState);

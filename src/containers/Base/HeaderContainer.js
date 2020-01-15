@@ -122,11 +122,11 @@ class HeaderContainer extends Component {
         }
     }
     handleThumbnailClick = () => {
-        const {BaseActions,menuvisible} = this.props;
-        if(!menuvisible)
-            BaseActions.setUserMenuVisibility(true);
+        const {BaseActions,userMenuVisible} = this.props;
+        if(userMenuVisible === 'none')
+            BaseActions.setUserMenuVisibility('block');
         
-        else BaseActions.setUserMenuVisibility(false);
+        else BaseActions.setUserMenuVisibility('none');
     }
 
     handleAlarmClick = () => {
@@ -134,7 +134,7 @@ class HeaderContainer extends Component {
      if(alarmMenuVisible === 'none'){
         BaseActions.setAlarmMenuVisible('block');
         BaseActions.setFollowMenuVisible('none');
-        BaseActions.setUserMenuVisibility(false);
+        BaseActions.setUserMenuVisibility('none');
     }
      else
         BaseActions.setAlarmMenuVisible('none');
@@ -145,7 +145,7 @@ class HeaderContainer extends Component {
         if(followMenuVisible === 'none'){
             BaseActions.setAlarmMenuVisible('none');
         BaseActions.setFollowMenuVisible('block');
-        BaseActions.setUserMenuVisibility(false);
+        BaseActions.setUserMenuVisibility('none');
     }
         else
         BaseActions.setFollowMenuVisible('none');
@@ -217,8 +217,6 @@ class HeaderContainer extends Component {
     let content,search,alarm,friendRequest,mypage,menu,menuVisible = null;
     
     if(!visible) return null;
-    if(!userMenuVisible) menuVisible='none';
-    else menuVisible = 'block';
 
     if(user.get('logged')){
         content = <UserThumbnail profileClick={handleProfileClick}  username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
@@ -232,7 +230,7 @@ class HeaderContainer extends Component {
         
          mypage = <Setting key={'mypage'} tvisible = {'none'}resultvisible={mypageVisible} image = {mypageImage} size = {'35px'} onclick = {handleMyPageClick} hoverimg={hoverMypageImage}/>;
         
-         menu = <Setting key={'menu'} left ={'10px'} tvisible = {menuVisible} resultvisible={mVisible} image = {menuImage} size = {'12px'}  hoverimg = {hoverMenuImage} onclick={handleThumbnailClick}/>;
+         menu = <Setting key={'menu'} left ={'10px'} tvisible = {userMenuVisible} resultvisible={mVisible} image = {menuImage} size = {'12px'}  hoverimg = {hoverMenuImage} onclick={handleThumbnailClick}/>;
     }
     else{
         content = <RegisterButton/>;
@@ -258,9 +256,8 @@ class HeaderContainer extends Component {
 }
 export default connect(
     (state) => ({
-        userMenuVisible : state.base.getIn(['userMenu','visible']),
+        userMenuVisible : state.base.get('userMenuVisible'),
         visible: state.base.getIn(['header', 'visible']),
-        menuvisible: state.base.getIn(['userMenu','visible']),
         username: state.user.getIn(['loggedInfo','username']),
         user: state.user,
         followRequest : state.friend.get('alarm'),

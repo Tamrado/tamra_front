@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Switch,Route } from 'react-router-dom';
-import { Home, AuthLogin,AuthRegister, UserPageConfirm,UserPage,Timeline,ImageDetail,Search,NotFound} from './pages';
+import { Home, AuthLogin,AuthRegister, UserPageConfirm,AuthKakaoRegister,
+    UserPage,Timeline,ImageDetail,Search,NotFound} from './pages';
 import HeaderContainer from './containers/Base/HeaderContainer';
 
 import storage from './lib/storage';
@@ -19,6 +20,7 @@ class App extends Component {
         return ;
         
         UserActions.setLoggedInfo(loggedInfo);
+        if(loggedInfo.category === 'basic'){
         try{
            await UserActions.checkStatus();
         } catch(e){
@@ -27,6 +29,17 @@ class App extends Component {
             window.location.replace('/auth/login?expired');
             return;
         }
+    }
+    else{
+        try{
+            await UserActions.kakaoCheckStatus();
+         } catch(e){
+             console.log(e);
+             storage.remove('loggedInfo');
+             window.location.replace('/auth/login?expired');
+             return;
+         }
+    }
        
     }
     componentDidMount(){
@@ -41,6 +54,7 @@ class App extends Component {
                 <Route exact path="/" component={Home}/>
                 <Route path = "/feed/@:postid/image/:index" component={ImageDetail}/>
                 <Route path="/auth/Login" component={AuthLogin}/>
+                <Route path="/auth/kakao/Register/:id" component={AuthKakaoRegister}/>
                 <Route path="/auth/Register" component={AuthRegister}/>
                 <Route exact path="/@:username/password" component={UserPageConfirm}/>
                 <Route exact path="/@:username/info"component={UserPage}/>

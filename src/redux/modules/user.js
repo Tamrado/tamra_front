@@ -8,12 +8,13 @@ const SET_LOGGED_INFO = 'user/SET_LOGGED_INFO';
 const SET_VALIDATED = 'user/SET_VALIDATED';
 const LOGOUT = 'user/LOGOUT';
 const CHECK_STATUS = 'user/CHECK_STATUS';
+const KAKAO_CHECK_STATUS = 'user/KAKAO_CHECK_STATUS';
 
 export const setLoggedInfo = createAction(SET_LOGGED_INFO);
 export const setValidated = createAction(SET_VALIDATED);
 export const logout = createAction(LOGOUT,AuthAPI.logout);
 export const checkStatus = createAction(CHECK_STATUS,AuthAPI.checkStatus);// 현재 로그인상태 확인
-
+export const kakaoCheckStatus = createAction(KAKAO_CHECK_STATUS,AuthAPI.kakaoCheckStatus);
 const initialState = Map({
     loggedInfo: Map({ // 현재 로그인 중인 유저의 정보
         thumbnail: null, 
@@ -29,6 +30,11 @@ export default handleActions({
     ...pender({
         type: CHECK_STATUS,
         onSuccess: (state,action) => state.set('loggedInfo',Map(action.payload.data)).set('validated', true),
+        onFailure: (state,action) => initialState
+    }),
+    ...pender({
+        type: KAKAO_CHECK_STATUS,
+        onSuccess: (state,action) => state.set('validated',true),
         onFailure: (state,action) => initialState
     })
 

@@ -1,18 +1,25 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {Route} from 'react-router-dom';
 import * as baseActions from '../redux/modules/base';
 import {AuthWrapper} from '../components/Auth';
-import {Route} from 'react-router-dom';
-import {Login,KakaoLogin} from '../containers/Auth';
-class AuthLogin extends Component {
+import {KakaoRegister} from '../containers/Auth';
+
+class AuthRegister extends Component {
+
+    componentDidMount(){
+        this.props.BaseActions.setHeaderVisibility(false);
+    }
+
+    componentWillUnmount(){
+        this.props.BaseActions.setHeaderVisibility(true);
+    }
 
     render() {
-        const {history} = this.props;  
-        return (
+        return (        
             <AuthWrapper>
-               <KakaoLogin history={history} />
-            <Route path="/auth/Login" component={Login}/>
+             <Route path="/auth/kakao/Register/:id" component={KakaoRegister}/>
             </AuthWrapper>
         );
     }
@@ -27,4 +34,4 @@ export default connect(
         // bindActionCreators 는 액션함수들을 자동으로 바인딩해줍니다.
         BaseActions : bindActionCreators(baseActions, dispatch)
     })
-)(AuthLogin);
+)(AuthRegister);
