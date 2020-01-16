@@ -11,6 +11,7 @@ text-decoration: none;
 margin-bottom: 1rem;
 padding-top : 1rem;
 border-top : ${props=>props.top};
+
 `;
 
 const AuthContent = ({title, children,top}) => (
