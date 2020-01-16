@@ -94,16 +94,16 @@ position : relative;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    cursor: pointer;
 `;
 const ViewChangeButton = styled.div`
 position : relative;
+cursor : pointer;
     width: 13px;
     height: 13px;
-    display: flex;
     left :0 ;
     top : 10px;
     float : left;
+    display : ${props=>props.display};
     background-image: url(${showmenuImage});
     background-size: cover;
     background-position: center;
@@ -192,6 +192,7 @@ const WriteButton = styled.div`
 position: absolute;
 width: 12%;
 height: 30px;
+cursor : pointer;
 right : ${props => props.right};
 bottom : 15px;
 border-radius: 10px;
@@ -248,7 +249,7 @@ overflow: hidden;
 width : ${props => props.size};
 height : ${props => props.size};
 display : block;
-
+cursor : pointer;
 background-image : url(${props => props.src});
 background-size: cover;
 background-position: center;
@@ -265,6 +266,7 @@ overflow: hidden;
 width : 250px;
 height : 250px;
 display : block;
+cursor : pointer;
 background: rgba(196, 196, 196, 0.75);
 font-family: Roboto;
 font-style: normal;
@@ -304,6 +306,7 @@ color: #000000;
 `;
 const LikeImage = styled.div`
 position : absolute;
+cursor : pointer;
 width: 32px;
 height: 32px;
 left : 105px;
@@ -320,6 +323,7 @@ const LikedImage = styled.div`
 position : absolute;
 width: 32px;
 height: 32px;
+cursor : pointer;
 left : 105px;
 background-image : url(${clickLike});
 background-size: cover;
@@ -381,6 +385,7 @@ const Comment = styled.div`
 position : absolute;
 width: 100px;
 height: 25px;
+cursor : pointer;
 right : 0;
 font-family: Noto Sans KR;
 font-style: normal;
@@ -401,8 +406,10 @@ position: absolute;
 width : 24px;
 height : 24px;
     right: 20px;
+    cursor : pointer;
     overflow : hidden;
     top: 10px;
+    display : ${props=>props.display};
 background: url(${menuImage});
 background-size: cover;
 background-position: center;
@@ -413,7 +420,7 @@ background: url(${hoverMenuImage});
 `;
 
 const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,username,like,cancel,handleComment,
-    childrenTwo,handleMenu,menu,handleImage,handleWrite,handleCancel,handleWriteInput,showList,
+    childrenTwo,handleMenu,menu,handleImage,handleWrite,handleCancel,handleWriteInput,showList,hostUser,
 handleViewChange}) => {
     
     const {
@@ -441,22 +448,25 @@ handleViewChange}) => {
        const contents=content.split('\n').map( line => {
         return (<div style={style} >{line}<br/></div>)
       }); 
+      let hostDisplay = 'none';
+
+    if(profile.id === hostUser) hostDisplay='flex';
 return(
 
     <div>
     <Box>
         <NickNameBox>
-            <Profile id = {username} thumbnail = {profile.profile}/>
-            <NickName id = {username}>{profile.name}</NickName>
+            <Profile id = {profile.id} thumbnail = {profile.profile}/>
+            <NickName id = {profile.id}>{profile.name}</NickName>
             <ViewBox>
             <Time>{dateString}</Time>
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}
            { `${showLevel}` === 'public' && <ViewPhase showLevel ={publicImage} />}
            { `${showLevel}` === 'followers' && <ViewPhase showLevel ={friendImage} />}
-           <ViewChangeButton id = {postId} onClick={handleViewChange}/>
+           <ViewChangeButton display={hostDisplay} id = {postId} onClick={handleViewChange}/>
            {showList}
             </ViewBox>
-            <MenuButton id = {postId} onClick={handleMenu}/>
+            <MenuButton display={hostDisplay} id = {postId} onClick={handleMenu}/>
             {menu}
         </NickNameBox>
         <FeedLine/>

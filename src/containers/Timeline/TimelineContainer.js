@@ -89,7 +89,6 @@ class TimelineContainer extends Component{
                 await Promise.all(
                     comments.map(
                         async(comment,commentIndex) => {
-                            console.log(comment.timestamp);
                             let time = comment.timestamp;
                             let timestring = this.dateTimeToFormatted(time);
                             await TimelineActions.setTimelineCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
@@ -269,7 +268,7 @@ class TimelineContainer extends Component{
             TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
             BaseActions.setFollowMenuVisible('none');
             BaseActions.setAlarmMenuVisible('none');
-            BaseActions.setUserMenuVisibility(false);
+            BaseActions.setUserMenuVisibility('none');
             TimelineActions.setMenuVisible({'index':index, 'visible':'block'});
         }
         else{
@@ -382,7 +381,7 @@ class TimelineContainer extends Component{
             TimelineActions.setShowMenuVisible({'index':index, 'visible':'block'});
             BaseActions.setFollowMenuVisible('none');
             BaseActions.setAlarmMenuVisible('none');
-            BaseActions.setUserMenuVisibility(false);
+            BaseActions.setUserMenuVisibility('none');
             TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
         }
         else{
@@ -430,6 +429,7 @@ class TimelineContainer extends Component{
             return null;
         }
         const commentThumbnail = storage.get('loggedInfo').thumbnail; 
+        const hostUser = storage.get('loggedInfo').username;
         const {hashdisplay,keyid,totalNum,postPopupDisplay,popupText,popupDisplay} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
         const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
@@ -438,7 +438,7 @@ class TimelineContainer extends Component{
         return(
             <div>
             <PageWrapper>
-            <FeedList  commentThumbnail = {commentThumbnail} change = {handleImageChange}
+            <FeedList hostUser={hostUser} commentThumbnail = {commentThumbnail} change = {handleImageChange}
             thumbnail = {thumbnail} comment ={comment} username={username} nickname={nickname}
             followNum = {followNum} followerNum = {followerNum}  followclick={handleFollowClick}
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}

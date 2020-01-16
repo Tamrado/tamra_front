@@ -11,6 +11,7 @@ flex-direction: row;
 min-width : 150px;
 height : 55px;
 display : block;
+cursor: pointer;
 background : #ffffff;
 
 `;

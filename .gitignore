@@ -1,5 +1,6 @@
-
+kakao.json
 yarn.lock
+build
 node_modules
 yarn-error.log
 =======

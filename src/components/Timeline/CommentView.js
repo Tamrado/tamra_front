@@ -80,6 +80,7 @@ const CommentAdd = styled.div`
 position: absolute;
 width: 121px;
 height: 29px;
+cursor : pointer;
 left: 38px;
 bottom : 0;
 font-family: Noto Sans KR;

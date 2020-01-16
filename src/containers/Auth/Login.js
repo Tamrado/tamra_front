@@ -69,7 +69,8 @@ class Login extends Component {
         const {error} = this.props;
 
         return (
-            <AuthContent title="SIGN IN">
+            <AuthContent top = {'1px solid rgba(0, 0, 0, 0.1)'}  title="SIGN IN">
+                
                 <InputWithLabel 
                 enter = {enterLogin}
                     label="아이디" 

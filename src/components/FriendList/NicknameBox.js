@@ -8,6 +8,7 @@ position: relative;
 height: 60px;
 top : 60px;
 width: 100%;
+cursor : pointer;
 flexDirection : column;
 background: #ffffff;
 margin-bottom : 1rem;

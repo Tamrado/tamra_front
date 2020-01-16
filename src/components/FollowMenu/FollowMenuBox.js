@@ -43,7 +43,7 @@ position: absolute;
 width: 100px;
 height: 45px;
 left: 670px;
-
+cursor: pointer;
 text-decoration:none;
 font-family: Noto Sans KR;
 font-style: normal;

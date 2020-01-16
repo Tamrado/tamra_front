@@ -7,6 +7,7 @@ width: 70%;
 left : 15%;
 height: 153px;
 background: #FFFFFF;
+cursor : pointer;
 
 `;
 const TextBox = styled.div`
@@ -23,6 +24,7 @@ font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
 font-size: 20px;
+cursor : pointer;
 line-height: 153px;
 &:hover {
     /* 마우스 클릭시 아래로 미세하게 움직임 */

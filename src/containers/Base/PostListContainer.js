@@ -10,6 +10,7 @@ import * as searchActions from '../../redux/modules/search';
 import * as likeActions from '../../redux/modules/like';
 import * as commentActions from '../../redux/modules/comment';
 import storage from '../../lib/storage';
+import {dateTimeToFormatted} from '../Function/dateTimeModule';
 class PostListContainer extends Component{
     openWriteModal = () => {
         this.props.PostActions.setWriteDisplay('block');
@@ -50,7 +51,7 @@ class PostListContainer extends Component{
                     data.map(
                         async(feed,index) => {
                             let time = feed.getIn(['feed','timestamp']);
-                            let timestring = this.dateTimeToFormatted(time);
+                            let timestring = dateTimeToFormatted(time);
                             await TimelineActions.setTime({timestring:timestring,index : index});
                         }
                     )
@@ -64,9 +65,8 @@ class PostListContainer extends Component{
                 await Promise.all(
                     comments.map(
                         async(comment,commentIndex) => {
-                            console.log(comment.timestamp);
                             let time = comment.timestamp;
-                            let timestring = this.dateTimeToFormatted(time);
+                            let timestring = dateTimeToFormatted(time);
                             await TimelineActions.setCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
                         }
                     )
@@ -100,33 +100,6 @@ class PostListContainer extends Component{
         await TimelineActions.setLikeNum(totalNum);
            
     }
-     dateTimeToFormatted=(dt)=> {
-		const min = 60 * 1000;
-		const c = new Date();
-		var d = new Date(dt);
-		var minsAgo = Math.floor((c - d) / (min));
-
-		var result = {
-            'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
-            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') 
-            +  d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') +  d.getMinutes() + ':'  
-            + (d.getSeconds() > 9 ? '' : '0') +  d.getSeconds(),
-            'month' : d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
-            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate(),
-			'formatted': ''
-		};
-
-		if (minsAgo < 60) { // 1시간 내
-			result.formatted = minsAgo + '분 전';
-		} else if (minsAgo < 60 * 24) { // 하루 내
-			result.formatted = Math.floor(minsAgo / 60) + '시간 전';
-		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
-			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
-		} else{
-            result.formatted = result.month;
-        }
-		return result.formatted;
-	};
     handleCancelClick =async(e) => {
         const {LikeActions,TimelineActions} = this.props;
         const id = e.target.id;

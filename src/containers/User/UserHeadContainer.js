@@ -8,9 +8,13 @@ import * as userPageActions from '../../redux/modules/userPage';
 import storage from '../../lib/storage';
 
 class UserHeadContainer extends Component {
-
-
     componentDidMount(){
+        if(!storage.get('loggedInfo')) return;
+        let username = storage.get('loggedInfo').username;
+        if(username.includes('Kakao')){
+            storage.set('passed','true');
+            window.location.replace('/@' + username+'/info');
+        }
         this.getUserInfo();
     }
 

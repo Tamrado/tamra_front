@@ -17,6 +17,7 @@ class UserMenuContainer extends Component{
     handleLogoutButtonClick = () => {
         const {PostActions,BaseActions} = this.props;
         PostActions.setPostPopupDisplay('block');
+        PostActions.setPopupText('로그아웃하시겠습니까?');
     }
 
     handleLogout = async()=> {
@@ -34,14 +35,14 @@ class UserMenuContainer extends Component{
     handleCancel = async() => {
         const {PostActions,BaseActions} = this.props;
         PostActions.setPostPopupDisplay('none');
-        BaseActions.setUserMenuVisibility(false);
+        BaseActions.setUserMenuVisibility('none');
     }
 
     render(){
-        const{visible, username,BaseActions,postPopupDisplay} = this.props;
+        const{visible, username,BaseActions,postPopupDisplay,popupText} = this.props;
         const {handleLogout,handleLogoutButtonClick,handleCancel} = this;
 
-        if(!visible){
+        if(visible === 'none'){
             return null;
         }
         else {
@@ -55,7 +56,7 @@ class UserMenuContainer extends Component{
                 <UserMenuItem onClick={handleLogoutButtonClick}>로그아웃</UserMenuItem>
                 </UserMenu>
             <PostPopup handleOk={handleLogout} right={'40%'} handleCancel={handleCancel}
-             text={'로그아웃하시겠습니까?'} display={postPopupDisplay} />
+             text={popupText} display={postPopupDisplay} />
                 </div>
         );
     }
@@ -64,10 +65,11 @@ class UserMenuContainer extends Component{
 export default connect(
 
     (state) => ({
-        visible : state.base.getIn(['userMenu','visible']),
+        visible : state.base.get('userMenuVisible'),
         username: state.user.getIn(['loggedInfo','username']),
         display : state.post.get('popupDisplay'),
-        postPopupDisplay : state.post.get('postPopupDisplay')
+        postPopupDisplay : state.post.get('postPopupDisplay'),
+        popupText : state.post.get('popupText')
     }),
     (dispatch) => ({
         BaseActions: bindActionCreators(baseActions, dispatch),

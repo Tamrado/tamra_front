@@ -85,7 +85,7 @@ background-image: url(${searchButton});
 background-size: cover;
 background-position: center;
 background-repeat: no-repeat;
-
+cursor: pointer;
 &:active {
     /* 마우스 클릭시 아래로 미세하게 움직임 */
     transform: translateY(3px);
@@ -95,6 +95,7 @@ const CancelButton = styled.div`
 width: 20px;
 height: 20px;
 top : 10px;
+cursor: pointer;
 z-index : 20;
 right : 30px;
 position : absolute;

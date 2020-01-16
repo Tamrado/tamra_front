@@ -26,6 +26,7 @@ margin-top : 0.8rem;
 width: 70%;
 left : 15%;
 height : 30px;
+cursor : pointer;
 background : #ffffff;
 position : relative;
 top : 160px;
@@ -52,7 +53,7 @@ width: 91px;
 height: 48px;
 left: 60px;
 top: 0px;
-
+cursor: pointer;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
@@ -62,7 +63,9 @@ display: flex;
 align-items: center;
 text-align: center;
 letter-spacing: 0.05em;
-
+&:hover {
+    text-decoration-line: underline;
+}
 color: #000000;
 
 `;
@@ -107,7 +110,6 @@ float : left;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    cursor: pointer;
 `;
 const Profile = styled.div`
 position : absolute;
@@ -136,7 +138,6 @@ position : relative;
 width: 100%;
 display : flex;
 flex-direction: row;
-
 height: 330px;
 
 `;
@@ -166,7 +167,7 @@ margin : ${props=>props.margin} ;
 overflow: hidden;
 width : ${props=>props.size};
 height : ${props=>props.size};
-
+cursor : pointer;
 display : block;
 background-image : url(${props => props.src});
 background-size: cover;
@@ -181,6 +182,7 @@ background-repeat: no-repeat;
 `;
 const ImageCount = styled.div`
 overflow: hidden;
+cursor : pointer;
 width : ${props=>props.size};
 height : ${props=>props.size};
 display : block;
@@ -222,6 +224,7 @@ position : absolute;
 width: 32px;
 height: 32px;
 left : 105px;
+cursor : pointer;
 display : ${props=>props.like};
 background-image : url(${like});
 background-size: cover;
@@ -236,6 +239,7 @@ position : absolute;
 width: 32px;
 height: 32px;
 left : 105px;
+cursor : pointer;
 background-image : url(${clickLike});
 background-size: cover;
 background-position: center;
@@ -297,6 +301,7 @@ position : absolute;
 width: 100px;
 height: 25px;
 right : 0;
+cursor : pointer;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: normal;
@@ -311,24 +316,7 @@ color: #000000;
     text-decoration-line: underline;
 }
 `;
-const FeedAdd = styled.div`
-position: absolute;
-width: 121px;
-height: 29px;
-left: 38px;
-bottom : 0;
-font-family: Noto Sans KR;
-font-style: normal;
-font-weight: normal;
-font-size: 16px;
-line-height: 33px;
-align-items: center;
 
-color: #0A825E;
-&:hover {
-    text-decoration-line: underline;
-}
-`;
 
 const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
     ,like,cancel,handleComment,childrenTwo,handleImage}) => {
@@ -369,8 +357,8 @@ return(
     {`${message}`&&<PostStateBox id = {sender[0]&&sender[0].username} onClick = {stateclick}>{message}</PostStateBox>}
     <Box bottom ={bottom}>
         <NickNameBox>
-            <Profile id = {profileId} thumbnail = {profile.profile}/>
-            <NickName id = {profileId}>{profile.name}</NickName>
+            <Profile onClick={()=>window.location.href=`/@:${profileId}`} id = {profileId} thumbnail = {profile.profile}/>
+            <NickName onClick={()=>window.location.href=`/@:${profileId}`} id = {profileId}>{profile.name}</NickName>
             <ViewBox>
             <Time>{dateString}</Time>
            { `${showLevel}` === 'private' && <ViewPhase showLevel ={privateImage} />}

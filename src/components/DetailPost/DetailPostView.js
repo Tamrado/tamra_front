@@ -57,7 +57,9 @@ position: absolute;
 width: 86px;
 height: 86px;
 left: 0px;
+display : ${props=>props.display};
 top: 277px;
+cursor : pointer;
 `;
 const LeftArrow = styled.div`
 position: absolute;
@@ -72,9 +74,11 @@ background-repeat: no-repeat;
 `;
 const RightArrowBox = styled.div`
 position: absolute;
+display : ${props=>props.display};
 width: 86px;
 height: 86px;
 left: 714px;
+cursor : pointer;
 top: 277px;
 `;
 const RightArrow = styled.div`
@@ -221,6 +225,8 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
         tags,
         dateString
        } = feed;
+       let arrowDisplay = 'block';
+       if(parseInt(files.length) === 1) arrowDisplay = 'none'; 
     return(
         <Wrapper>
             <FeedBox >
@@ -229,8 +235,8 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
                     <Image image = {files[`${imageIndex}`].original} id = {'^^image'} width = {String(width)+'px'}
                 height = {String(height)+'px'}/>
                 </ImageWrapper>
-                    <LeftArrowBox onClick={handleLeft}><LeftArrow/></LeftArrowBox>
-                    <RightArrowBox onClick={handleRight}><RightArrow/></RightArrowBox>
+                    <LeftArrowBox display={arrowDisplay} onClick={handleLeft}><LeftArrow/></LeftArrowBox>
+                    <RightArrowBox display={arrowDisplay} onClick={handleRight}><RightArrow/></RightArrowBox>
                 </ImageBox>
                 <NicknameBox>
                     <Thumbnail id = {profileId} thumbnail = {profile.profile}/>

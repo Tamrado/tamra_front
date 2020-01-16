@@ -9,6 +9,7 @@ height: 63px;
 top : 0px;
 flexDirection : column;
 margin-bottom : 1rem;
+cursor: pointer;
 padding-top: 0.5rem;
 padding-bottom: 0.5rem;
 &:hover{

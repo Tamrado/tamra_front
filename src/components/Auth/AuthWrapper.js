@@ -25,7 +25,7 @@ const LogoWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom : 1px solid rgba(0, 0, 0, 0.1);
+    
   
 `;
 
@@ -41,15 +41,18 @@ const Logo = styled(Link)`
 // children 이 들어가는 곳
 const Contents = styled.div`
     background: white;
-    padding: 2rem;
+    padding-bottom: 2rem;
+    padding-left : 2rem;
+    padding-right : 2rem;
     height: auto;
 `;
 
-const AuthWrapper = ({children}) => (
+const AuthWrapper = ({kakao,children}) => (
     <Positioner>
         <ShadowedBox>
             <LogoWrapper>
                 <Logo to="/">TAMRA</Logo>
+                {kakao}
             </LogoWrapper>
             <Contents>
                 {children}

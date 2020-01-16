@@ -41,6 +41,7 @@ height: 100%;
  text-align:center;
  line-height: 6.3;
  margin : auto;
+ cursor: pointer;
 font-family: Roboto;
 font-style: normal;
 font-weight: normal;

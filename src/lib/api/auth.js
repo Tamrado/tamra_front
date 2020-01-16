@@ -8,6 +8,11 @@ export const localRegister = ({email,id,password,phone,birthday,name,comment,add
 export const localLogin = ({id,password}) => axios.post('http://15.164.170.252:8080/api/member/auth', {id, password},{withCredentials: true});
 export const localRegisterImage = (formData) => axios.post('http://15.164.170.252:8080/api/member/image',formData,{'content-type' : 'multipart/form-data',withCredentials: true});
 
+export const kakaoLogin = ({accesstoken,email,nickname,refreshtoken,thumbnail,uid}) => axios.post('http://15.164.170.252:8080/api/member/auth/kakao',{accesstoken,email,nickname,refreshtoken,thumbnail,uid},{withCredentials: true});
+export const kakaoRegister = ({id,comment,email}) => axios.post(`http://15.164.170.252:8080/api/member/auth/kakao/next/${id}`,{email,comment},{withCredentials: true});
+
+export const kakaoCheckStatus = () => axios.get('http://15.164.170.252:8080/api/auth/kakao/token/id',{withCredentials: true});
 export const checkStatus = () => axios.get('http://15.164.170.252:8080/api/auth/token/id', {withCredentials: true});
 export const logout = () => axios.get('http://15.164.170.252:8080/api/member/auth/token', {withCredentials: true});
 export const getUserInfo = (userId) => axios.get(`http://15.164.170.252:8080/api/auth/friend/${userId}`,{withCredentials:true});
+

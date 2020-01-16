@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import scuize from '../../lib/scuize';
-import { Link } from 'react-router-dom';
 const Box = styled.div`
 position: relative;
 width: 100%;
@@ -12,12 +11,13 @@ background: #FFFFFF;
 
 }
 `;
-const Button = styled(Link)`
+const Button = styled.div`
 position: absolute;
 left: 54.35%;
 right: 28.01%;
 top: 28%;
 bottom: 34%;
+cursor: pointer;
 width : 138px;
 text-decoration:none;
 background: rgba(18, 184, 134, 0.1);

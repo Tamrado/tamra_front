@@ -7,6 +7,7 @@ import * as commentActions from '../../redux/modules/comment';
 import * as postActions from '../../redux/modules/post';
 import * as likeActions from '../../redux/modules/like';
 import {CommentList,DetailPostView} from '../../components/DetailPost';
+import {dateTimeToFormatted} from '../Function/dateTimeModule';
 class PostDetailContainer extends Component{
     state = {
         pageCount : 0
@@ -15,33 +16,6 @@ class PostDetailContainer extends Component{
         await this.renderPageInfo();
         await this.renderCommentInfo();
     }
-    dateTimeToFormatted=(dt)=> {
-		const min = 60 * 1000;
-		const c = new Date();
-		var d = new Date(dt);
-		var minsAgo = Math.floor((c - d) / (min));
-
-		var result = {
-            'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
-            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') 
-            +  d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') +  d.getMinutes() + ':'  
-            + (d.getSeconds() > 9 ? '' : '0') +  d.getSeconds(),
-            'month' : d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
-            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate(),
-			'formatted': ''
-		};
-
-		if (minsAgo < 60) { // 1시간 내
-			result.formatted = minsAgo + '분 전';
-		} else if (minsAgo < 60 * 24) { // 하루 내
-			result.formatted = Math.floor(minsAgo / 60) + '시간 전';
-		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
-			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
-		} else{
-            result.formatted = result.month;
-        }
-		return result.formatted;
-    };
     setImageSize=async(index)=>{
         const{presentPost,PostActions} = this.props;
         let imageSize = await this.getImageSize(presentPost.getIn(['feed','files',index,'original']));
@@ -86,7 +60,7 @@ class PostDetailContainer extends Component{
     setPostTime = async() => {
         const{presentPost,TimelineActions} = this.props;
         let time = presentPost.getIn(['feed','timestamp']);
-        let timestring = this.dateTimeToFormatted(time);
+        let timestring = dateTimeToFormatted(time);
         await TimelineActions.setDetailTime(timestring);
     }
 
@@ -97,7 +71,7 @@ class PostDetailContainer extends Component{
                     comments.map(
                         async(comment,commentIndex) => {
                             let time = comment.timestamp;
-                            let timestring = this.dateTimeToFormatted(time);
+                            let timestring = dateTimeToFormatted(time);
                             await TimelineActions.setDetailCommentTime({timestring:timestring,commentIndex:commentIndex});
                         }
                     )

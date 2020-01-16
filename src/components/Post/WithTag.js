@@ -81,6 +81,7 @@ height: 20px;
 top : 10px;
 z-index : 20;
 right : 30px;
+cursor: pointer;
 position : absolute;
 background-image: url(${cancelButton});
 background-size: cover;

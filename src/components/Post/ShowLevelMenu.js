@@ -19,7 +19,7 @@ const Menu = styled.div`
     margin-top: 0.1px;
 }
     padding-bottom: 0.5rem;
-
+    cursor: pointer;
 width: 152px;
 height: 26px;
 

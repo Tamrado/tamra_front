@@ -7,7 +7,7 @@ import ShowLevelMenu from '../Post/ShowLevelMenu';
 
 const FeedList = ({followclick,postNum,followerNum,followNum,comment,nickname,username,thumbnail,enterComment,commentThumbnail
     ,followdisplay,isfollow,mainfeed,hover,nothover,hashdisplay,keyid,cancel,like,handleComment,handleCommentAdd,
-handleMenu,modifyClick,deleteClick,change,handleImage,handleWrite,handleCancel,
+handleMenu,modifyClick,deleteClick,change,handleImage,handleWrite,handleCancel,hostUser,
 handleWriteInput,handleViewChange,handleShowLevel}) => {
         
     const feedList = mainfeed.map(
@@ -35,13 +35,13 @@ handleWriteInput,handleViewChange,handleShowLevel}) => {
                 hashdisplay = {hashdisplay} childrenTwo={commentList} hover = {hover} nothover = {nothover}
                  like={like} cancel={cancel} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}
                  handleWrite={handleWrite} handleCancel = {handleCancel} handleWriteInput={handleWriteInput}
-                 handleViewChange = {handleViewChange} showList={showLevelMenu}
+                 handleViewChange = {handleViewChange} showList={showLevelMenu} hostUser={hostUser}
                  >{hashTagList}</FeedBox>
                 }
                 else{
                     return <FeedBox key = {parseInt(feeds.get('postId'))}
                     count = {feeds && feeds.get('files').size} handleComment = {handleComment} thumbnail = {thumbnail}
-                     mainfeed={feeds} hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} 
+                     mainfeed={feeds} hashdisplay = {hashdisplay} hover = {hover} nothover = {nothover} hostUser={hostUser}
                      like={like} cancel={cancel} childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu}
                      handleImage={handleImage} handleViewChange = {handleViewChange} showList={showLevelMenu}
                      handleWrite={handleWrite} handleCancel = {handleCancel} handleWriteInput={handleWriteInput}>
@@ -54,7 +54,7 @@ handleWriteInput,handleViewChange,handleShowLevel}) => {
             hashdisplay = {'none'} hover = {hover} nothover = {nothover} like={like} cancel={cancel} 
             childrenTwo={commentList} handleMenu={handleMenu} menu={postMenu} handleImage={handleImage}
             handleWrite={handleWrite} handleCancel = {handleCancel} handleWriteInput={handleWriteInput}
-            handleViewChange = {handleViewChange} showList={showLevelMenu}/>
+            handleViewChange = {handleViewChange} showList={showLevelMenu} hostUser={hostUser}/>
             }
         }
     )

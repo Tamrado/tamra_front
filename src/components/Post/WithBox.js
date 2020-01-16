@@ -9,7 +9,7 @@ position: relative;
 width: 275px;
 height: 54px;
 left: 46px;
-
+cursor: pointer;
 margin-bottom : 28px;
 `;
 const Thumbnail = styled.img`

@@ -60,6 +60,7 @@ width: 99px;
 height: 43.38px;
 left: 189px;
 top: 135px;
+cursor: pointer;
 font-family: Noto Sans KR;
 font-style: normal;
 font-weight: 500;

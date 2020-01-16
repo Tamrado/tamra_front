@@ -22,9 +22,11 @@ padding-top : 5px;
 width : 90%;
 
 `;
-const SearchButton = styled(Link)`
+const SearchButton = styled.div`
 margin-top : 10px;
-position : absolute;
+position : relative;
+float:left;
+cursor: pointer;
 width: 32px;
 height: 32px;
 background-image: url(${searchButtonImage});
