@@ -1,13 +1,11 @@
 kakao.json
 yarn.lock
 build
-node_modules
 yarn-error.log
 =======
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
 /.pnp
 .pnp.js
 
@@ -15,7 +13,6 @@ yarn-error.log
 /coverage
 
 # production
-/src/build
 
 # misc
 .DS_Store
