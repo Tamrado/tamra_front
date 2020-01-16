@@ -51,7 +51,7 @@ const RegisterComponent = ({error,errorId,id,password,passwordConfirm,email,name
             {
                 errorId === 'name' &&error && <AuthError>{error}</AuthError>
             } 
-            <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다." enter = {enterRegister}
+            <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
             value = {comment} onChange={handleChange} enter = {enterRegister}/>
             {
                 errorId === 'comment' &&error && <AuthError>{error}</AuthError>

@@ -1,8 +1,7 @@
-import { Map,List,fromJS } from 'immutable';
+import { Map,List } from 'immutable';
 import { handleActions, createAction } from 'redux-actions';
 import {pender} from 'redux-pender';
 import * as PostAPI from '../../lib/api/post';
-import { MAC_IP_RE } from 'address';
 
 const UPLOAD_FEED = 'post/UPLOAD_FEED';
 const UPLOAD_IMAGE = 'post/UPLOAD_IMAGE'

@@ -279,7 +279,7 @@ class TimelineContainer extends Component{
 
     modifyClick = async(e) => {
         const {id} = e.target;
-        const {data,TimelineActions,PostActions} = this.props;
+        const {data,TimelineActions} = this.props;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
         
         await TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
@@ -346,7 +346,7 @@ class TimelineContainer extends Component{
     }
     handleCancel = (e) => {
         const {id} = e.target;
-        const {TimelineActions,data,PostActions} = this.props;
+        const {data} = this.props;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
         this.unavailableModify(index,id);
     }
@@ -368,7 +368,7 @@ class TimelineContainer extends Component{
         }
         handleWriteInput = (e) => {
             const {id,innerText} = e.target;
-            const {TimelineActions,data,PostActions} = this.props;
+            const {TimelineActions,data} = this.props;
             const index = data.findIndex(item => item.get('postId')===parseInt(id));
             TimelineActions.setModifyText({'index' : index, 'modifyText' : innerText});
         }
@@ -433,8 +433,8 @@ class TimelineContainer extends Component{
         const {hashdisplay,keyid,totalNum,postPopupDisplay,popupText,popupDisplay} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
         const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
-            ,handleComment,handleMenu,handleImageChange,handleImage,handleCancel,modifyClick,handlePopupOk,
-        handleWrite,handleWriteInput,handleViewChange,handleShowLevel,handleOk,handlePopupCancel,buttonClick} = this;
+            ,handleComment,handleMenu,handleImageChange,handleImage,handleCancel,modifyClick,handlePopupOk
+            ,handleWriteInput,handleViewChange,handleShowLevel,handleOk,handlePopupCancel,buttonClick} = this;
         return(
             <div>
             <PageWrapper>

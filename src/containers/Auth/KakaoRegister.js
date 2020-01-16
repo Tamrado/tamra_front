@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError,Label} from '../../components/Auth';
+import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError} from '../../components/Auth';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as authActions from '../../redux/modules/auth';
@@ -69,7 +69,7 @@ render(){
                  {
                     errorId === 'email' &&error && <AuthError>{error}</AuthError>
                 }               
-                <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다." enter = {enterRegister}
+                <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
                 value = {comment} onChange={handleChange} enter = {enterRegister}/>
                 {
                     errorId === 'comment' &&error && <AuthError>{error}</AuthError>

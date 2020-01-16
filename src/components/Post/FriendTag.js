@@ -2,8 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import searchButton from '../../build/static/images/iconmonstr-magnifier-1-32.png';
 import cancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24 (1).png';
-import hoverCancelButton from '../../build/static/images/iconmonstr-x-mark-thin-24.png';
-import hoverSearchButton from '../../build/static/images/iconmonstr-magnifier-1-32 (1).png';
 const Wrapper = styled.div`
 position: absolute;
 left: 20px;

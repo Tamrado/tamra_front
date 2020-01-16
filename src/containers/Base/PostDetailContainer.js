@@ -22,7 +22,7 @@ class PostDetailContainer extends Component{
         await PostActions.setFileSize(imageSize);
     }
     renderPageInfo=async()=>{
-    const {postid,TimelineActions,PostActions,imageIndex} = this.props;
+    const {postid,TimelineActions,imageIndex} = this.props;
     let index = imageIndex.substr(1);
     const id = postid.substr(1);
     await TimelineActions.getFeedInformationDetail(id);
@@ -65,7 +65,7 @@ class PostDetailContainer extends Component{
     }
 
     setCommentTime = async() => {
-        const{presentPost,TimelineActions,commentList} = this.props;
+        const{TimelineActions,commentList} = this.props;
         const comments = commentList;
                 await Promise.all(
                     comments.map(
@@ -78,7 +78,7 @@ class PostDetailContainer extends Component{
                 );
     }
     handleLeft = async() => {
-        const {presentPost,imageIndex,history,postid,PostActions} = this.props;
+        const {presentPost,imageIndex,history,postid} = this.props;
         let index = imageIndex.substr(1);
         let imageSize = presentPost.getIn(['feed','files']).size;
         this.setState({

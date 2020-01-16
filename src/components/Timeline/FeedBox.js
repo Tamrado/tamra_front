@@ -427,19 +427,14 @@ handleViewChange}) => {
         postId,
         content,
         showLevel,
-        timestamp,
         totalTag,
         totalComment,
         totalLike,
         profile,
         files,
         islike,
-        commentState,
         dateString,
-        menuVisible,
-        showMenuVisible,
-        modifyVisible,
-        tags
+        modifyVisible
     } = mainfeed.toJS();
     if(!profile || !postId) return null;
     const style = {

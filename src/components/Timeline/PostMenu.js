@@ -42,20 +42,7 @@ color: #000000;
 const PostMenu = ({modifyClick,deleteClick,mainfeed}) => {
     const {
         postId,
-        content,
-        showLevel,
-        timestamp,
-        totalTag,
-        totalComment,
-        totalLike,
-        profile,
-        files,
-        islike,
-        commentState,
-        dateString,
-        menuVisible,
-        showMenuVisible,
-        tags
+        menuVisible
     } = mainfeed.toJS();
     return(
 

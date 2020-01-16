@@ -99,18 +99,7 @@ const CommentView = ({commentThumbnail,enterComment,children,mainfeed,handleComm
    
    const {
     postId,
-    content,
-    showLevel,
-    timestamp,
-    totalTag,
-    totalComment,
-    totalLike,
-    profile,
-    files,
-    islike,
     commentState,
-    tags,
-    dateString,
     trueComment
    } = mainfeed.toJS();
 return(

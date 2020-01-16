@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import searchButtonImage from '../../build/static/images/iconmonstr-magnifier-1-32.png';
 import hoversearchButtonImage from '../../build/static/images/iconmonstr-magnifier-1-32 (1).png';
-import { shadow, media } from '../../lib/styleUtils';
+import { shadow } from '../../lib/styleUtils';
 
 const FriendBox = styled.div`
 min-width: 150px;

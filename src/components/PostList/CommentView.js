@@ -79,27 +79,12 @@ color: #0A825E;
 `;
 const CommentView = ({thumbnail,enterComment,children,mainfeed,handleCommentAdd}) => {
     const {
-        feed,
-        category,
-        sender,
-        message,
-        profileId,
+        feed
     } = mainfeed.toJS();
   
    const {
     postId,
-    content,
-    showLevel,
-    timestamp,
-    totalTag,
-    totalComment,
-    totalLike,
-    profile,
-    files,
-    islike,
     commentState,
-    tags,
-    dateString,
     trueComment
    } = feed;
 return(

@@ -49,12 +49,12 @@ position: absolute;
     display : ${props => props.visible};
 `;
 const Setting = ({image,onclick,size,hoverimg,alarmNum,resultvisible,tvisible,left}) => {
-    var aNum = alarmNum;
+    let aNum = alarmNum;
     if(alarmNum > 99) aNum = '99+';
     return(
         <div>
         <SettingImage src = {image} size = {size} onClick = {onclick} hoverimg={hoverimg} left={left}/>
-        <AlarmNum visible = {resultvisible}>{alarmNum}</AlarmNum>
+        <AlarmNum visible = {resultvisible}>{aNum}</AlarmNum>
         <Triangle visible = {tvisible}></Triangle>
         </div>
     );

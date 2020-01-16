@@ -333,15 +333,12 @@ const FeedBox = ({mainfeed,count,children,hover,nothover,hashdisplay,stateclick
     postId,
     content,
     showLevel,
-    timestamp,
     totalTag,
     totalComment,
     totalLike,
     profile,
     files,
     islike,
-    commentState,
-    tags,
     dateString
    } = feed;
    var bottom = '0.5rem';

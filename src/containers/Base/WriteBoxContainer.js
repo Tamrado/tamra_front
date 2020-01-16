@@ -1,4 +1,3 @@
-import { List,Map} from 'immutable';
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {WriteBox,ImageList} from '../../components/Post';

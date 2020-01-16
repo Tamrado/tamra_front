@@ -34,7 +34,7 @@ class HeaderContainer extends Component {
        this.getAlarm();
     }
     getFollowRequest = async() => {
-        const {FriendActions,followRequest} = this.props;
+        const {FriendActions} = this.props;
         try{
             await FriendActions.getFriendAlarmInfo();
         this.setState({
@@ -182,12 +182,12 @@ class HeaderContainer extends Component {
     render(){
     const {visible, user,followRequest,friendRequestNum,headerVisible,alarmMenuVisible,
         userList,headerContent,alarmList,alarmNum,userMenuVisible,followMenuVisible} = this.props;
-    const{friendRequestVisible,alarmNumVisible, friendvisible,alarmNonevisible,
+    const{friendRequestVisible,alarmNumVisible,alarmNonevisible,
         mypageVisible,mVisible,noFriendAddVisible} = this.state;
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
         ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick,handleProfileClick,
         handleClickHome,handleAllRead,handleAlarmInfoClick} = this;
-    let content,search,alarm,friendRequest,mypage,menu,menuVisible = null;
+    let content,search,alarm,friendRequest,mypage,menu = null;
     
     if(!visible) return null;
 

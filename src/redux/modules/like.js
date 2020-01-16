@@ -1,4 +1,4 @@
-import { Map,List,fromJS } from 'immutable';
+import { Map,List } from 'immutable';
 import { handleActions, createAction } from 'redux-actions';
 import {pender} from 'redux-pender';
 import * as LikeAPI from '../../lib/api/like';

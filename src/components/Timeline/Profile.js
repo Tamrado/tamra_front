@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import scuize from '../../lib/scuize';
 const Box = styled.div`
 
 position: relative;

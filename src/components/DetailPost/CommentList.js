@@ -12,8 +12,7 @@ const CommentList = ({comments,mainfeed,addDisplay,commentThumbnail,enterComment
         )
         return(
             <CommentView handleCommentAdd={handleCommentAdd} userThumbnail = {commentThumbnail} postId={postId}
-             enterComment={enterComment} mainfeed={mainfeed} addDisplay={addDisplay} enterComment={enterComment}
-             handleCommentAdd = {handleCommentAdd} trueComment={trueComment} like={like} cancel={cancel}>
+            mainfeed={mainfeed} addDisplay={addDisplay} enterComment={enterComment} trueComment={trueComment} like={like} cancel={cancel}>
                 {commentList}
             </CommentView>
         );

@@ -1,7 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import scuize from '../../lib/scuize';
-import { Link } from 'react-router-dom';
 const Box = styled.div`
 position: relative;
 width: 100%;
@@ -79,9 +77,7 @@ font-size: 16px;
 const AlarmBox = ({alarm,handleAlarmInfoClick}) => {
     const {
         message,
-        timestamp,
         read,
-        link,
         dateString,
         sender
     } = alarm.toJS();

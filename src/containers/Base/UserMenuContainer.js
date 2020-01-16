@@ -15,7 +15,7 @@ class UserMenuContainer extends Component{
     }
 
     handleLogoutButtonClick = () => {
-        const {PostActions,BaseActions} = this.props;
+        const {PostActions} = this.props;
         PostActions.setPostPopupDisplay('block');
         PostActions.setPopupText('로그아웃하시겠습니까?');
     }

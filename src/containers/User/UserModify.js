@@ -78,7 +78,7 @@ class UserModify extends Component{
         checkPhoneExists(value);
 }
 handleLocalRegister = async () => {
-    const{form, UserPageActions, error, history} = this.props;
+    const{form, UserPageActions, error} = this.props;
     const {email, id,password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
 
     if(error) return; //현재 에러 있는 상태라면 진행 x
@@ -110,7 +110,7 @@ handleLocalRegister = async () => {
     render(){
         const {error,form,errorId} = this.props
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} =form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange} = this; 
+        const {handleChange,handleLocalRegister,defaultNullChange,checkedChange} = this; 
   
                 return(
                 <AuthContent title='MY PAGE'>

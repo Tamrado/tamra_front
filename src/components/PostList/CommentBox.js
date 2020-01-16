@@ -81,7 +81,6 @@ const CommentBox = ({comment}) => {
         postId,
         commentId,
         content,
-        timestamp,
         profile,
         dateString
     } = comment;

@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
 import { shadow, media } from '../../lib/styleUtils';
-import { Link } from 'react-router-dom';
 
 // 상단 고정, 그림자
 const Positioner = styled.div`

@@ -200,9 +200,6 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
 ,history,pageCount}) => { 
     const{
         feed,
-        category,
-        sender,
-        message,
         profileId
     } = mainfeed;
     const {
@@ -211,18 +208,9 @@ const DetailPostView = ({mainfeed,children,thumbnail,userId,name,fileSize,imageI
     } = fileSize;
     if(!feed) return null;
     const {
-        postId,
-        content,
         showLevel,
-        timestamp,
-        totalTag,
-        totalComment,
-        totalLike,
         profile,
         files,
-        islike,
-        commentState,
-        tags,
         dateString
        } = feed;
        let arrowDisplay = 'block';

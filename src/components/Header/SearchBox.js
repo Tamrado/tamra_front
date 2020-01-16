@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
 import scuize from '../../lib/scuize';
 const Content = styled.div`
 position : relative;

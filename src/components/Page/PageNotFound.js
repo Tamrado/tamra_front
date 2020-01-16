@@ -83,18 +83,6 @@ color: #d6d6d6;
       }
 `;
 
-const fadeIn = keyframes`
-0%{
-    opacity: 0
-}
-100%{
-    opacity: 1
-}
-`;
-
-
-
-
 const PageNotFound = () => (
     <Wrapper>
         <H1 data-h1="404">404</H1>

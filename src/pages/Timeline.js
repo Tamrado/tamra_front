@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import storage from '../lib/storage';
-import PageWrapper from '../components/PageWrapper';
 import {TimelineContainer} from '../containers/Timeline';
 class MyPost extends Component {
     componentDidMount(){

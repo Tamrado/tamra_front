@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {ModifyWrapper,ConfirmContent} from '../components/User';
+import {ConfirmContent} from '../components/User';
 import {UserHeadContainer} from '../containers/User';
 import storage from '../lib/storage';
 class UserPageConfirm extends Component {
