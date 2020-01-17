@@ -15,11 +15,79 @@ This web service was designed and produced using Figma.
 
 # 📋 project features
 
-## Add to friend List when following interactive 🧑‍🤝‍🧑 
 
-![addToFriendListWhenFollowingInteractive] (./addToFriendListWhenFollowingInteractive.png)
+## write ✍️
 
-##
+![write](./write.PNG)
+
+## friendTag #️⃣
+
+![friendTag](./friendTag.PNG)
+
+## Comment
+
+![comment](./comment.PNG)
+
+## Add to friend List when following interactive 🧑‍🤝‍🧑
+
+![add](./addToFriendListWhenFollowingInteractive.PNG)
+
+## friendAlarm ⏰
+
+![friendAlarm](./friendAlarm.PNG)
+
+## BasicAlarm ⏰
+
+![alarm](./Alarm.PNG)
+
+
+## friendProfile 😃
+
+![friendProfile](./friendProfile.PNG)
+
+## friendSearch 🔍
+
+![friendSearch](./friendSearch.PNG)
+
+
+## myPage 📄
+
+![myPage](./myPage.PNG)
+
+![myPage(2)](./myPage(2).PNG)
+
+## myProfile 🙍
+ 
+![myProfile](./myProfile.PNG)
+
+### Delete feed
+
+![feedDelete](./feedDelete.PNG)
+
+### Modify text 
+
+![textModify](./textModify.PNG)
+
+### Modify view phase
+
+![modifyViewPhase](./viewPhaseModify.PNG)
+
+
+## Security 🔑
+
+### logout
+
+![logout](./logout.PNG)
+ 
+### SignIn
+
+![signIn](./signIn.PNG)
+ 
+### SignUp
+
+![signUp](./signUp.PNG)
+
+
 
 # ℹ️ OpenSource
 
