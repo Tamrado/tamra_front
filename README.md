@@ -54,7 +54,7 @@ This web service was designed and produced using Figma.
 
 ![myPage](./myPage.PNG)
 
-![myPage(2)](./myPage(2).PNG)
+![myPage(2)](./myage(2).PNG)
 
 ## myProfile 🙍
  
