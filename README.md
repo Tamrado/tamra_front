@@ -20,34 +20,59 @@ This web service was designed and produced using Figma.
 
 ![write](./write.PNG)
 
+
+
+
 ## friendTag #️⃣
 
 ![friendTag](./friendTag.PNG)
+
+
+
 
 ## Comment
 
 ![comment](./comment.PNG)
 
+
+
+
 ## Add to friend List when following interactive 🧑‍🤝‍🧑
 
 ![add](./addToFriendListWhenFollowingInteractive.PNG)
 
+
+
+
 ## friendAlarm ⏰
 
 ![friendAlarm](./friendAlarm.PNG)
+
+
+
 
 ## BasicAlarm ⏰
 
 ![alarm](./Alarm.PNG)
 
 
+
+
+
 ## friendProfile 😃
 
 ![friendProfile](./friendProfile.PNG)
 
+
+
+
 ## friendSearch 🔍
 
 ![friendSearch](./friendSearch.PNG)
+
+
+
+
 
 
 ## myPage 📄
@@ -56,7 +81,12 @@ This web service was designed and produced using Figma.
 
 ![myPage(2)](./myage(2).PNG)
 
+
+
+
 ## myProfile 🙍
+ 
+ 
  
 ![myProfile](./myProfile.PNG)
 
@@ -74,6 +104,8 @@ This web service was designed and produced using Figma.
 
 
 ## Security 🔑
+
+
 
 ### logout
 
@@ -115,4 +147,8 @@ This web service was designed and produced using Figma.
 
 - styled-components
 
+
+# 🎥
+
+https://www.youtube.com/channel/UCMRjGZic64ud3KhPHE06gPQ
 - open-color
