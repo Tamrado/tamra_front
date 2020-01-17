@@ -10,7 +10,6 @@ class KakaoLogin extends Component{
     
     responseKakao = async(res) =>{
         const { profile,response } = res;
-        console.log(res);
         const {AuthActions,history} = this.props;
         
         const{
@@ -34,7 +33,7 @@ class KakaoLogin extends Component{
         thumbnail : profile_image_url,
         email : email
     });
-    if(this.props.result.toJS() === null){
+    if(typeof this.props.result.toJS().username === 'undefined'){
         storage.set('kakaologin',true);
         history.replace(`/auth/kakao/Register/${id}`);
     }
