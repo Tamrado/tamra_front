@@ -7,7 +7,8 @@ import * as userActions from '../../redux/modules/user';
 import storage from '../../lib/storage';
 import {setError,validate,checkEmailExists,checkIdExists,checkPhoneExists,
     setAuthActions,setPassword} from '../Function/ValidateModule';
-
+    import * as postActions from '../../redux/modules/post';
+    import {Popup} from '../../components/Popup';
 class Register extends Component{  
         state = {
         file: null
@@ -69,7 +70,7 @@ class Register extends Component{
     
 }
 handleLocalRegister = async() => {
-    const{form, AuthActions, error, history,UserActions} = this.props;
+    const{form, AuthActions, error,UserActions,PostActions} = this.props;
     const {email, id, password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
     const formData = new FormData();
     if(this.state.file !== null)
@@ -98,9 +99,9 @@ handleLocalRegister = async() => {
         });
     } catch(e){
         if(e.response.status === 411)
-            setError('조건에 맞는 데이터를 입력해주세요.');
+            setError('조건에 맞는 데이터를 입력해주세요.','main');
         if(e.response.status === 409)
-            setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.');
+            setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.','main');
     }
     try{
          await AuthActions.localRegisterImage(
@@ -110,30 +111,40 @@ handleLocalRegister = async() => {
         storage.set('loggedInfo', loggedInfo);
         UserActions.setLoggedInfo(loggedInfo);
         UserActions.setValidated(true);
-        history.push('/');
+        PostActions.setPopupDisplay('block');
+        
     } catch(e){
         if(e.response.status === 422)
-            setError('알 수 없는 에러가 발생했습니다.');
+            setError('알 수 없는 에러가 발생했습니다.','main');
         if(e.response.status === 409)
-            setError('다른 회원의 아이디와 동일합니다. 다시 입력해주세요.');
+            setError('다른 회원의 아이디와 동일합니다. 다시 입력해주세요.','main');
         if(e.response.status === 411)
-            setError('조건에 맞는 데이터를 입력해주세요.');
+            setError('조건에 맞는 데이터를 입력해주세요.','main');
     }
     }
     enterRegister = () => {
         if(window.event.keyCode === 13)
           this.handleLocalRegister();
     }
+    handlePopupOk = () => {
+        const{PostActions,history} = this.props;
+        PostActions.setPopupDisplay('none');
+        history.push('/');
+    }
     render(){
-        const {error,errorId} = this.props;
+        const {error,errorId,popupDisplay} = this.props;
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address} = this.props.form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange,enterRegister} = this;
+        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange,enterRegister,
+        handlePopupOk} = this;
         return(
+            <div>
             <RegisterComponent error={error} errorId = {errorId} id = {id} password={password} 
             passwordConfirm = {passwordConfirm} email={email} name={name} phone={phone} birthday={birthday}
             comment={comment} address={address} handleChange={handleChange} handleLocalRegister={handleLocalRegister}
             defaultNullChange={defaultNullChange} handleFileInput={handleFileInput} checkedChange={checkedChange}
             enterRegister={enterRegister}/>
+            <Popup right={'40%'} top = {'200px'} handlePopupOk = {handlePopupOk} display={popupDisplay} text={'회원가입이 완료었습니다.'} />
+            </div>
         );
         }
 }
@@ -144,10 +155,14 @@ export default connect(
         error: state.auth.getIn(['register','error']),
         errorId: state.auth.getIn(['register','errorId']),
         result: state.auth.get('result'),
-        password : state.auth.getIn(['register','form','password'])
+        password : state.auth.getIn(['register','form','password']),
+        popupText : state.post.get('popupText'),
+        popupId : state.post.get('popupId'),
+        popupDisplay : state.post.get('popupDisplay')
     }),
     (dispatch)=>({
         AuthActions : bindActionCreators(authActions,dispatch),
-        UserActions : bindActionCreators(userActions, dispatch)
+        UserActions : bindActionCreators(userActions, dispatch),
+        PostActions : bindActionCreators(postActions,dispatch)
     })
 )(Register);

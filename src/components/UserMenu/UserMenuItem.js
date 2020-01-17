@@ -21,8 +21,8 @@ text-align: center;
     }
 `;
 
-const UserMenuItem = ({onClick, children}) => (
-    <MenuItem onClick={onClick}>
+const UserMenuItem = ({onClick, children,item}) => (
+    <MenuItem id={item} onClick={onClick}>
         {children}
     </MenuItem>
 );

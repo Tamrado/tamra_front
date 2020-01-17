@@ -1,48 +1,22 @@
 import React from 'react';
 import styled from 'styled-components';
-import searchButtonImage from '../../build/static/images/iconmonstr-magnifier-1-32.png';
-import hoversearchButtonImage from '../../build/static/images/iconmonstr-magnifier-1-32 (1).png';
+
 import { shadow } from '../../lib/styleUtils';
 
 const FriendBox = styled.div`
 min-width: 150px;
 width : 80%;
 height: 49px;
-padding-left : 5rem;
-padding-right : 5rem;
+padding-left : 10%;
 float:left;
+padding-right : 10px;
 `;
-const SearchBox = styled.div`
-min-width: 150px;
-height: 49px;
-position : relative;
-float:left;
-padding-top : 5px;
-width : 90%;
 
-`;
-const SearchButton = styled.div`
-margin-top : 10px;
-position : relative;
-float:left;
-cursor: pointer;
-width: 32px;
-height: 32px;
-background-image: url(${searchButtonImage});
-background-size: cover;
-background-position: center;
-background-repeat: no-repeat;
-&:hover {
-    background-image: url(${hoversearchButtonImage});
-}
-&:active {
-    /* 마우스 클릭시 아래로 미세하게 움직임 */
-    transform: translateY(3px);
-}
-`;
 const SearchlineRectangle = styled.div`
-min-width: 144px;
+min-width: 114px;
 width : 100%;
+height: 70%;
+top : 15%;
 outline: none;
 border : none;
 outline: none;
@@ -84,13 +58,10 @@ ${shadow(1)};
 `;
 
 
-const FriendSearch = ({onclick,nickname,children}) => (
+const FriendSearch = ({onclick,children}) => (
     <FriendBox>
-        <SearchBox>
         <SearchlineRectangle role = "textbox" spellcheck = "true" contentEditable = "true" aria-label = {`검색`}
         onInput={onclick}/>
-        </SearchBox>
-        <SearchButton onClick={()=>{window.location.href=`/search/${nickname}`}}/>
         <SearchContent>{children}</SearchContent>
     </FriendBox>
 );

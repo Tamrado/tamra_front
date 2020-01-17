@@ -14,12 +14,12 @@ class UserPage extends Component {
         }
     }
     render() {
-        const { match } = this.props;
+        const { match,history } = this.props;
         const { username } = match.params;
         return(
             
                 <ConfirmContent>
-                <UserModify username = {username}/>
+                <UserModify username = {username} history={history}/>
                 </ConfirmContent>
           
         );

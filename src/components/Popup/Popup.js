@@ -17,8 +17,8 @@ const Box = styled.div`
 position: absolute;
 width: 319px;
 height: 195px;
-right : 30%;
-top: 240px;
+right : ${props=>props.right};
+top: ${props=>props.top};
 
 background: #FFFFFF;
 box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
@@ -85,9 +85,9 @@ border-radius: 10px;
 }
 `;
 
-const Popup = ({handlePopupOk,display,text}) => (
+const Popup = ({handlePopupOk,display,text,right,top}) => (
 <Wrapper display={display}>
-    <Box>
+    <Box right={right} top = {top}>
         <Message>
             {text}
         </Message>

@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import Header, {RegisterButton,UserThumbnail,SearchList,Setting} from '../../components/Header';
+import {SearchButton,Header} from '../../components/Header/Header';
+import {RegisterButton,UserThumbnail,SearchList,Setting} from '../../components/Header';
 import {FollowList} from '../../components/FollowMenu';
 import {AlarmList} from '../../components/Alarm';
 import {connect} from 'react-redux';
@@ -187,17 +188,17 @@ class HeaderContainer extends Component {
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
         ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick,handleProfileClick,
         handleClickHome,handleAllRead,handleAlarmInfoClick} = this;
-    let content,search,alarm,friendRequest,mypage,menu = null;
+    let content,search,alarm,friendRequest,mypage,menu,searchButton = null;
     
     if(!visible) return null;
 
     if(user.get('logged')){
         content = <UserThumbnail profileClick={handleProfileClick}  username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
         search = <SearchList userclick = {handleUserClick}
-         onclick = {handleSearchBox} visible={headerVisible} users={userList} nickname={headerContent}/>;
+         onclick = {handleSearchBox} visible={headerVisible} users={userList} />;
         alarm = <Setting key={'alarm'} resultvisible = {alarmNumVisible} alarmNum = {alarmNum}image = {alarmImage} size = {'30px'}
          onclick = {handleAlarmClick} hoverimg={hoverAlarmImage} tvisible={alarmMenuVisible}/>;
-        
+        searchButton = <SearchButton onClick={()=>{window.location.href=`/search/${headerContent}`}}/>
         friendRequest = <Setting key={'friendRequest'} tvisible={followMenuVisible} resultvisible={friendRequestVisible} image = {friendRequestImage} size ={'30px'}
          onclick = {handleFriendRequestClick} hoverimg={hoverFriendRequestImage} alarmNum = {friendRequestNum}/>;
         
@@ -212,6 +213,7 @@ class HeaderContainer extends Component {
             
             <Header home={handleClickHome}>
                 {search}
+                {searchButton}
                 {content}
                 {alarm}
                 {friendRequest}

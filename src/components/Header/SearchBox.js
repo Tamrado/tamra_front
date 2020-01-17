@@ -12,6 +12,9 @@ height : 55px;
 display : block;
 cursor: pointer;
 background : #ffffff;
+&:hover{
+    background:rgba(196, 196, 196,0.8);
+}
 
 `;
 const Nickname =styled.div`

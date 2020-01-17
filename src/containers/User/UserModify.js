@@ -5,9 +5,11 @@ import {connect} from 'react-redux';
 import * as userPageActions from '../../redux/modules/userPage';
 import * as userActions from '../../redux/modules/user';
 import * as authActions from '../../redux/modules/auth';
+import * as postActions from '../../redux/modules/post';
 import storage from '../..//lib/storage';
 import {setError,validate,checkEmailExists,checkPhoneExists,inputStyle
     ,setAuthActions,setPassword} from '../Function/ValidateModule';
+    import {Popup} from '../../components/Popup';
 
 class UserModify extends Component{        
 
@@ -78,7 +80,7 @@ class UserModify extends Component{
         checkPhoneExists(value);
 }
 handleLocalRegister = async () => {
-    const{form, UserPageActions, error} = this.props;
+    const{form, UserPageActions, error,PostActions} = this.props;
     const {email, id,password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
 
     if(error) return; //현재 에러 있는 상태라면 진행 x
@@ -98,39 +100,49 @@ handleLocalRegister = async () => {
         await UserPageActions.modifyUserInfo({
             email,id,password,name,comment,phone,address,gender,birthday
         });
-        window.location.href = '/';
         storage.remove('passed');
+        PostActions.setPopupDisplay('block');
         } catch(e){
             if(e.response.status === 411)
-                setError('조건에 맞는 데이터를 입력해주세요.');
+                setError('조건에 맞는 데이터를 입력해주세요.','main');
         if(e.response.status === 409)
-                setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.');
+                setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.','main');
     }
+    }
+    handlePopupOk = () => {
+        const{PostActions,history} = this.props;
+        PostActions.setPopupDisplay('none');
+        history.push('/');
     }
     render(){
-        const {error,form,errorId} = this.props
+        const {error,form,errorId,popupDisplay} = this.props
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} =form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,checkedChange} = this; 
-  
+        const {handleChange,handleLocalRegister,defaultNullChange,checkedChange,handlePopupOk} = this; 
+        console.log(gender);
                 return(
+                    <div>
                 <AuthContent title='MY PAGE'>
                 <InputWithLabel label = "아이디" name="id" placeholder="아이디"
                 value = {id}
                 disabled/>
-                <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
+               { !id.includes('Kakao') && <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
                 type="password"
                 value={password} onChange={handleChange}
                 />
+               }
                 {
                     errorId === 'password' &&error && <AuthError>{error}</AuthError>
-                }  
-                <InputWithLabel label = "비밀번호 확인" name="passwordConfirm" placeholder="다시 한번 입력"
+                }
+              
+               { !id.includes('Kakao') && <InputWithLabel label = "비밀번호 확인" name="passwordConfirm" placeholder="다시 한번 입력"
                 type="password"
                 value={passwordConfirm} onChange={handleChange}
                 />
+            }
                 {
                     errorId === 'passwordConfirm' &&error && <AuthError>{error}</AuthError>
-                }  
+                } 
+            
                 <InputWithLabel label = "생년월일" name="birthday" 
                 type="date" 
                 value = {birthday} onChange={defaultNullChange}
@@ -162,18 +174,23 @@ handleLocalRegister = async () => {
                     errorId === 'comment' &&error && <AuthError>{error}</AuthError>
                 } 
                 <Label label = "성별"></Label>
-                {
+                <input style ={inputStyle} name= "gender" type="radio" value = {Number('0')} checked={gender === Number('0')}  onChange={checkedChange} />여자
+                <input style ={inputStyle} name="gender" type="radio" value = {Number('1')} checked={gender === Number('1')}   onChange={checkedChange}/>남자
+                <input style ={inputStyle} name="gender" type="radio" value = {Number('2')} checked={gender === Number('2')}  onChange={checkedChange} />others
+            {
                     errorId === 'gender' &&error && <AuthError>{error}</AuthError>
                 } 
-                <input style ={inputStyle} name= "gender" type="radio" value = {Number('0')} defaultChecked = {Number(gender)} onChange={checkedChange} />여자
-                <input style ={inputStyle} name="gender" type="radio" value = {Number('1')} defaultChecked ={Number(gender)}  onChange={checkedChange}/>남자
-                <input style ={inputStyle} name="gender" type="radio" value = {Number('2')} defaultChecked ={Number(gender)} onChange={checkedChange} />others
                 <InputWithLabel label ="주소" name ="address" placeholder="서울" defaultValue = {address} onChange={defaultNullChange} />
                 {
                     errorId === 'address' &&error && <AuthError>{error}</AuthError>
                 }              
                 <AuthButton onClick={handleLocalRegister}>확인</AuthButton>
+                {
+                    errorId === 'main' &&error && <AuthError>{error}</AuthError>
+                }  
                 </AuthContent>
+                <Popup handlePopupOk = {handlePopupOk} right={'20%'} top = {'100px'} display={popupDisplay} text={'회원가입이 완료었습니다.'} />
+                </div>
             );
         }
 }
@@ -185,11 +202,13 @@ export default connect(
         errorId: state.auth.getIn(['register','errorId']),
         result: state.userPage.get('result'),
         userPage : state.userPage,
-        password : state.userPage.getIn(['User','form','password'])
+        password : state.userPage.getIn(['User','form','password']),
+        popupDisplay : state.post.get('popupDisplay')
     }),
     (dispatch)=>({
         UserPageActions : bindActionCreators(userPageActions,dispatch),
         UserActions : bindActionCreators(userActions, dispatch),
-        AuthActions: bindActionCreators(authActions,dispatch)
+        AuthActions: bindActionCreators(authActions,dispatch),
+        PostActions : bindActionCreators(postActions,dispatch)
     })
 )(UserModify);

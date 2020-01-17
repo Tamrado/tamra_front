@@ -28,7 +28,7 @@ top: 8px;
 `;
 const CommentInputBox = styled.div`
 position: relative;
-    max-width: 80%;
+    max-width: 70%;
     height: 100%;
     left: 82px;
     top: 8px;

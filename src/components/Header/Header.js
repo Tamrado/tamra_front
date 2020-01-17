@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import oc from 'open-color';
 import { shadow, media } from '../../lib/styleUtils';
-
+import searchButtonImage from '../../build/static/images/iconmonstr-magnifier-1-32.png';
+import hoversearchButtonImage from '../../build/static/images/iconmonstr-magnifier-1-32 (1).png';
 // 상단 고정, 그림자
 const Positioner = styled.div`
     display: flex;
@@ -50,6 +51,33 @@ const Logo = styled.div`
     text-decoration: none;
 `;
 
+export const SearchButton = styled.div`
+    position: relative;
+    float: left;
+    cursor: pointer;
+   
+    width: 32px;
+    padding-left: 15px;
+    height: 33px;
+    margin-left : 1%;
+    margin-right : 10%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    padding-right: 17px;
+background-image: url(${searchButtonImage});
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+&:hover {
+    background-image: url(${hoversearchButtonImage});
+}
+&:active {
+    /* 마우스 클릭시 아래로 미세하게 움직임 */
+    transform: translateY(3px);
+}
+`;
+
 // 중간 여백
 
 
@@ -59,23 +87,16 @@ const GradientBorder = styled.div`
     background: linear-gradient(to right, ${oc.teal[6]}, ${oc.cyan[5]});
 `;
 
-const Header = ({children,childrentwo,menuOne,menuTwo,menuThree,menuFour,home}) => {
+export const Header = ({children,home}) => {
     return (
         <Positioner>
             <WhiteBackground>
                 <HeaderContents>
                     <Logo onClick={home}>TAMRA</Logo>
                     {children}
-                    {childrentwo}
-                    {menuOne}
-                    {menuTwo}
-                    {menuThree}
-                    {menuFour}
                 </HeaderContents>
             </WhiteBackground>
             <GradientBorder/>
         </Positioner>
     );
 };
-
-export default Header;

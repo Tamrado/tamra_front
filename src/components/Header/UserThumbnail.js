@@ -7,7 +7,7 @@ const Wrapper = styled.div`
     left : 0;
     border-radius: 50%;
     cursor: pointer;
-    margin-left : 20px;
+    
     margin-right : 20px;
     margin-top : 7px;
     float: left;

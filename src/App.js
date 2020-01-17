@@ -59,7 +59,7 @@ class App extends Component {
                 <Route exact path="/@:username/password" component={UserPageConfirm}/>
                 <Route exact path="/@:username/info"component={UserPage}/>
                 <Route exact path="/@:username"component={Timeline}/>
-                <Route exact path = "/search/:nickname" component={Search}/>
+                <Route path = "/search" component={Search}/>
                 <Route exact path = "/notfound" component={NotFound}/>
                 <Route component={NotFound}/>
                 </Switch>

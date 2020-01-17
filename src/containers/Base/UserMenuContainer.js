@@ -5,33 +5,28 @@ import {bindActionCreators} from 'redux';
 import * as baseActions from '../../redux/modules/base';
 import * as userActions from '../../redux/modules/user';
 import * as postActions from '../../redux/modules/post';
+import {handleLogout,setUserActions} from '../Function/SignModule';
 import {PostPopup} from '../../components/Popup';
 import PropTypes from 'prop-types';
-import storage from '../../lib/storage';
 class UserMenuContainer extends Component{
 
     static contextTypes = {
         router: PropTypes.object
     }
 
-    handleLogoutButtonClick = () => {
+    componentDidMount=()=>{
+        setUserActions(this.props.UserActions);
+
+    }
+    handleLogoutButtonClick = (e) => {
         const {PostActions} = this.props;
+        const{id} = e.target;
         PostActions.setPostPopupDisplay('block');
         PostActions.setPopupText('로그아웃하시겠습니까?');
+        PostActions.setPopupCategory(id);
     }
 
-    handleLogout = async()=> {
-        const {UserActions} = this.props;
-
-        try{
-            await UserActions.logout();
-        }catch (e){
-            console.log(e);
-        }
-
-        storage.remove('loggedInfo');
-        window.location.href='/auth/Login';
-    }
+    
     handleCancel = async() => {
         const {PostActions,BaseActions} = this.props;
         PostActions.setPostPopupDisplay('none');
@@ -40,7 +35,7 @@ class UserMenuContainer extends Component{
 
     render(){
         const{visible, username,BaseActions,postPopupDisplay,popupText} = this.props;
-        const {handleLogout,handleLogoutButtonClick,handleCancel} = this;
+        const {handleLogoutButtonClick,handleCancel} = this;
 
         if(visible === 'none'){
             return null;
@@ -53,7 +48,7 @@ class UserMenuContainer extends Component{
             <div>
             <UserMenu>
                 <Username username={username}/>
-                <UserMenuItem onClick={handleLogoutButtonClick}>로그아웃</UserMenuItem>
+                <UserMenuItem item={'logout'} onClick={handleLogoutButtonClick}>로그아웃</UserMenuItem>
                 </UserMenu>
             <PostPopup handleOk={handleLogout} right={'40%'} handleCancel={handleCancel}
              text={popupText} display={postPopupDisplay} />

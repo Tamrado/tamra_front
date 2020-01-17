@@ -9,6 +9,9 @@ import * as timelineActions from '../../redux/modules/timeline';
 import * as likeActions from '../../redux/modules/like';
 import * as baseActions from '../../redux/modules/base';
 import * as postActions from '../../redux/modules/post';
+import * as userActions from '../../redux/modules/user';
+import {setUserActions,handleLogout} from '../Function/SignModule';
+import {dateTimeToFormatted} from '../Function/dateTimeModule';
 import storage from '../../lib/storage';
 import * as commentActions from '../../redux/modules/comment';
 import * as userPageActions from '../../redux/modules/userPage';
@@ -76,7 +79,7 @@ class TimelineContainer extends Component{
                     data.map(
                         async(feed,index) => {
                             let time = feed.get('timestamp');
-                            let timestring = this.dateTimeToFormatted(time);
+                            let timestring = dateTimeToFormatted(time);
                             await TimelineActions.setTimelineTime({timestring:timestring,index : index});
                         }
                     )
@@ -90,39 +93,12 @@ class TimelineContainer extends Component{
                     comments.map(
                         async(comment,commentIndex) => {
                             let time = comment.timestamp;
-                            let timestring = this.dateTimeToFormatted(time);
+                            let timestring = dateTimeToFormatted(time);
                             await TimelineActions.setTimelineCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
                         }
                     )
                 );
     }
-    dateTimeToFormatted=(dt)=> {
-		const min = 60 * 1000;
-		const c = new Date();
-		var d = new Date(dt);
-		var minsAgo = Math.floor((c - d) / (min));
-
-		var result = {
-            'raw': d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
-            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate() + ' ' + (d.getHours() > 9 ? '' : '0') 
-            +  d.getHours() + ':' + (d.getMinutes() > 9 ? '' : '0') +  d.getMinutes() + ':'  
-            + (d.getSeconds() > 9 ? '' : '0') +  d.getSeconds(),
-            'month' : d.getFullYear() + '-' + (d.getMonth() + 1 > 9 ? '' : '0') + (d.getMonth() + 1) 
-            + '-' + (d.getDate() > 9 ? '' : '0') +  d.getDate(),
-			'formatted': ''
-		};
-
-		if (minsAgo < 60) { // 1시간 내
-			result.formatted = minsAgo + '분 전';
-		} else if (minsAgo < 60 * 24) { // 하루 내
-			result.formatted = Math.floor(minsAgo / 60) + '시간 전';
-		} else if(minsAgo < 60 * 24 * 30) { // 하루 이상
-			result.formatted = Math.floor(minsAgo / 60 / 24) + '일 전';
-		} else{
-            result.formatted = result.month;
-        }
-		return result.formatted;
-	};
     getSnapshotBeforeUpdate(prevProps, prevState) {
         return prevProps.userid !== this.props.userid || prevProps.data !== this.props.data;
     }
@@ -141,6 +117,7 @@ class TimelineContainer extends Component{
         const {handleTimeline} = this;
         window.addEventListener("scroll", this.handleScroll);
         await this.getFeedList();
+        setUserActions(this.props.UserActions);
         await this.props.TimelineActions.addPage();
         await handleTimeline();
     }
@@ -223,7 +200,6 @@ class TimelineContainer extends Component{
         if(window.event.keyCode === 13){
             const {CommentActions,TimelineActions} = this.props;
             const {innerText,id} = e.target;
-            console.log(id);
             var content = innerText;
             content = content.replace(/\r/g, "");
             content = content.replace(/\n/g, "");
@@ -411,6 +387,8 @@ class TimelineContainer extends Component{
 
             if(popupCategory === 'delete')
                 this.deleteClick();
+            if(popupCategory === 'logout')
+                handleLogout();
         }
         handlePopupCancel = () => {
         const {PostActions} = this.props;
@@ -497,7 +475,8 @@ export default connect(
         CommentActions : bindActionCreators(commentActions,dispatch),
         BaseActions : bindActionCreators(baseActions,dispatch),
         PostActions : bindActionCreators(postActions,dispatch),
-        UserPageActions : bindActionCreators(userPageActions,dispatch)
+        UserPageActions : bindActionCreators(userPageActions,dispatch),
+        UserActions : bindActionCreators(userActions,dispatch)
 
     })
 )(TimelineContainer);
