@@ -145,75 +145,68 @@ $ yarn start
 &nbsp;
 ### Demo
 
-<div align="center">
-
-write ✍️
-
-![write](./write.PNG)
-<br/>
+write ✍️  
+![write](./write.PNG)  
+  
 friendTag #️⃣
 
-![friendTag](./friendTag.PNG)
-<br/>
+![friendTag](./friendTag.PNG)  
+
 Comment
 
-![comment](./comment.PNG)
-<br/>
+![comment](./comment.PNG)  
+
 Add to friend List when following interactive 🧑‍🤝‍🧑
 
-![add](./addToFriendListWhenFollowingInteractive.PNG)
-<br/>
+![add](./addToFriendListWhenFollowingInteractive.PNG)  
+
 friendAlarm ⏰
 
-![friendAlarm](./friendAlarm.PNG)
-<br/>
+![friendAlarm](./friendAlarm.PNG)  
+
 BasicAlarm ⏰
 
-![alarm](./Alarm.PNG)
-<br/>
+![alarm](./Alarm.PNG)  
+
 friendProfile 😃
 
-![friendProfile](./friendProfile.PNG)
-<br/>
+![friendProfile](./friendProfile.PNG)  
+
 friendSearch 🔍
 
-![friendSearch](./friendSearch.PNG)
-<br/>
+![friendSearch](./friendSearch.PNG)  
+
 myPage 📄
 
 ![myPage](./myPage.PNG)
 
 ![myPage(2)](./mypage(2).PNG)
-<br/>
+
 myProfile 🙍
 ![myProfile](./myProfile.PNG)
-<br/>
+
 Delete feed
 ![feedDelete](./feedDelete.PNG)
-<br/>
+
 Modify text 
 ![textModify](./textModify.PNG)
-<br/>
+
 Modify view phase
 ![modifyViewPhase](./viewPhaseModify.PNG)
-<br/>
+
 Security 🔑
-<br/>
+
 logout
 
 ![logout](./logout.PNG)
-<br/>
+
 SignIn
 
 ![signIn](./signIn.PNG)
-<br/>
+
 SignUp
 
 ![signUp](./signUp.PNG)
-<br/>
-
-
-</div>
 
 <!-- CONTACT -->
 &nbsp;
