@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {SearchButton,Header} from '../../components/Header/Header';
-import {RegisterButton,UserThumbnail,SearchList,Setting} from '../../components/Header';
+import {Header} from '../../components/Header/Header';
 import {FollowList} from '../../components/FollowMenu';
 import {AlarmList} from '../../components/Alarm';
 import {connect} from 'react-redux';
@@ -11,185 +10,80 @@ import * as searchActions from '../../redux/modules/search';
 import * as alarmActions from '../../redux/modules/alarm';
 import {bindActionCreators} from 'redux';
 import UserMenuContainer from './UserMenuContainer';
-import menuImage from '../../build/static/images/iconmonstr-arrow-80-24.png';
-import alarmImage from '../../build/static/images/iconmonstr-bell-thin-32.png';
-import friendRequestImage from '../../build/static/images/iconmonstr-user-29-32.png';
-import mypageImage from '../../build/static/images/iconmonstr-gear-10-32.png';
-import hoverMenuImage from '../../build/static/images/iconmonstr-arrow-80-12.png';
-import hoverAlarmImage from '../../build/static/images/iconmonstr-bell-thin-32 (1).png';
-import hoverFriendRequestImage from '../../build/static/images/iconmonstr-user-29-32 (1).png';
-import hoverMypageImage from '../../build/static/images/iconmonstr-gear-10-32 (1).png';
-import {setAlarmActions,setAlarmTime} from '../Function/AlarmModule';
+import {setUserAndRender,setHeaderVisible,setFriendRequestNum,setUserList,setHeaderContent,setAlarmNum,content,search,alarm,friendRequest,mypage,menu,searchButton,
+    setuserMenuVisible,setAlarmNumVisible,setHandleThumbnailClick,setHandleAlarmClick,setHandleFriendRequestClick,
+setalarmMenuVisible,setfriendRequestVisible,setfollowMenuVisible} from '../Function/HeaderComponent';
+import {setAlarmActions,setAlarmTime,thumbnailClick,setUsername,alarmClick,setUserMenuVisible,setAlarmMenuVisible,
+    setFollowMenuVisible,follow,setBaseActions,setSearchActions,setFriendActions,setFollowNotificationUnavailable,
+    friendRequestClick,handleClickHome,getFollowRequest} from '../Function/HeaderModule';
 class HeaderContainer extends Component {
     componentDidMount() {
-        setAlarmActions(alarmActions);
-        this.getFollowRequest();
+        const{AlarmActions,SearchActions,FriendActions,username,BaseActions} = this.props;
+        setAlarmActions(AlarmActions);
+        setSearchActions(SearchActions);
+        setFriendActions(FriendActions);
+        setBaseActions(BaseActions);
+        getFollowRequest();
         this.getAlarm();
+        setUsername(username);
     }
-    getFollowRequest = async() => {
-        const {FriendActions} = this.props;
-        try{
-            await FriendActions.getFriendAlarmInfo();
-        this.setState({
-                friendRequestVisible : 'block',
-                noFriendAddVisible : 'none'
-            });
-        }catch(e){
-            this.setState({
-                friendRequestVisible : 'none',
-                noFriendAddVisible : 'block'
-            });
-            return;
-        }
-    }
-    
-    getAlarm = async () => {
+    getAlarm = async() => {
         const {AlarmActions} = this.props;
         try{
             await Promise.all([AlarmActions.getAlarmNum(),AlarmActions.getAlarm()]);
-            const {alarmList,alarmNum} = this.props;
+            const{alarmList,alarmNum} = this.props;
             await setAlarmTime(alarmList);
             if(alarmList.size > 0)
-            this.setState({ alarmNonevisible : 'none'});
+                AlarmActions.setAlarmNoneVisible('none');
             else
-                this.setState({ alarmNonevisible : 'block'});
+                AlarmActions.setAlarmNoneVisible('block');
             if(alarmNum > 0)
-                this.setState({alarmNumVisible : 'block'});
+                AlarmActions.setAlarmNumVisible('block');
             else
-                this.setState({alarmNumVisible: 'none'});
-            
+                AlarmActions.setAlarmNumVisible('none');
         }catch(e){
-            this.setState({
-                alarmNonevisible : 'block',
-                alarmNumVisible : 'none'
-            });
+            AlarmActions.setAlarmNoneVisible('block');
+            AlarmActions.setAlarmNumVisible('none');
         }
     }
-    setFollowNotificationUnavailable = async(e) => {
-        const {FriendActions} = this.props;
-        const {id} = e.target;
-        try{
-            await FriendActions.deleteFriendAlarmNotification({'userId' : id});
-            this.handleFriendRequestClick();
-            this.getFollowRequest();
-            
-        }catch(e){
-            return;
-        }
+    handleAlarmClick = ()=>{
+        setAlarmMenuVisible(this.props.alarmMenuVisible);
+        alarmClick();
     }
     handleThumbnailClick = () => {
-        const {BaseActions,userMenuVisible} = this.props;
-        if(userMenuVisible === 'none')
-            BaseActions.setUserMenuVisibility('block');
-        
-        else BaseActions.setUserMenuVisibility('none');
+        setUserMenuVisible(this.props.userMenuVisible);
+        thumbnailClick();
     }
-
-    handleAlarmClick = () => {
-        const{BaseActions,alarmMenuVisible} = this.props;
-     if(alarmMenuVisible === 'none'){
-        BaseActions.setAlarmMenuVisible('block');
-        BaseActions.setFollowMenuVisible('none');
-        BaseActions.setUserMenuVisibility('none');
-    }
-     else
-        BaseActions.setAlarmMenuVisible('none');
-    }
-
     handleFriendRequestClick = () => {
-        const{BaseActions,followMenuVisible} = this.props;
-        if(followMenuVisible === 'none'){
-            BaseActions.setAlarmMenuVisible('none');
-        BaseActions.setFollowMenuVisible('block');
-        BaseActions.setUserMenuVisibility('none');
+        setFollowMenuVisible(this.props.followMenuVisible);
+        friendRequestClick();
     }
-        else
-        BaseActions.setFollowMenuVisible('none');
-    }
-    handleMyPageClick = () => {
-        const {username} = this.props;
-        window.location.href = '/@' + username+'/password';
-    }
-    follow = (e) => {
-        const {FriendActions} = this.props;
-        const {id} = e.target;
-        try{
-        FriendActions.follow(id);
-        this.handleFriendRequestClick();
-        window.location.reload();
-        }catch(e){
-            return;
-        }
-    }
-
-    handleProfileClick = () => {
-        const{username} = this.props;
-        window.location.href =`/@:${username}`;
-    }
-
-    handleSearchBox = async(e) => {
-        const {SearchActions} = this.props;
-        const {innerText} = e.target;
-        
-        await SearchActions.setHeaderContent(innerText);
-        const {headerContent} = this.props;
-        try{
-        await SearchActions.searchInHeader(headerContent,1,5);
-        }catch(e){
-            SearchActions.setEmptyUserlist();
-        }
-        await SearchActions.setHeaderVisible('block');
-    }
-
     handleSearchClick = async() => {
         const {SearchActions,page,headerContent} = this.props;
         await SearchActions.searchInHeader(headerContent,page,10);
         await SearchActions.setEmptyUserlist();
         await SearchActions.setAddPage();
     }
-
-    handleUserClick = async(e) => {
-        window.location.href = `/@:${e.target.id}`;
-    }
-    handleClickHome = () => {
-        window.location.href = '/';
-    }
     handleAllRead = async() => {
         const {AlarmActions,BaseActions} = this.props;
         await AlarmActions.setAllReadAlarm();
         await this.getAlarm();
         BaseActions.setAlarmMenuVisible('none');
-
+    
     }
 
     render(){
     const {visible, user,followRequest,friendRequestNum,headerVisible,alarmMenuVisible,
         userList,headerContent,alarmList,alarmNum,userMenuVisible,followMenuVisible,friendRequestVisible,alarmNumVisible
-        ,alarmNonevisible,noFriendAddVisible} = this.props;
-    const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
-        ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick,handleProfileClick,
-        handleClickHome,handleAllRead,handleAlarmInfoClick} = this;
-    let content,search,alarm,friendRequest,mypage,menu,searchButton = null;
+        ,alarmNoneVisible,noFriendAddVisible} = this.props;
+    const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleAllRead,handleAlarmInfoClick} = this;
+    setUserAndRender(user);setFriendRequestNum(friendRequestNum);setHeaderVisible(headerVisible);setUserList(userList);setHeaderContent(headerContent);
+    setAlarmNum(alarmNum); setuserMenuVisible(userMenuVisible); setAlarmNumVisible(alarmNumVisible);setHandleAlarmClick(handleAlarmClick);
+    setHandleFriendRequestClick(handleFriendRequestClick); setHandleThumbnailClick(handleThumbnailClick);setalarmMenuVisible(alarmMenuVisible);
+    setfriendRequestVisible(friendRequestVisible); setfollowMenuVisible(followMenuVisible);
     
     if(!visible) return null;
 
-    if(user.get('logged')){
-        content = <UserThumbnail profileClick={handleProfileClick}  username={user.getIn(['loggedInfo','username'])} thumbnail={user.getIn(['loggedInfo','thumbnail'])} />;
-        search = <SearchList userclick = {handleUserClick}
-         onclick = {handleSearchBox} visible={headerVisible} users={userList} />;
-        alarm = <Setting key={'alarm'} resultvisible = {alarmNumVisible} alarmNum = {alarmNum}image = {alarmImage} size = {'30px'}
-         onclick = {handleAlarmClick} hoverimg={hoverAlarmImage} tvisible={alarmMenuVisible}/>;
-        searchButton = <SearchButton onClick={()=>{window.location.href=`/search/${headerContent}`}}/>
-        friendRequest = <Setting key={'friendRequest'} tvisible={followMenuVisible} resultvisible={friendRequestVisible} image = {friendRequestImage} size ={'30px'}
-         onclick = {handleFriendRequestClick} hoverimg={hoverFriendRequestImage} alarmNum = {friendRequestNum}/>;
-        
-         mypage = <Setting key={'mypage'} tvisible = {'none'}resultvisible={'none'} image = {mypageImage} size = {'35px'} onclick = {handleMyPageClick} hoverimg={hoverMypageImage}/>;
-        
-         menu = <Setting key={'menu'} left ={'10px'} tvisible = {userMenuVisible} resultvisible={'none'} image = {menuImage} size = {'12px'}  hoverimg = {hoverMenuImage} onclick={handleThumbnailClick}/>;
-    }
-    else{
-        content = <RegisterButton/>;
-    }
         return(
             
             <Header home={handleClickHome}>
@@ -200,7 +94,7 @@ class HeaderContainer extends Component {
                 {friendRequest}
                 {mypage}
                 {menu}
-                <AlarmList alarms={alarmList} visible={alarmMenuVisible} alarmvisible={alarmNonevisible}
+                <AlarmList alarms={alarmList} visible={alarmMenuVisible} alarmvisible={alarmNoneVisible}
                 handleAllRead={handleAllRead} handleAlarmInfoClick={handleAlarmInfoClick}/>
                 <FollowList friend = {followRequest} deleteclick={setFollowNotificationUnavailable}
                 follow = {follow} visible = {followMenuVisible} result={friendRequestVisible} 
@@ -225,7 +119,10 @@ export default connect(
         alarmNum : state.alarm.get('alarmNum'),
         followMenuVisible : state.base.get('followMenuVisible'),
         alarmMenuVisible : state.base.get('alarmMenuVisible'),
-        
+        friendRequestVisible : state.alarm.get('friendRequestVisible'),
+        alarmNumVisible : state.alarm.get('alarmNumVisible'),
+        noFriendAddVisible : state.alarm.get('noFriendAddVisible'),
+        alarmNoneVisible : state.alarm.get('alarmNoneVisible')
     }),
     (dispatch) => ({
         UserActions: bindActionCreators(userActions, dispatch),
