@@ -86,9 +86,9 @@ export const validate = {
 
 };
 
-export const checkEmailExists = debounce(async (email) => {
+export const checkEmailExists = debounce(async (email,id) => {
     try{
-        await AuthActions.checkEmailExists(email,'null');
+        await AuthActions.checkEmailExists(email,id);
         setError(null,'email');
     }catch(e){
         setError('이미 존재하는 이메일입니다.','email');
@@ -105,9 +105,9 @@ export const checkIdExists = debounce(async(id)=> {
     }
 },300);
 
-export const checkPhoneExists = debounce(async(phone) => {
+export const checkPhoneExists = debounce(async(phone,id) => {
     try{
-        await AuthActions.checkPhoneExists(phone,'null');
+        await AuthActions.checkPhoneExists(phone,id);
             setError(null,'phone');
         
     }catch (e){

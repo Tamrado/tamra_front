@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as authActions from '../../redux/modules/auth';
 import * as userActions from '../../redux/modules/user';
-import storage from '../../lib/storage';
-import {setError,validate,checkEmailExists,checkIdExists,checkPhoneExists,
-    setAuthActions,setPassword} from '../Function/ValidateModule';
+import {setAuthActions,setError} from '../Function/ValidateModule';
+import {handleChange,setAuthAction,setPostActions,handleRegister,
+    registerNextPhase,makeFormData, setUserActions} from '../Function/SignModule';
     import * as postActions from '../../redux/modules/post';
     import {Popup} from '../../components/Popup';
 class Register extends Component{  
@@ -19,29 +19,11 @@ class Register extends Component{
         AuthActions.initializeForm('register');
     }
     componentDidMount(){
-        const {AuthActions} = this.props;
+        const {AuthActions,PostActions,UserActions} = this.props;
         setAuthActions(AuthActions);
-    }
-
-    checkedChange = (e) =>{
-        const {AuthActions} = this.props;
-        const {name, value} = e.target.checked;
-        AuthActions.changeInput({
-          name,
-          value,
-          form: 'register'  
-        });
-    }
-
-    defaultNullChange = (e) =>{
-        const {AuthActions} = this.props;
-        const {name, value} = e.target;
-        AuthActions.changeInput({
-          name,
-          value,
-          form: 'register'  
-        });
-        
+        setAuthAction(AuthActions);
+        setPostActions(PostActions);
+        setUserActions(UserActions);
     }
 
     handleFileInput=(e)=>{
@@ -50,78 +32,6 @@ class Register extends Component{
             });
         
       }
-    handleChange = (e) =>{
-    const {AuthActions} = this.props;
-    const {name, value} = e.target;
-    AuthActions.changeInput({
-      name,
-      value,
-      form: 'register'  
-    });
-    setPassword(this.props.password);
-    const validation = validate[name](value);
-    if(name.indexOf('password') > -1 || !validation) return;
-    if( name.indexOf('email') > -1)
-        checkEmailExists(value);
-    else if(name.indexOf('id') > -1) 
-        checkIdExists(value); 
-     else if(name.indexOf('phone') > -1) 
-        checkPhoneExists(value);
-    
-}
-handleLocalRegister = async() => {
-    const{form, AuthActions, error,UserActions,PostActions} = this.props;
-    const {email, id, password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
-    const formData = new FormData();
-    if(this.state.file !== null)
-        formData.append('file',this.state.file);
-    else
-        formData.append('file',null);
-    formData.append('userId',id);
-
-    if(error) return; //현재 에러 있는 상태라면 진행 x
-    if(!validate['email'](email)
-    || !validate['id'](id)
-    || !validate['password'](password)
-    || !validate['passwordConfirm'](passwordConfirm)
-    || !validate['name'](name)
-    || !validate['comment'](comment)
-    || !validate['phone'](phone)
-    || !validate['gender'](gender)
-    ){
-        //하나라도 실패하면 진행 하지 않음
-        return;
-    }
-    
-    try{
-         await AuthActions.localRegister({
-            email,id,password,name,comment,phone,address,gender,birthday
-        });
-    } catch(e){
-        if(e.response.status === 411)
-            setError('조건에 맞는 데이터를 입력해주세요.','main');
-        if(e.response.status === 409)
-            setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.','main');
-    }
-    try{
-         await AuthActions.localRegisterImage(
-            formData
-        );
-        const loggedInfo = this.props.result.toJS();
-        storage.set('loggedInfo', loggedInfo);
-        UserActions.setLoggedInfo(loggedInfo);
-        UserActions.setValidated(true);
-        PostActions.setPopupDisplay('block');
-        
-    } catch(e){
-        if(e.response.status === 422)
-            setError('알 수 없는 에러가 발생했습니다.','main');
-        if(e.response.status === 409)
-            setError('다른 회원의 아이디와 동일합니다. 다시 입력해주세요.','main');
-        if(e.response.status === 411)
-            setError('조건에 맞는 데이터를 입력해주세요.','main');
-    }
-    }
     enterRegister = () => {
         if(window.event.keyCode === 13)
           this.handleLocalRegister();
@@ -131,18 +41,25 @@ handleLocalRegister = async() => {
         PostActions.setPopupDisplay('none');
         history.push('/');
     }
+    handleLocalRegister = async() => {
+        const{form,error} = this.props;
+        try{
+        await Promise.all([makeFormData(this.state.file,form.toJS().id),handleRegister('register',form.toJS(),error)]);
+        registerNextPhase(this.props.result);
+        }catch(e){
+           setError('다시 클릭해주세요.','main');
+        }
+    }
     render(){
         const {error,errorId,popupDisplay} = this.props;
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address} = this.props.form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange,enterRegister,
-        handlePopupOk} = this;
+        const {handleLocalRegister,handleFileInput,enterRegister,handlePopupOk} = this;
         return(
             <div>
             <RegisterComponent error={error} errorId = {errorId} id = {id} password={password} 
             passwordConfirm = {passwordConfirm} email={email} name={name} phone={phone} birthday={birthday}
             comment={comment} address={address} handleChange={handleChange} handleLocalRegister={handleLocalRegister}
-            defaultNullChange={defaultNullChange} handleFileInput={handleFileInput} checkedChange={checkedChange}
-            enterRegister={enterRegister}/>
+             handleFileInput={handleFileInput} enterRegister={enterRegister}/>
             <Popup right={'40%'} top = {'200px'} handlePopupOk = {handlePopupOk} display={popupDisplay} text={'회원가입이 완료었습니다.'} />
             </div>
         );

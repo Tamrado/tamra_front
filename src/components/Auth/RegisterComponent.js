@@ -2,8 +2,8 @@ import {inputStyle} from '../../containers/Function/ValidateModule';
 import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError,Label} from '.';
 import React from 'react';
 
-const RegisterComponent = ({error,errorId,id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender,
-    handleChange,handleLocalRegister,defaultNullChange,handleFileInput,checkedChange,enterRegister})=> {
+const RegisterComponent = ({error,errorId,id,password,passwordConfirm,email,name,phone,birthday,comment,address,
+    handleChange,handleLocalRegister,handleFileInput,enterRegister})=> {
     return(
         <AuthContent title='SIGN UP'>
             <InputWithLabel label = "아이디(필수)" name="id" placeholder="아이디" enter = {enterRegister}
@@ -28,7 +28,7 @@ const RegisterComponent = ({error,errorId,id,password,passwordConfirm,email,name
             }  
             <InputWithLabel label = "생년월일(선택)" name="birthday" placeholder="****-**-**"
             type="date" enter = {enterRegister}
-            value = {birthday} onChange={defaultNullChange}
+            value = {birthday} onChange={handleChange}
             />
             {
                 errorId === 'birthday' &&error && <AuthError>{error}</AuthError>
@@ -58,13 +58,13 @@ const RegisterComponent = ({error,errorId,id,password,passwordConfirm,email,name
             } 
              <br/>
             <Label label = "성별(default : 여,필수)"></Label>
-            <input style={inputStyle}  name= "gender" type="radio" value='0' onKeyUp = {enterRegister} onChange={checkedChange} />여성
-            <input style={inputStyle} name="gender" type="radio" value ={1} onKeyUp = {enterRegister}  onChange={checkedChange}/>남성
-            <input style={inputStyle} name="gender" type="radio"value={2} onKeyUp = {enterRegister} onChange={checkedChange} />others
+            <input style={inputStyle}  name= "gender" type="radio" value={0} onKeyUp = {enterRegister} onChange={handleChange} />여성
+            <input style={inputStyle} name="gender" type="radio" value ={1} onKeyUp = {enterRegister}  onChange={handleChange}/>남성
+            <input style={inputStyle} name="gender" type="radio"value={2} onKeyUp = {enterRegister} onChange={handleChange} />others
             {
                 errorId === 'gender' &&error && <AuthError>{error}</AuthError>
             } 
-            <InputWithLabel enter = {enterRegister} label ="주소(선택)" name ="address" placeholder="서울" value = {address} onChange={defaultNullChange} />
+            <InputWithLabel enter = {enterRegister} label ="주소(선택)" name ="address" placeholder="서울" value = {address} onChange={handleChange} />
             {
                 errorId === 'address' &&error && <AuthError>{error}</AuthError>
             } 

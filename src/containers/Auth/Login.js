@@ -48,10 +48,7 @@ class Login extends Component {
         const {id,password} = form.toJS();
         try{
             await AuthActions.localLogin({id, password});
-            const loggedInfo = this.props.result.toJS();
-
-            UserActions.setLoggedInfo(loggedInfo);
-            storage.set('loggedInfo', loggedInfo);
+            storage.set('loggedInfo', this.props.result.toJS());
             window.location.replace('/');
             
         
@@ -72,22 +69,11 @@ class Login extends Component {
             <AuthContent top = {'1px solid rgba(0, 0, 0, 0.1)'}  title="SIGN IN">
                 
                 <InputWithLabel 
-                enter = {enterLogin}
-                    label="아이디" 
-                    name="id" 
-                    placeholder="아이디" 
-                    value={id} 
-                    onChange={handleChange}
-                />
+                enter = {enterLogin} label="아이디" name="id" placeholder="아이디" 
+                    value={id} onChange={handleChange}/>
                 <InputWithLabel 
-                    label="비밀번호" 
-                    name="password" 
-                    placeholder="비밀번호" 
-                    type="password" 
-                    value={password} 
-                    onChange={handleChange}
-                    enter = {enterLogin}
-                />
+                    label="비밀번호" name="password" placeholder="비밀번호" type="password" 
+                    value={password} onChange={handleChange}enter = {enterLogin}/>
                 {
                     error && <AuthError>{error}</AuthError>
                 }

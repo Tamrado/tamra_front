@@ -3,7 +3,9 @@ import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError} from '
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as authActions from '../../redux/modules/auth';
-import {setError,checkEmailExists,validate,setAuthActions} from '../Function/ValidateModule';
+import {setAuthActions,setError} from '../Function/ValidateModule';
+import {setAuthAction,setUserActions,setPostActions,setMatchId,handleRegister,registerNextPhase
+    ,handleChange} from '../Function/SignModule';
 import * as userActions from '../../redux/modules/user';
 import * as postActions from '../../redux/modules/post';
 import storage from '../../lib/storage';
@@ -11,51 +13,15 @@ import {Popup} from '../../components/Popup';
 
 class KakaoRegister extends Component{ 
     componentDidMount(){
+        const{AuthActions,PostActions,match,UserActions} = this.props;
         if(!storage.get('kakaologin')) return null;
         storage.remove('kakaologin');
-        setAuthActions(this.props.AuthActions);
+        setAuthActions(AuthActions);
+        setAuthAction(AuthActions);
+        setPostActions(PostActions);
+        setUserActions(UserActions);
+        setMatchId(match.params.id);
     }
-    handleChange = (e) =>{
-        const {AuthActions} = this.props;
-        const {name, value} = e.target;
-        AuthActions.changeInput({
-          name,
-          value,
-          form: 'register'  
-        });
-        if( name.indexOf('email') > -1)
-            checkEmailExists(value);
-    } 
-    handleLocalRegister = async() => {
-        const{form, AuthActions, error,UserActions,match,PostActions} = this.props;
-        const{id} = match.params;
-        const {email,comment} = form.toJS();
-    
-        if(error) return; //현재 에러 있는 상태라면 진행 x
-        if(!validate['email'](email)
-        || !validate['comment'](comment)
-        ){
-            //하나라도 실패하면 진행 하지 않음
-            return;
-        }
-        
-        try{
-             await AuthActions.kakaoRegister({
-                email,id,comment
-            });
-            const loggedInfo = this.props.result.toJS();
-            storage.set('loggedInfo', loggedInfo);
-            UserActions.setLoggedInfo(loggedInfo);
-            UserActions.setValidated(true);
-            PostActions.setPopupDisplay('block');
-            
-        } catch(e){
-            if(e.response.status === 411)
-                setError('조건에 맞는 데이터를 입력해주세요.','main');
-            if(e.response.status === 409)
-                setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.','main');
-        }
-        }
         enterRegister = () => {
             if(window.event.keyCode === 13)
               this.handleLocalRegister();
@@ -65,20 +31,29 @@ class KakaoRegister extends Component{
             PostActions.setPopupDisplay('none');
             history.push('/');
         }
+        handleLocalRegister = async() => {
+            const{form,error} = this.props;
+            try{
+            await handleRegister('kakaoRegister',form.toJS(),error);
+            registerNextPhase(this.props.result);
+            }catch(e){
+                setError('다시 클릭해주세요.','main');
+            }
+        }
 render(){
     const {error,errorId,popupDisplay} = this.props;
         const {email,comment} = this.props.form.toJS();
-        const {handleChange,handleLocalRegister,enterRegister,handlePopupOk} = this;
+        const {handleLocalRegister,enterRegister,handlePopupOk} = this;
     return(
         <div>
         <AuthContent title='SIGN UP'>
-                <InputWithLabel label = "이메일" name="email" placeholder="timeline@naver.com(필수)" enter = {enterRegister}
+                <InputWithLabel label = "이메일(필수)" name="email" placeholder="timeline@naver.com" enter = {enterRegister}
                 value = {email}
                 onChange={handleChange}/>
                  {
                     errorId === 'email' &&error && <AuthError>{error}</AuthError>
                 }               
-                <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다.(선택)"
+                <InputWithLabel label = "코멘트(선택)" name="comment" placeholder="반갑습니다."
                 value = {comment} onChange={handleChange} enter = {enterRegister}/>
                 {
                     errorId === 'comment' &&error && <AuthError>{error}</AuthError>

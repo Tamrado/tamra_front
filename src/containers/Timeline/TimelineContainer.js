@@ -10,11 +10,11 @@ import * as likeActions from '../../redux/modules/like';
 import * as baseActions from '../../redux/modules/base';
 import * as postActions from '../../redux/modules/post';
 import * as userActions from '../../redux/modules/user';
+import * as authActions from '../../redux/modules/auth';
 import {setUserActions,handleLogout} from '../Function/SignModule';
 import {dateTimeToFormatted} from '../Function/dateTimeModule';
 import storage from '../../lib/storage';
 import * as commentActions from '../../redux/modules/comment';
-import * as userPageActions from '../../redux/modules/userPage';
 class TimelineContainer extends Component{
     
     handleScroll = async(e) => {
@@ -293,11 +293,11 @@ class TimelineContainer extends Component{
 
     handleImageChange = async(e) => {
         e.preventDefault();
-        const {UserPageActions} = this.props;
+        const {AuthActions} = this.props;
         let file = e.target.files[0];
         var formdata = new FormData();
         formdata.set('file',file);
-        await UserPageActions.modifyUserImage(formdata);
+        await AuthActions.modifyUserImage(formdata);
         const {userResult} = this.props;
         console.log(userResult.toJS());
         storage.remove('loggedInfo');
@@ -460,7 +460,7 @@ export default connect(
         postId : state.post.get('postId'),
         presentComment : state.comment.get('presentComment'),
         lastComment : state.comment.get('lastComment'),
-        userResult : state.userPage.get('result'),
+        userResult : state.auth.get('result'),
         postPopupDisplay : state.post.get('postPopupDisplay'),
         popupText : state.post.get('popupText'),
         popupId : state.post.get('popupId'),
@@ -475,8 +475,8 @@ export default connect(
         CommentActions : bindActionCreators(commentActions,dispatch),
         BaseActions : bindActionCreators(baseActions,dispatch),
         PostActions : bindActionCreators(postActions,dispatch),
-        UserPageActions : bindActionCreators(userPageActions,dispatch),
-        UserActions : bindActionCreators(userActions,dispatch)
+        UserActions : bindActionCreators(userActions,dispatch),
+        AuthActions: bindActionCreators(authActions,dispatch)
 
     })
 )(TimelineContainer);

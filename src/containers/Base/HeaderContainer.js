@@ -19,20 +19,12 @@ import hoverMenuImage from '../../build/static/images/iconmonstr-arrow-80-12.png
 import hoverAlarmImage from '../../build/static/images/iconmonstr-bell-thin-32 (1).png';
 import hoverFriendRequestImage from '../../build/static/images/iconmonstr-user-29-32 (1).png';
 import hoverMypageImage from '../../build/static/images/iconmonstr-gear-10-32 (1).png';
-import {dateTimeToFormatted} from '../Function/dateTimeModule';
+import {setAlarmActions,setAlarmTime} from '../Function/AlarmModule';
 class HeaderContainer extends Component {
-    state = {
-        friendRequestVisible : 'none',
-        alarmNumVisible : 'none',
-        mypageVisible : 'none',
-        mVisible : 'none',
-        noFriendAddVisible : 'none',
-        alarmNonevisible : 'none'
-    }
-    
     componentDidMount() {
-       this.getFollowRequest();
-       this.getAlarm();
+        setAlarmActions(alarmActions);
+        this.getFollowRequest();
+        this.getAlarm();
     }
     getFollowRequest = async() => {
         const {FriendActions} = this.props;
@@ -43,7 +35,6 @@ class HeaderContainer extends Component {
                 noFriendAddVisible : 'none'
             });
         }catch(e){
-            console.log(e);
             this.setState({
                 friendRequestVisible : 'none',
                 noFriendAddVisible : 'block'
@@ -51,20 +42,13 @@ class HeaderContainer extends Component {
             return;
         }
     }
+    
     getAlarm = async () => {
         const {AlarmActions} = this.props;
         try{
-            await AlarmActions.getAlarmNum();
-            await AlarmActions.getAlarm();
-
+            await Promise.all([AlarmActions.getAlarmNum(),AlarmActions.getAlarm()]);
             const {alarmList,alarmNum} = this.props;
-            alarmList.map(
-                async(alarm,index) =>{
-                    let time = alarm.get('timestamp');
-                            let dateString = dateTimeToFormatted(time);
-                            await AlarmActions.setAlarmTime({dateString:dateString,index : index});
-                }
-            )
+            await setAlarmTime(alarmList);
             if(alarmList.size > 0)
             this.setState({ alarmNonevisible : 'none'});
             else
@@ -85,13 +69,11 @@ class HeaderContainer extends Component {
         const {FriendActions} = this.props;
         const {id} = e.target;
         try{
-            console.log(id);
             await FriendActions.deleteFriendAlarmNotification({'userId' : id});
             this.handleFriendRequestClick();
             this.getFollowRequest();
             
         }catch(e){
-            console.log(e);
             return;
         }
     }
@@ -182,9 +164,8 @@ class HeaderContainer extends Component {
 
     render(){
     const {visible, user,followRequest,friendRequestNum,headerVisible,alarmMenuVisible,
-        userList,headerContent,alarmList,alarmNum,userMenuVisible,followMenuVisible} = this.props;
-    const{friendRequestVisible,alarmNumVisible,alarmNonevisible,
-        mypageVisible,mVisible,noFriendAddVisible} = this.state;
+        userList,headerContent,alarmList,alarmNum,userMenuVisible,followMenuVisible,friendRequestVisible,alarmNumVisible
+        ,alarmNonevisible,noFriendAddVisible} = this.props;
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleMyPageClick
         ,follow,setFollowNotificationUnavailable,handleSearchBox,handleUserClick,handleProfileClick,
         handleClickHome,handleAllRead,handleAlarmInfoClick} = this;
@@ -202,9 +183,9 @@ class HeaderContainer extends Component {
         friendRequest = <Setting key={'friendRequest'} tvisible={followMenuVisible} resultvisible={friendRequestVisible} image = {friendRequestImage} size ={'30px'}
          onclick = {handleFriendRequestClick} hoverimg={hoverFriendRequestImage} alarmNum = {friendRequestNum}/>;
         
-         mypage = <Setting key={'mypage'} tvisible = {'none'}resultvisible={mypageVisible} image = {mypageImage} size = {'35px'} onclick = {handleMyPageClick} hoverimg={hoverMypageImage}/>;
+         mypage = <Setting key={'mypage'} tvisible = {'none'}resultvisible={'none'} image = {mypageImage} size = {'35px'} onclick = {handleMyPageClick} hoverimg={hoverMypageImage}/>;
         
-         menu = <Setting key={'menu'} left ={'10px'} tvisible = {userMenuVisible} resultvisible={mVisible} image = {menuImage} size = {'12px'}  hoverimg = {hoverMenuImage} onclick={handleThumbnailClick}/>;
+         menu = <Setting key={'menu'} left ={'10px'} tvisible = {userMenuVisible} resultvisible={'none'} image = {menuImage} size = {'12px'}  hoverimg = {hoverMenuImage} onclick={handleThumbnailClick}/>;
     }
     else{
         content = <RegisterButton/>;
@@ -243,7 +224,8 @@ export default connect(
         alarmList : state.alarm.get('alarmList'),
         alarmNum : state.alarm.get('alarmNum'),
         followMenuVisible : state.base.get('followMenuVisible'),
-        alarmMenuVisible : state.base.get('alarmMenuVisible')
+        alarmMenuVisible : state.base.get('alarmMenuVisible'),
+        
     }),
     (dispatch) => ({
         UserActions: bindActionCreators(userActions, dispatch),

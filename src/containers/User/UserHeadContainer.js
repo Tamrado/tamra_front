@@ -1,70 +1,45 @@
 import React, {Component} from 'react';
-
+import * as authActions from '../../redux/modules/auth';
 import UserHead from '../../components/User/UserHead';
 import {InputWithLabel,AuthButton,AuthContent,AuthError} from '../../components/Auth';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import * as userPageActions from '../../redux/modules/userPage';
 import storage from '../../lib/storage';
-
+import {setError,setAuthActions} from '../Function/ValidateModule';
 class UserHeadContainer extends Component {
     componentDidMount(){
+        const{AuthActions} = this.props;
         if(!storage.get('loggedInfo')) return;
+        setAuthActions(AuthActions);
         let username = storage.get('loggedInfo').username;
         if(username.includes('Kakao')){
             storage.set('passed','true');
             window.location.replace('/@' + username+'/info');
+            return;
         }
-        this.getUserInfo();
+        AuthActions.getUserInfo(username);
+        AuthActions.setUserThumbnail(storage.get('loggedInfo').thumbnail);
     }
-
-    componentDidUpdate(prevProps, prevState){
-        if(prevProps.username !== this.props.username){
-            this.getUserInfo();
-        }
-    }
-    
-    getUserInfo = async() => {
-        const{UserPageActions, username} = this.props;
-        try{
-            await UserPageActions.getUserInfo(username);
-            const info = this.props.result.toJS();
-            await UserPageActions.setUserInfo(info);
-        }catch(e){
-            console.log(e);
-        }
-        
-    }
-
-    setError = (message) => {
-        const {UserPageActions} = this.props;
-        UserPageActions.setError({
-            form : 'User',
-            message
-        });
-        return false;
-    }
-
     handleChange = (e) =>{
-        const {UserPageActions} = this.props;
+        const {AuthActions} = this.props;
         const {name, value} = e.target;
-        UserPageActions.changeInput({
+        AuthActions.changeInput({
             name,
             value,
-            form: 'User'  
+            form: 'register'  
         });
     }
     handleClick = async() => {
-        const{UserPageActions,form,username} = this.props;
+        const{AuthActions,form,username} = this.props;
         const{password} = form.toJS();
         try{
-            await UserPageActions.checkUserAndGetInfo({password});
+            await AuthActions.checkUserAndGetInfo({password});
             const data = this.props.result.toJS();
-            await UserPageActions.setUserData({data}); 
+            await AuthActions.setUserData({data}); 
             storage.set('passed','true');
         } catch(e){
             console.log(e);
-            return this.setError("비밀번호가 틀렸습니다. 다시 입력해주세요.");
+            return setError("비밀번호가 틀렸습니다. 다시 입력해주세요.",'password');
         }
         window.location.href =  '/@' + username+'/info';
         
@@ -100,14 +75,14 @@ class UserHeadContainer extends Component {
 
 export default connect(
     (state) => ({
-        thumbnail: state.userPage.getIn(['info','thumbnail']),
-        error: state.userPage.getIn(['User','error']),
-        result : state.userPage.get('result'),
-        fetched: state.pender.success['userPage/GET_USER_INFO'],
-        form : state.userPage.getIn(['User','form']),
+        thumbnail: state.auth.get('thumbnail'),
+        error: state.auth.getIn(['register','error']),
+        result : state.auth.get('result'),
+        fetched: state.pender.success['auth/GET_USER_INFO'],
+        form : state.auth.getIn(['register','form']),
         userpage : state.userPage
     }),
     (dispatch)=> ({
-        UserPageActions: bindActionCreators(userPageActions, dispatch)
+        AuthActions: bindActionCreators(authActions, dispatch)
     })
 )(UserHeadContainer);

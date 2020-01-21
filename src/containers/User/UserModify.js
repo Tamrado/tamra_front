@@ -1,18 +1,27 @@
 import React, {Component} from 'react';
-import {AuthContent,InputWithLabel,AuthButton,AuthError,Label} from '../../components/Auth';
+import {ModifyComponent} from '../../components/User';
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
-import * as userPageActions from '../../redux/modules/userPage';
 import * as userActions from '../../redux/modules/user';
 import * as authActions from '../../redux/modules/auth';
 import * as postActions from '../../redux/modules/post';
 import storage from '../..//lib/storage';
-import {setError,validate,checkEmailExists,checkPhoneExists,inputStyle
-    ,setAuthActions,setPassword} from '../Function/ValidateModule';
-    import {Popup} from '../../components/Popup';
+import {setAuthAction,setUserActions,setPostActions,handleRegister,handleChange} from '../Function/SignModule';
+import {setError,setAuthActions} from '../Function/ValidateModule';
+import {Popup} from '../../components/Popup';
 
 class UserModify extends Component{        
 
+    componentDidMount(){
+        const{AuthActions,PostActions,UserActions} = this.props;
+        setAuthAction(AuthActions);
+        setAuthActions(AuthActions);
+        setPostActions(PostActions);
+        setUserActions(UserActions);
+        this.checkIfUserPassed();
+        this.initialModifyInfo();
+        
+    }
     checkIfUserPassed = () => {
         const{username} = this.props;
         if(!storage.get('passed')) window.location.href = '/@' + username+ "/password";
@@ -20,176 +29,50 @@ class UserModify extends Component{
     }
     
     initialModifyInfo = async() => {
-        const{username,UserPageActions} = this.props;
+        const{AuthActions,username} = this.props;
         try{
-        await UserPageActions.checkUserAndGetUser();
+        await AuthActions.checkUserAndGetUser();
         const user = this.props.result.toJS();
-        UserPageActions.setUserData(user);
-        
+        await AuthActions.setUserData({form:'register',data:user});
+        if(this.props.gender === null)
+            await AuthActions.setGender(0);
         }
         catch(e){
-            console.log(e);
+            storage.remove('passed');
             window.location.replace('/@' + username+ "/password");
         }
     }
 
-    componentDidMount(){
-        this.checkIfUserPassed();
-        this.initialModifyInfo();
-        setAuthActions(this.props.AuthActions);
-    }
-    componentWillUnmount(){
-        const {UserPageActions} = this.props;
-        UserPageActions.initializeForm('User');
-        
-    }
-
-    checkedChange = (e) =>{
-        const {UserPageActions} = this.props;
-        const {name, value} = e.target.checked;
-        UserPageActions.changeInput({
-          name,
-          value,
-          form: 'User'  
-        });
-    }
-
-    defaultNullChange = (e) =>{
-        const {UserPageActions} = this.props;
-        const {name, value} = e.target;
-        UserPageActions.changeInput({
-          name,
-          value,
-          form: 'User'  
-        });
-    }
-    handleChange = (e) =>{
-    const {UserPageActions} = this.props;
-    const {name, value} = e.target;
-    UserPageActions.changeInput({
-      name,
-      value,
-      form: 'User'  
-    });
-    setPassword(this.props.password);
-    const validation = validate[name](value);
-    if(name.indexOf('password') > -1 || !validation) return;
-    if( name.indexOf('email') > -1)
-        checkEmailExists(value);
-     else if(name.indexOf('phone') > -1) 
-        checkPhoneExists(value);
-}
-handleLocalRegister = async () => {
-    const{form, UserPageActions, error,PostActions} = this.props;
-    const {email, id,password, passwordConfirm, phone,name,comment,address,gender,birthday} = form.toJS();
-
-    if(error) return; //현재 에러 있는 상태라면 진행 x
-    if(!validate['email'](email)
-    || !validate['password'](password)
-    || !validate['passwordConfirm'](passwordConfirm)
-    || !validate['name'](name)
-    || !validate['comment'](comment)
-    || !validate['phone'](phone)
-    || !validate['gender'](gender)
-    ){
-        //하나라도 실패하면 진행 하지 않음
-        return;
+    enterRegister = () => {
+        if(window.event.keyCode === 13)
+          this.handleLocalRegister();
     }
     
-    try{
-        await UserPageActions.modifyUserInfo({
-            email,id,password,name,comment,phone,address,gender,birthday
-        });
-        storage.remove('passed');
-        PostActions.setPopupDisplay('block');
-        } catch(e){
-            if(e.response.status === 411)
-                setError('조건에 맞는 데이터를 입력해주세요.','main');
-        if(e.response.status === 409)
-                setError('다른 회원과 일치하는 데이터가 있습니다. 다시 입력해주세요.','main');
+    handleLocalRegister = async() => {
+        const{form,error} = this.props;
+        try{
+        await handleRegister('modify',form.toJS(),error);
+        }catch(e){
+            setError('다시 클릭해주세요.','main');
+        }
     }
-    }
+
     handlePopupOk = () => {
-        const{PostActions,history} = this.props;
+        const{PostActions} = this.props;
         PostActions.setPopupDisplay('none');
-        history.push('/');
+        window.location.replace('/');
     }
     render(){
         const {error,form,errorId,popupDisplay} = this.props
         const {id,password,passwordConfirm,email,name,phone,birthday,comment,address,gender} =form.toJS();
-        const {handleChange,handleLocalRegister,defaultNullChange,checkedChange,handlePopupOk} = this; 
-        console.log(gender);
-                return(
-                    <div>
-                <AuthContent title='MY PAGE'>
-                <InputWithLabel label = "아이디" name="id" placeholder="아이디"
-                value = {id}
-                disabled/>
-               { !id.includes('Kakao') && <InputWithLabel label = "비밀번호" name="password" placeholder="비밀번호"
-                type="password"
-                value={password} onChange={handleChange}
-                />
-               }
-                {
-                    errorId === 'password' &&error && <AuthError>{error}</AuthError>
-                }
-              
-               { !id.includes('Kakao') && <InputWithLabel label = "비밀번호 확인" name="passwordConfirm" placeholder="다시 한번 입력"
-                type="password"
-                value={passwordConfirm} onChange={handleChange}
-                />
-            }
-                {
-                    errorId === 'passwordConfirm' &&error && <AuthError>{error}</AuthError>
-                } 
-            
-                <InputWithLabel label = "생년월일" name="birthday" 
-                type="date" 
-                value = {birthday} onChange={defaultNullChange}
-                />
-                {
-                    errorId === 'birthday' &&error && <AuthError>{error}</AuthError>
-                } 
-                <InputWithLabel label = "이메일" name="email" placeholder="timeline@naver.com" 
-                type="email"
-                defaultValue = {email}
-                onChange={handleChange}/>
-                {
-                    errorId === 'email' &&error && <AuthError>{error}</AuthError>
-                } 
-                <InputWithLabel label = "핸드폰 번호" name="phone" placeholder="010-1234-1234" 
-                defaultValue={phone}
-                onChange={handleChange}/>
-                {
-                    errorId === 'phone' &&error && <AuthError>{error}</AuthError>
-                } 
-                <InputWithLabel label = "이름" name="name" placeholder="이름" 
-                defaultValue = {name} onChange={handleChange}/>
-                {
-                    errorId === 'name' &&error && <AuthError>{error}</AuthError>
-                } 
-                <InputWithLabel label = "코멘트" name="comment" placeholder="반갑습니다."
-                defaultValue = {comment} onChange={handleChange} /> <br/>
-                {
-                    errorId === 'comment' &&error && <AuthError>{error}</AuthError>
-                } 
-                <Label label = "성별"></Label>
-                <input style ={inputStyle} name= "gender" type="radio" value = {Number('0')} checked={gender === Number('0')}  onChange={checkedChange} />여자
-                <input style ={inputStyle} name="gender" type="radio" value = {Number('1')} checked={gender === Number('1')}   onChange={checkedChange}/>남자
-                <input style ={inputStyle} name="gender" type="radio" value = {Number('2')} checked={gender === Number('2')}  onChange={checkedChange} />others
-            {
-                    errorId === 'gender' &&error && <AuthError>{error}</AuthError>
-                } 
-                <InputWithLabel label ="주소" name ="address" placeholder="서울" defaultValue = {address} onChange={defaultNullChange} />
-                {
-                    errorId === 'address' &&error && <AuthError>{error}</AuthError>
-                }              
-                <AuthButton onClick={handleLocalRegister}>확인</AuthButton>
-                {
-                    errorId === 'main' &&error && <AuthError>{error}</AuthError>
-                }  
-                </AuthContent>
-                <Popup handlePopupOk = {handlePopupOk} right={'20%'} top = {'100px'} display={popupDisplay} text={'회원가입이 완료었습니다.'} />
+        const {handleLocalRegister,handlePopupOk,enterRegister} = this; 
+            return(
+                <div>
+                <ModifyComponent error={error} errorId = {errorId} id = {id} password={password} 
+            passwordConfirm = {passwordConfirm} email={email} name={name} phone={phone} birthday={birthday}
+            comment={comment} address={address} handleChange={handleChange} handleLocalRegister={handleLocalRegister}
+             gender={gender} enterRegister={enterRegister}/>
+                <Popup handlePopupOk = {handlePopupOk} right={'40%'} top = {'100px'} display={popupDisplay} text={'수정이 완료었습니다.'} />
                 </div>
             );
         }
@@ -197,16 +80,16 @@ handleLocalRegister = async () => {
 
 export default connect(
     (state) => ({
-        form: state.userPage.getIn(['User','form']),
-        error: state.userPage.getIn(['User','error']),
+        form: state.auth.getIn(['register','form']),
+        error: state.auth.getIn(['register','error']),
         errorId: state.auth.getIn(['register','errorId']),
-        result: state.userPage.get('result'),
-        userPage : state.userPage,
-        password : state.userPage.getIn(['User','form','password']),
-        popupDisplay : state.post.get('popupDisplay')
+        result: state.auth.get('result'),
+        userPage : state.auth,
+        pw : state.auth.getIn(['register','form','password']),
+        popupDisplay : state.post.get('popupDisplay'),
+        gender : state.auth.getIn(['register','form','gender'])
     }),
     (dispatch)=>({
-        UserPageActions : bindActionCreators(userPageActions,dispatch),
         UserActions : bindActionCreators(userActions, dispatch),
         AuthActions: bindActionCreators(authActions,dispatch),
         PostActions : bindActionCreators(postActions,dispatch)
