@@ -28,7 +28,13 @@ const SET_POPUP_DISPLAY = 'post/SET_POPUP_DISPLAY';
 const SET_POPUP_TEXT = 'post/SET_POPUP_TEXT';
 const SET_POPUP_ID = 'post/SET_POPUP_ID';
 const SET_POPUP_CATEGORY = 'post/SET_POPUP_CATEGORY';
+const SET_OPACITY = 'post/SET_OPACITY';
+const SET_SHOW_LEVEL_DISPLAY = 'post/SET_SHOW_LEVEL_DISPLAY';
+const SET_LEVEL = 'post/SET_LEVEL';
 
+export const setOpacity = createAction(SET_OPACITY);
+export const setShowLevelDisplay = createAction(SET_SHOW_LEVEL_DISPLAY);
+export const setLevel = createAction(SET_LEVEL);
 export const setPopupCategory = createAction(SET_POPUP_CATEGORY);
 export const setPopupId = createAction(SET_POPUP_ID);
 export const setPopupText = createAction(SET_POPUP_TEXT);
@@ -76,7 +82,10 @@ const initialState = Map({
     postPopupDisplay : 'none',
     popupText : '',
     popupId : -1,
-    popupCategory : ''
+    popupCategory : '',
+    opacity : 0.8,
+    showLevelDisplay : 'none',
+    level : '전체 공개' 
 });
 
 
@@ -98,6 +107,9 @@ export default handleActions({
         onSuccess : (state,action) => state.set('clear',2),
         onFailure : (state,action) => state.set('clear',-1)
     }),
+    [SET_LEVEL] : (state,action) => state.set('level',action.payload),
+    [SET_SHOW_LEVEL_DISPLAY] : (state,action) => state.set('showLevelDisplay',action.payload),
+    [SET_OPACITY] : (state,action) => state.set('opacity',action.payload),
     [SET_POPUP_CATEGORY] : (state,action) => state.set('popupCategory',action.payload),
     [SET_POPUP_ID] : (state,action) => state.set('popupId',action.payload),
     [SET_POPUP_TEXT] : (state,action) => state.set('popupText',action.payload),

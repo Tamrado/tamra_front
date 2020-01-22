@@ -3,29 +3,14 @@ import {connect} from 'react-redux';
 import {WithList} from '../../components/Post';
 import {bindActionCreators} from 'redux';
 import * as postActions from '../../redux/modules/post';
-
+import {scrollingAction,setOpacity,closeWithBox} from '../Function/PostModule';
 class WithListContainer extends Component{
-    state  = {
-        opacity : 0.8
-    };
-    
-      closeWithBox = () => {
-          this.props.PostActions.setWithFriendDisplay('none');
-          
-      }
-      
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
       }
       handleScroll = (e) => {
-        const scrollTop =e.srcElement.scrollingElement.scrollTop;
-        
-        this.setState({
-            opacity : 0.8 - scrollTop / 800
-        });
-        if(this.state.opacity < 0){
-           this.closeWithBox();
-        }
+        scrollingAction(e);
+        setOpacity(this.props.opacity);
      
       }
     
@@ -51,9 +36,8 @@ class WithListContainer extends Component{
     }
 
     render(){
-        const {withData,withfriendDisplay} = this.props;
-        const {opacity} = this.state;
-        const {closeWithBox,handleFriendCancel} = this;
+        const {withData,withfriendDisplay,opacity} = this.props;
+        const {handleFriendCancel} = this;
         return(
             <WithList friend = {withData} opacity = {opacity} display = {withfriendDisplay}
              cancel = {handleFriendCancel} close={closeWithBox} />
@@ -64,7 +48,8 @@ class WithListContainer extends Component{
 export default connect(
     (state) => ({
         withData : state.post.get('friendInfo'),
-        withfriendDisplay :state.post.get('withFriendDisplay')
+        withfriendDisplay :state.post.get('withFriendDisplay'),
+        opacity : state.post.get('opacity')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch)

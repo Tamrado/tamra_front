@@ -65,7 +65,9 @@ class PostDetailContainer extends Component{
     }
 
     setCommentTime = async() => {
-        const{TimelineActions,commentList} = this.props;
+        const{TimelineActions,commentList,postid,data} = this.props;
+        const id = postid.substr(1);
+        const index = data.findIndex(item => item.getIn(['feed','postId']) ===parseInt(id));
         const comments = commentList;
                 await Promise.all(
                     comments.map(
@@ -73,6 +75,7 @@ class PostDetailContainer extends Component{
                             let time = comment.timestamp;
                             let timestring = dateTimeToFormatted(time);
                             await TimelineActions.setDetailCommentTime({timestring:timestring,commentIndex:commentIndex});
+                            await TimelineActions.setCommentTime({index:index,timestring:timestring,commentIndex:commentIndex});
                         }
                     )
                 );
@@ -141,7 +144,7 @@ class PostDetailContainer extends Component{
             content = content.replace(/\n/g, "");
             await CommentActions.writeComment({id,content});
             await CommentActions.showPostCommentList(id,1);
-            this.renewComment(id);
+            await this.renewComment(id);
             
             for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
                 console.log(document.getElementsByName('^^comment')[i].id);
@@ -157,12 +160,12 @@ class PostDetailContainer extends Component{
             
         }
     }
-    renewComment=(id)=>
-        setTimeout(async()=>{
+    renewComment=async(id)=>{
             const {presentComment,TimelineActions} = this.props;
             await TimelineActions.renewDetailComment({'commentId' : id,'presentComment':presentComment});
+            await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
             await this.setCommentTime(id);
-        },2000);
+        };
         handleLikeClick = async(e) =>{
             const {LikeActions,TimelineActions} = this.props;
             const id = e.target.id;
@@ -224,7 +227,8 @@ export default connect(
         commentNum : state.comment.get('commentNum'),
         trueComment : state.timeline.getIn(['presentPost','feed','trueComment']),
         totalNum : state.like.get('totalNum'),
-        presentComment : state.comment.get('presentComment')
+        presentComment : state.comment.get('presentComment'),
+        data : state.timeline.get('mainfeed')
     }),
     (dispatch) => ({
         TimelineActions : bindActionCreators(timelineActions,dispatch),

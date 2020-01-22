@@ -6,18 +6,8 @@ import * as friendActions from '../../redux/modules/friend';
 import * as postActions from '../../redux/modules/post';
 import * as searchActions from '../../redux/modules/search';
 import storage from '../../lib/storage';
-
+import {closeModal,scrollingAction,setOpacity} from '../Function/PostModule';
 class TagListContainer extends Component{
-    state  = {
-        opacity : 0.8
-    };
-   
-    closeModal = () => {
-        const {SearchActions,PostActions} = this.props;
-        PostActions.setDisplay('none');
-        SearchActions.setFriendContent('');
-        
-    }
      
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);
@@ -25,15 +15,9 @@ class TagListContainer extends Component{
         this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
       }
       handleScroll = (e) => {
-        const scrollTop =e.srcElement.scrollingElement.scrollTop;
-        this.setState({
-            opacity : 0.8 - scrollTop / 800
-        });
-        if(this.state.opacity < 0){
-           this.closeModal();
-        }
+       scrollingAction(e);
+       setOpacity(this.props.opacity);
       }
-    
     
     handleFriendInfo = async(e) => {
         const{PostActions} = this.props;
@@ -50,7 +34,7 @@ class TagListContainer extends Component{
         else{
             PostActions.setWithFriend( withData.toJS()[0].nickname+'님과 함께');
         }
-        this.closeModal();
+        closeModal();
     }
     
     handleFriendCancel = async(e) => {
@@ -94,9 +78,8 @@ class TagListContainer extends Component{
       }
 
     render(){
-        const {friendList,friendContent,display} = this.props;
-        const {opacity} = this.state;
-        const {handleFriendInfo,closeModal,handleFriendCancel,
+        const {friendList,friendContent,display,opacity} = this.props;
+        const {handleFriendInfo,handleFriendCancel,
         handleSearch,handleSearchContent,enterSearch} = this;
         return(
             <TagList opacity = {opacity} friends = {friendList} search = {handleSearch} onclick = {handleFriendInfo} close={closeModal}
@@ -112,7 +95,8 @@ export default connect(
         friendList : state.search.get('friendList'),
         display : state.post.get('display'),
         withdisplay : state.post.get('withDisplay'),
-        withData : state.post.get('friendInfo')
+        withData : state.post.get('friendInfo'),
+        opacity : state.post.get('opacity')
     }),
     (dispatch) => ({
         PostActions: bindActionCreators(postActions, dispatch),
