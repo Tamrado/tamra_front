@@ -212,10 +212,11 @@ SignUp
 &nbsp;
 
 ## Contact
-
+### Back-end 
  - 김주현 ([juhyeon96](https://github.com/juhyeon96)) 
  - 정다은 ([jde](https://github.com/jeongdaeun98))
-
+### Front-end
+ - 정다은 ([jde](https://github.com/jeongdaeun98))
 # 🎥
 
 https://www.youtube.com/channel/UCMRjGZic64ud3KhPHE06gPQ
