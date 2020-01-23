@@ -1,12 +1,8 @@
 import {isEmail,isAlphanumeric,isLength} from 'validator';
 import debounce from 'lodash/debounce';
+import {AuthActions} from './setActionModule';
 
-export let AuthActions;
 export let password;
-const setAuthActions = (authActions) => {
-    AuthActions = authActions;
-}
-export {setAuthActions};
 const setPassword = (Password) => {
     password = Password;
 }

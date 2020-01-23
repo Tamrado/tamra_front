@@ -1,6 +1,6 @@
 import storage from '../../lib/storage';
 import {setPassword,validate,checkEmailExists,checkPhoneExists,checkIdExists,setError} from './ValidateModule';
-
+import {UserActions,AuthActions,PostActions} from './setActionModule';
 export const handleLogout = async()=> {
     try{
         await UserActions.logout();
@@ -11,25 +11,13 @@ export const handleLogout = async()=> {
     storage.remove('loggedInfo');
     window.location.href='/auth/Login';
 }
-let UserActions,AuthActions,PostActions,id,formData = new FormData();
+let id,formData = new FormData();
 
 const setMatchId = (matchId) => {
     id = matchId;
 }
 export{setMatchId};
 
-const setPostActions = (postActions)=> {
-    PostActions = postActions;
-}
-export{setPostActions};
-const setAuthAction = (authActions) => {
-    AuthActions = authActions;
-}
-export {setAuthAction};
-
-export const setUserActions = (userActions) => {
-    UserActions=userActions;
-}
 const getValidation = (name,value) => {
     return validate[name](value);
 }

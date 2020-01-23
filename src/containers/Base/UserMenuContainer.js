@@ -5,7 +5,8 @@ import {bindActionCreators} from 'redux';
 import * as baseActions from '../../redux/modules/base';
 import * as userActions from '../../redux/modules/user';
 import * as postActions from '../../redux/modules/post';
-import {handleLogout,setUserActions} from '../Function/SignModule';
+import {handleLogout} from '../Function/SignModule';
+import {setUserActions} from '../Function/setActionModule';
 import {PostPopup} from '../../components/Popup';
 import PropTypes from 'prop-types';
 class UserMenuContainer extends Component{

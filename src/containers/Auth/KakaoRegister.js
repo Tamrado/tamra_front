@@ -3,9 +3,9 @@ import {AuthContent,InputWithLabel,AuthButton,RightAlignedLink,AuthError} from '
 import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as authActions from '../../redux/modules/auth';
-import {setAuthActions,setError} from '../Function/ValidateModule';
-import {setAuthAction,setUserActions,setPostActions,setMatchId,handleRegister,registerNextPhase
-    ,handleChange} from '../Function/SignModule';
+import {setAuthActions,setUserActions,setPostActions} from '../Function/setActionModule';
+import {setError} from '../Function/ValidateModule';
+import {setMatchId,handleRegister,registerNextPhase,handleChange} from '../Function/SignModule';
 import * as userActions from '../../redux/modules/user';
 import * as postActions from '../../redux/modules/post';
 import storage from '../../lib/storage';
@@ -17,7 +17,6 @@ class KakaoRegister extends Component{
         if(!storage.get('kakaologin')) return null;
         storage.remove('kakaologin');
         setAuthActions(AuthActions);
-        setAuthAction(AuthActions);
         setPostActions(PostActions);
         setUserActions(UserActions);
         setMatchId(match.params.id);

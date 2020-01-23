@@ -10,12 +10,12 @@ import * as searchActions from '../../redux/modules/search';
 import * as alarmActions from '../../redux/modules/alarm';
 import {bindActionCreators} from 'redux';
 import UserMenuContainer from './UserMenuContainer';
+import {setAlarmActions,setSearchActions,setFriendActions,setBaseActions} from '../Function/setActionModule';
 import {setUserAndRender,setHeaderVisible,setFriendRequestNum,setUserList,setHeaderContent,setAlarmNum,content,search,alarm,friendRequest,mypage,menu,searchButton,
     setuserMenuVisible,setAlarmNumVisible,setHandleThumbnailClick,setHandleAlarmClick,setHandleFriendRequestClick,
 setalarmMenuVisible,setfriendRequestVisible,setfollowMenuVisible} from '../Function/HeaderComponent';
-import {setAlarmActions,setAlarmTime,thumbnailClick,setUsername,alarmClick,setUserMenuVisible,setAlarmMenuVisible,
-    setFollowMenuVisible,follow,setBaseActions,setSearchActions,setFriendActions,setFollowNotificationUnavailable,
-    friendRequestClick,handleClickHome,getFollowRequest} from '../Function/HeaderModule';
+import {setAlarmTime,thumbnailClick,setUsername,alarmClick,setUserMenuVisible,setAlarmMenuVisible,
+    setFollowMenuVisible,follow,setFollowNotificationUnavailable,friendRequestClick,handleClickHome,getFollowRequest} from '../Function/HeaderModule';
 class HeaderContainer extends Component {
     componentDidMount() {
         const{AlarmActions,SearchActions,FriendActions,username,BaseActions} = this.props;

@@ -1,4 +1,5 @@
-import {PostActions,closeWriteModal,SearchActions} from './WriteModule';
+import {closeWriteModal} from './WriteModule';
+import {PostActions,SearchActions} from './setActionModule';
 let opacity;
 export const setOpacity = (Opacity) =>{
     opacity = Opacity;

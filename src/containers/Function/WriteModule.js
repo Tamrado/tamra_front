@@ -1,13 +1,5 @@
-export let PostActions,SearchActions,TimelineActions;
-export const setPostActions=(postActions)=>{
-    PostActions = postActions;
-}
-export const setSearchActions=(searchActions)=>{
-    SearchActions = searchActions;
-}
-export const setTimelineActions=(timelineActions)=>{
-    TimelineActions = timelineActions;
-}
+import {PostActions,TimelineActions} from './setActionModule';
+
 export const handleLevelClick = (e) => {
     const {id} = e.target;
     PostActions.setShowLevel({showLevel : id});

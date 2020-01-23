@@ -9,9 +9,9 @@ import * as timelineActions from '../../redux/modules/timeline';
 import storage from '../../lib/storage';
 import ShowLevelMenu from '../../components/Post/ShowLevelMenu';
 import {scrollingAction,setOpacity} from '../Function/PostModule';
-import {setPostActions,handleLevelClick,makeImageThumbnailAndFile,handleWriteClickButton,handleCancel
-    ,handleWriteBox,handleFileDelete,handlePopupOk,handleWithBox,closeWriteModal,handleImageCancel,setSearchActions,
-uploadOnlyContent,uploadImages,setTimelineActions} from '../Function/WriteModule';
+import {setPostActions,setSearchActions,setTimelineActions} from '../Function/setActionModule';
+import {handleLevelClick,makeImageThumbnailAndFile,handleWriteClickButton,handleCancel,handleWriteBox,
+    handleFileDelete,handlePopupOk,handleWithBox,closeWriteModal,handleImageCancel,uploadOnlyContent,uploadImages} from '../Function/WriteModule';
 class WriteBoxContainer extends Component{
     componentDidMount() {
         window.addEventListener("scroll", this.handleScroll);

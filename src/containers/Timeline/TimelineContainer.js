@@ -16,7 +16,14 @@ import {dateTimeToFormatted} from '../Function/dateTimeModule';
 import storage from '../../lib/storage';
 import * as commentActions from '../../redux/modules/comment';
 class TimelineContainer extends Component{
-    
+    componentDidMount=async()=>{
+        const {handleTimeline} = this;
+        window.addEventListener("scroll", this.handleScroll);
+        await this.getFeedList();
+        setUserActions(this.props.UserActions);
+        await this.props.TimelineActions.addPage();
+        await handleTimeline();
+    }
     handleScroll = async(e) => {
         const scrollTop =e.srcElement.scrollingElement.scrollTop;
         const { innerHeight } = window;
@@ -113,14 +120,7 @@ class TimelineContainer extends Component{
         }
     }
     
-    componentDidMount=async()=>{
-        const {handleTimeline} = this;
-        window.addEventListener("scroll", this.handleScroll);
-        await this.getFeedList();
-        setUserActions(this.props.UserActions);
-        await this.props.TimelineActions.addPage();
-        await handleTimeline();
-    }
+    
     handleFollowClick =async()=>{
         const {FriendActions,isfollow,userid} = this.props;
         const id = userid.substr(1);

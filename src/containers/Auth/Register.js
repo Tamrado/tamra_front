@@ -4,9 +4,9 @@ import { bindActionCreators } from 'redux';
 import {connect} from 'react-redux';
 import * as authActions from '../../redux/modules/auth';
 import * as userActions from '../../redux/modules/user';
-import {setAuthActions,setError} from '../Function/ValidateModule';
-import {handleChange,setAuthAction,setPostActions,handleRegister,
-    registerNextPhase,makeFormData, setUserActions} from '../Function/SignModule';
+import {setAuthActions,setPostActions,setUserActions} from '../Function/setActionModule';
+import {setError} from '../Function/ValidateModule';
+import {handleChange,handleRegister,registerNextPhase,makeFormData} from '../Function/SignModule';
     import * as postActions from '../../redux/modules/post';
     import {Popup} from '../../components/Popup';
 class Register extends Component{  
@@ -21,7 +21,6 @@ class Register extends Component{
     componentDidMount(){
         const {AuthActions,PostActions,UserActions} = this.props;
         setAuthActions(AuthActions);
-        setAuthAction(AuthActions);
         setPostActions(PostActions);
         setUserActions(UserActions);
     }

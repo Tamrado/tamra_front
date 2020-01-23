@@ -25,15 +25,7 @@ class PostListContainer extends Component{
         await this.props.TimelineActions.addPage();
         }
     }
-    componentDidMount= async() =>{
-        window.addEventListener("scroll", this.handleScroll);
-        if(!storage.get('loggedInfo')) return ;
-        await this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
-         await this.getFeedList();
-        await this.props.TimelineActions.addPage();
-      }
-
-      getFeedList = async() => {
+    getFeedList = async() => {
         const{TimelineActions,page,isTruePost} = this.props;
         if(isTruePost){
             try{
@@ -45,6 +37,15 @@ class PostListContainer extends Component{
             
         }
     }
+    componentDidMount= async() =>{
+        window.addEventListener("scroll", this.handleScroll);
+        if(!storage.get('loggedInfo')) return ;
+        await this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
+         await this.getFeedList();
+        await this.props.TimelineActions.addPage();
+      }
+
+     
     setPostTime = async() => {
         const{data,TimelineActions} = this.props;
                 await Promise.all(

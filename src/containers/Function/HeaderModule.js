@@ -1,14 +1,8 @@
 import {dateTimeToFormatted} from './dateTimeModule';
-let AlarmActions,FriendActions,userMenuVisible,alarmMenuVisible,followMenuVisible,username,BaseActions,SearchActions;
-export const setBaseActions = (baseActions)=>{
-    BaseActions = baseActions;
-}
-export const setAlarmActions =(alarmActions)=>{
-    AlarmActions = alarmActions;
-}
-export const setFriendActions = (friendActions)=>{
-    FriendActions = friendActions;
-}
+import {BaseActions,AlarmActions,FriendActions,SearchActions} from './setActionModule';
+
+let userMenuVisible,alarmMenuVisible,followMenuVisible,username;
+
 export const setUserMenuVisible = (UserMenuVisible)=>{
     userMenuVisible = UserMenuVisible;
 }
