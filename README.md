@@ -13,7 +13,7 @@
   <p align="center">
     Social Network Service for everyone <br/>
 	<br/>
-with Spring Boot
+with Spring boot and React
     <br />
    </p>
 
