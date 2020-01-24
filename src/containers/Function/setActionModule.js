@@ -1,4 +1,5 @@
-export let PostActions,AuthActions,UserActions,SearchActions,TimelineActions,BaseActions,AlarmActions,FriendActions;
+export let CommentActions,PostActions,AuthActions,UserActions,SearchActions,TimelineActions,BaseActions,
+AlarmActions,FriendActions,LikeActions;
 
 export const setPostActions = (postActions)=> {
     PostActions = postActions;
@@ -25,4 +26,10 @@ export const setAlarmActions =(alarmActions)=>{
 }
 export const setFriendActions = (friendActions)=>{
     FriendActions = friendActions;
+}
+export const setCommentActions = (commentActions) =>{
+    CommentActions = commentActions;
+}
+export const setLikeActions = (likeActions) =>{
+    LikeActions = likeActions;
 }

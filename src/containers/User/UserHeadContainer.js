@@ -5,7 +5,8 @@ import {InputWithLabel,AuthButton,AuthContent,AuthError} from '../../components/
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import storage from '../../lib/storage';
-import {setError,setAuthActions} from '../Function/ValidateModule';
+import {setAuthActions} from '../Function/setActionModule';
+import {setError} from '../Function/ValidateModule';
 class UserHeadContainer extends Component {
     componentDidMount(){
         const{AuthActions} = this.props;

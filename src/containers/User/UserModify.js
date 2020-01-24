@@ -6,15 +6,15 @@ import * as userActions from '../../redux/modules/user';
 import * as authActions from '../../redux/modules/auth';
 import * as postActions from '../../redux/modules/post';
 import storage from '../..//lib/storage';
-import {setAuthAction,setUserActions,setPostActions,handleRegister,handleChange} from '../Function/SignModule';
-import {setError,setAuthActions} from '../Function/ValidateModule';
+import {setAuthActions,setUserActions,setPostActions} from '../Function/setActionModule';
+import {handleRegister,handleChange} from '../Function/SignModule';
+import {setError} from '../Function/ValidateModule';
 import {Popup} from '../../components/Popup';
 
 class UserModify extends Component{        
 
     componentDidMount(){
         const{AuthActions,PostActions,UserActions} = this.props;
-        setAuthAction(AuthActions);
         setAuthActions(AuthActions);
         setPostActions(PostActions);
         setUserActions(UserActions);

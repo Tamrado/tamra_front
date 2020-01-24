@@ -10,202 +10,99 @@ import * as searchActions from '../../redux/modules/search';
 import * as likeActions from '../../redux/modules/like';
 import * as commentActions from '../../redux/modules/comment';
 import storage from '../../lib/storage';
-import {dateTimeToFormatted} from '../Function/dateTimeModule';
+import {setTimelineActions,setLikeActions,setCommentActions} from '../Function/setActionModule';
+import {setCommentTime,renderCommentListAfterCommentAdd,clickCommentAdd,setCommentListDisplay,initializeCommentList,
+    returnCommentContextAndInitalize} from '../Function/CommentModule';
+import {outHashTag,overHashTag,getFeedList,setPostTime,scrollAction,clickLike,setTotalLikeAfterClickLike,
+clickUnLike} from '../Function/PostModule';
 class PostListContainer extends Component{
-    openWriteModal = () => {
-        this.props.PostActions.setWriteDisplay('block');
-    }
-    handleScroll = async(e) => {
-        const scrollTop =e.srcElement.scrollingElement.scrollTop;
-        const { innerHeight } = window;
-      const { scrollHeight } = document.body;
-    
-      if (scrollTop+innerHeight >scrollHeight & this.props.isTruePost) {
-        this.getFeedList();
-        await this.props.TimelineActions.addPage();
-        }
-    }
-    getFeedList = async() => {
-        const{TimelineActions,page,isTruePost} = this.props;
-        if(isTruePost){
-            try{
-                await TimelineActions.getMainInformation(page);
-                await this.setPostTime();
-            }catch(e){
-                await TimelineActions.setFalsePost();
-            }
-            
-        }
-    }
-    componentDidMount= async() =>{
+    componentDidMount= () =>{
         window.addEventListener("scroll", this.handleScroll);
         if(!storage.get('loggedInfo')) return ;
-        await this.props.PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
-         await this.getFeedList();
-        await this.props.TimelineActions.addPage();
+        setTimelineActions(this.props.TimelineActions);
+        setLikeActions(this.props.LikeActions);
+        setCommentActions(this.props.CommentActions);
+        this.initializePage();
       }
-
-     
-    setPostTime = async() => {
-        const{data,TimelineActions} = this.props;
-                await Promise.all(
-                    data.map(
-                        async(feed,index) => {
-                            let time = feed.getIn(['feed','timestamp']);
-                            let timestring = dateTimeToFormatted(time);
-                            await TimelineActions.setTime({timestring:timestring,index : index});
-                        }
-                    )
-                );
-    }
-
-    setCommentTime = async(id) => {
-        const{data,TimelineActions} = this.props;
-        let index = data.findIndex(item => item.getIn(['feed','postId'])===parseInt(id));
-        const comments = data.getIn([index,'feed','commentList']);
-                await Promise.all(
-                    comments.map(
-                        async(comment,commentIndex) => {
-                            let time = comment.timestamp;
-                            let timestring = dateTimeToFormatted(time);
-                            await TimelineActions.setCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
-                        }
-                    )
-                );
+      initializePage = async()=>{
+          const{TimelineActions,PostActions} = this.props;
+        await PostActions.setWrittenData(storage.get('loggedInfo').nickname + '님 무슨 일이 있으셨나요?');
+         await getFeedList(1,true,null);
+         await setPostTime('postList',this.props.data);
+        await TimelineActions.addPage();
+        this.timerId = setInterval(
+            ()=>setPostTime('postList',this.props.data),60000);
+      }
+      componentWillUnmount() {
+        clearInterval(this.timerId);
+        clearInterval(this.commentTimer);
     }
     
-    overHashTag = (e) =>{
-        const {TimelineActions} = this.props;
-        TimelineActions.setHashDisplay('block');
-        TimelineActions.setKey(e.target.id);
-        TimelineActions.setCategoryId(e.target.dataset.category);
-    }
-    outHashTag = (e) =>{
-        const {TimelineActions} = this.props;
-        TimelineActions.setHashDisplay('none');
-          
-    }
-    handleStateClick = (e) =>{
-        window.location.href =`/@:${e.target.id}`;
-    }
-    handleLikeClick = async(e) =>{
-        const {LikeActions,TimelineActions} = this.props;
-        const id = e.target.id;
-        await TimelineActions.setLikeKey(id);
-        await LikeActions.clickLike(id);
-        await TimelineActions.setLike('none');
-        try{
-        await LikeActions.getLikeAndUserList(id,1);
-        }catch(e){}
-        const {totalNum} = this.props;
-        await TimelineActions.setLikeNum(totalNum);
-           
-    }
-    handleCancelClick =async(e) => {
-        const {LikeActions,TimelineActions} = this.props;
-        const id = e.target.id;
-        await TimelineActions.setLikeKey(id);
-        await LikeActions.cancelLike(id);
-        await TimelineActions.setLike('block');
-        try{
-        await LikeActions.getLikeAndUserList(id,1);
-        }catch(e){}
-        const {totalNum} = this.props;
-        await TimelineActions.setLikeNum(totalNum);
-    }
-    handleComment =async(e)=>{
-        const {CommentActions,TimelineActions,data} = this.props;
-        const {id} = e.target;
-        const {category} = e.target.dataset;
-        await TimelineActions.setCommentCategory(category);
-        await TimelineActions.setCommentDisplay(id);
-        const{commentdisplay} = this.props;
-        if(commentdisplay === 'block'){
-            let index = data.findIndex(item => item.getIn(['feed','postId'])===parseInt(id));
-            let page = data.getIn([index,'feed','commentPage']);
-            await CommentActions.showPostCommentList(id,page);
-            await TimelineActions.setCommentPage(id);
-            const{commentList,lastComment}=this.props;
-            if(lastComment)
-            await TimelineActions.setCommentList({'commentId' : id,'commentList':commentList,'trueComment' :false});
-            else
-            await TimelineActions.setCommentList({'commentId' : id,'commentList':commentList,'trueComment' :true});
-            await this.setCommentTime(id);
-        }
-    }
-
-    getSnapshotBeforeUpdate(prevProps, prevState) {
-        return prevProps.data !== this.props.data;
-    }
-   componentDidUpdate(prevProps, prevState, snapshot){
-        if(snapshot){
-            this.setPostTime();
-        }
-    }
-
     shouldComponentUpdate(nextProps, nextState) {
         return this.props.data !== nextProps.data || this.props.writtenData !== nextProps.writtenData ||
         this.props.hashdisplay !== nextProps.hashdisplay;
     }
-    handleCommentAdd = async(e) =>{
-        const {id} = e.target;
-        const {TimelineActions,CommentActions,data} = this.props;
-        const index = data.findIndex(item => item.getIn(['feed','postId']) ===parseInt(id));
-        if(data.getIn([index,'feed','trueComment'])){
-            
-            const page = data.getIn([index,'feed','commentPage']);
-            try{
-                await CommentActions.showPostCommentList(id,page);
-                await TimelineActions.setCommentPage(id);
-                const{commentList,lastComment}=this.props;
-            if(lastComment)
-            await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
-            else
-            await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
-            await this.setCommentTime(id);
-            }catch(e){
-                TimelineActions.setCommentFalse(id);
-            }
-        } 
-    }
-    enterComment = async(e) =>{
-        if(window.event.keyCode === 13){
-            const {CommentActions,TimelineActions} = this.props;
-            const {innerText,id} = e.target;
-            console.log(id);
-            var content = innerText;
-            content = content.replace(/\r/g, "");
-            content = content.replace(/\n/g, "");
-            await CommentActions.writeComment({id,content});
-            await CommentActions.showPostCommentList(id,1);
-            this.renewComment(id);
-            for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
-                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(id)){
-                    document.getElementsByName('^^comment')[i].textContent = '';
-                    document.getElementsByName('^^comment')[i].blur();
-                }
-            }
-            await CommentActions.getCommentNum(id);
-            var {commentNum} = this.props;
-            await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':id});
-            await this.setCommentTime(id);
-            
-        }
-    }
-    renewComment=(id)=>
-        setTimeout(async()=>{
-            const {presentComment,TimelineActions} = this.props;
-            await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
-            await this.setCommentTime(id);
-        },2000);
-
     handleImage =(e) =>{
         const {id} = e.target;
         const {imageid} = e.target.dataset;
         this.props.history.push(`/feed/@:${id}/image/:${imageid}`);
     }
+    handleComment =async(e)=>{
+        const{id} = e.target;
+        await setCommentListDisplay(e,'postList');
+        const{commentdisplay,data} = this.props;
+        if(commentdisplay === 'block'){
+        await initializeCommentList(data,'postList',id);
+        const{commentList,lastComment} = this.props;
+        console.log(this.props.data.toJS());
+        await renderCommentListAfterCommentAdd('postList',commentList,lastComment,id);
+        setCommentTime(null,'postList',this.props.data,id);
+        this.commentTimer = setInterval(()=>setCommentTime(null,'postList',this.props.data,id),60000);
+        }
+    }
+    openWriteModal = () => {
+        this.props.PostActions.setWriteDisplay('block');
+    }
+    handleScroll = async(e) => {
+        const {isTruePost,page} = this.props;
+        scrollAction(e,isTruePost,page,null);
+    }
+    
+    handleStateClick = (e) =>{
+        window.location.href =`/@:${e.target.id}`;
+    }
+    handleLikeClick = async(e) =>{
+        await clickLike(e);
+        await setTotalLikeAfterClickLike(this.props.totalNum);
+    }
+    handleCancelClick =async(e) => {
+        await clickUnLike(e);
+        await setTotalLikeAfterClickLike(this.props.totalNum);
+    }
+   
+   
+    handleCommentAdd = async(e) =>{
+        await clickCommentAdd(e,this.props.data,'postList');
+        const {commentList,lastComment,data} = this.props;
+        const {id} = e.target;
+        await renderCommentListAfterCommentAdd('postList',commentList,lastComment,data,id);
+    }
+    enterComment = async(e) =>{
+        if(window.event.keyCode === 13){
+            const {id} = e.target;
+        await returnCommentContextAndInitalize(e,null);
+        var {commentNum,TimelineActions} = this.props;
+        await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':id});
+        await this.renewComment(id);   
+        } 
+    }
+    renewComment=async(id)=>{
+        const {presentComment,TimelineActions} = this.props;
+        await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
+        await setCommentTime(null,'postList',this.props.data,id);
+    }
+
     render(){
-        
         const {data} = this.props;
         const style = {
             lineHeight: '160%'
@@ -217,8 +114,8 @@ class PostListContainer extends Component{
         const username = storage.get('loggedInfo').nickname;
         const thumbnail = storage.get('loggedInfo').thumbnail;
         const {writtenData,hashdisplay,keyid,category,totalNum,commentCategory,PostActions} = this.props;
-        const {openWriteModal,overHashTag,outHashTag,handleStateClick,handleLikeClick,enterComment,handleCommentAdd
-            ,handleCancelClick,handleComment,handleImage} = this;
+        const {openWriteModal,handleStateClick,handleLikeClick,enterComment,handleCommentAdd,handleImage
+            ,handleCancelClick,handleComment} = this;
         if(writtenData === '') PostActions.setWrittenData(`${username}님, 무슨 일이 있으셨나요?`);
         return(
             <PageWrapper>

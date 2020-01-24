@@ -7,7 +7,7 @@ const CommentList = ({comments,mainfeed,addDisplay,commentThumbnail,enterComment
     const commentList = comments&& comments.size > 0 &&comments.map(
             (comment) => {
                  
-                return <CommentBox comment={comment} />
+                return <CommentBox  comment={comment} />
             }
         )
         return(

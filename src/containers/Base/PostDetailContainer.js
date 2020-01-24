@@ -7,14 +7,27 @@ import * as commentActions from '../../redux/modules/comment';
 import * as postActions from '../../redux/modules/post';
 import * as likeActions from '../../redux/modules/like';
 import {CommentList,DetailPostView} from '../../components/DetailPost';
+import {clickDetailCommentAdd,renderDetailCommentListAfterCommentAdd,setCommentTime,initializeDetailCommentList,
+    returnCommentContextAndInitalize} from '../Function/CommentModule';
+import {setTimelineActions,setLikeActions,setCommentActions} from '../Function/setActionModule';
+import {clickLike,clickUnLike,setTotalLikeAfterClickLike} from '../Function/PostModule';
 import {dateTimeToFormatted} from '../Function/dateTimeModule';
 class PostDetailContainer extends Component{
     state = {
         pageCount : 0
     }
     componentDidMount=async()=>{
+        this.timerId = setInterval(
+            ()=>this.setPostTime(),60000);
+        setTimelineActions(this.props.TimelineActions);
+        setLikeActions(this.props.LikeActions);
+        setCommentActions(this.props.CommentActions);
         await this.renderPageInfo();
         await this.renderCommentInfo();
+    }
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+        clearInterval(this.commentTimer);
     }
     setImageSize=async(index)=>{
         const{presentPost,PostActions} = this.props;
@@ -45,40 +58,20 @@ class PostDetailContainer extends Component{
         })
       }
     renderCommentInfo =async()=>{
-        const {CommentActions,TimelineActions,presentPost,postid} = this.props;
+        console.log(1);
+        const{presentPost,postid} = this.props;
         const id = postid.substr(1);
-        let page = presentPost.getIn(['feed','commentPage']);
-            await CommentActions.showPostCommentList(id,page);
-            await TimelineActions.setDetailCommentPage(id);
-            const{comments,lastComment}=this.props;
-            if(lastComment)
-            await TimelineActions.setDetailCommentList({'commentId' : id,'commentList':comments,'trueComment' :false});
-            else
-            await TimelineActions.setDetailCommentList({'commentId' : id,'commentList':comments,'trueComment' :true});
-            await this.setCommentTime();
+        await initializeDetailCommentList(presentPost,postid);
+        const{comments,lastComment}=this.props;
+        await renderDetailCommentListAfterCommentAdd(comments,lastComment,id);
+        await setCommentTime(this.props.commentList,'detail',this.props.data,id);
+        this.commentTimer = setInterval(()=>setCommentTime(this.props.commentList,'detail',this.props.data,id),60000);
     }
     setPostTime = async() => {
         const{presentPost,TimelineActions} = this.props;
         let time = presentPost.getIn(['feed','timestamp']);
         let timestring = dateTimeToFormatted(time);
         await TimelineActions.setDetailTime(timestring);
-    }
-
-    setCommentTime = async() => {
-        const{TimelineActions,commentList,postid,data} = this.props;
-        const id = postid.substr(1);
-        const index = data.findIndex(item => item.getIn(['feed','postId']) ===parseInt(id));
-        const comments = commentList;
-                await Promise.all(
-                    comments.map(
-                        async(comment,commentIndex) => {
-                            let time = comment.timestamp;
-                            let timestring = dateTimeToFormatted(time);
-                            await TimelineActions.setDetailCommentTime({timestring:timestring,commentIndex:commentIndex});
-                            await TimelineActions.setCommentTime({index:index,timestring:timestring,commentIndex:commentIndex});
-                        }
-                    )
-                );
     }
     handleLeft = async() => {
         const {presentPost,imageIndex,history,postid} = this.props;
@@ -115,85 +108,34 @@ class PostDetailContainer extends Component{
         }
     }
     handleCommentAdd = async() =>{
-        const {TimelineActions,CommentActions,presentPost,postid} = this.props;
-        const id = postid.substr(1);
-        if(presentPost.getIn(['feed','trueComment'])){
-            
-            const page = presentPost.getIn(['feed','commentPage']);
-            try{
-                await CommentActions.showPostCommentList(id,page);
-                await TimelineActions.setDetailCommentPage(id);
-                const{comments,lastComment}=this.props;
-            if(lastComment)
-            await TimelineActions.setDetailCommentList({'commentId':id,'commentList':comments,'trueComment' :false});
-            else
-            await TimelineActions.setDetailCommentList({'commentId':id,'commentList':comments,'trueComment' :true});
-            await this.setCommentTime(id);
-            }catch(e){
-                TimelineActions.setCommentFalse(id);
-            }
-        } 
+        const {presentPost,postid} = this.props;
+        await clickDetailCommentAdd(postid,presentPost);
+        const{comments,lastComment} = this.props;
+        await renderDetailCommentListAfterCommentAdd(comments,lastComment,postid.substr(1));
+        await setCommentTime(this.props.commentList,'detail',this.props.data,postid.substr(1));
     }
     enterComment = async(e) =>{
         if(window.event.keyCode === 13){
-            const {CommentActions,TimelineActions,postid} = this.props;
-            const {innerText} = e.target;
-            const id = postid.substr(1);
-            var content = innerText;
-            content = content.replace(/\r/g, "");
-            content = content.replace(/\n/g, "");
-            await CommentActions.writeComment({id,content});
-            await CommentActions.showPostCommentList(id,1);
-            await this.renewComment(id);
-            
-            for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
-                console.log(document.getElementsByName('^^comment')[i].id);
-                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(id)){
-                    document.getElementsByName('^^comment')[i].textContent = '';
-                    document.getElementsByName('^^comment')[i].blur();
-                }
-            }
-            await CommentActions.getCommentNum(id);
-            var {commentNum} = this.props;
-            await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':id});
-            await this.setCommentTime(id);
-            
+        await returnCommentContextAndInitalize(e,null);
+        var {TimelineActions,commentNum,postid} = this.props;
+        await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':postid.substr(1)});
+        await this.renewComment(postid.substr(1));  
         }
     }
     renewComment=async(id)=>{
-            const {presentComment,TimelineActions} = this.props;
+            const {presentComment,TimelineActions,postid} = this.props;
             await TimelineActions.renewDetailComment({'commentId' : id,'presentComment':presentComment});
             await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
-            await this.setCommentTime(id);
+            await setCommentTime(this.props.commentList,'detail',this.props.data,postid.substr(1));
         };
-        handleLikeClick = async(e) =>{
-            const {LikeActions,TimelineActions} = this.props;
-            const id = e.target.id;
-            await TimelineActions.setLikeKey(id);
-            await LikeActions.clickLike(id);
-            await TimelineActions.setDetailLike('none');
-            await TimelineActions.setLike('none');
-            try{
-            await LikeActions.getLikeAndUserList(id,1);
-            }catch(e){}
-            const {totalNum} = this.props;
-            await TimelineActions.setDetailLikeNum(totalNum);
-            await TimelineActions.setLikeNum(totalNum);
+    handleLikeClick = async(e) =>{
+        await clickLike(e);
+        await setTotalLikeAfterClickLike(this.props.totalNum);
                
-        }
-        handleCancelClick =async(e) => {
-            const {LikeActions,TimelineActions} = this.props;
-            const id = e.target.id;
-            await TimelineActions.setLikeKey(id);
-            await LikeActions.cancelLike(id);
-            await TimelineActions.setDetailLike('block');
-            await TimelineActions.setLike('block');
-            try{
-            await LikeActions.getLikeAndUserList(id,1);
-            }catch(e){}
-            const {totalNum} = this.props;
-            await TimelineActions.setDetailLikeNum(totalNum);
-            await TimelineActions.setLikeNum(totalNum);
+    }
+    handleCancelClick =async(e) => {
+        await clickUnLike(e);
+        await setTotalLikeAfterClickLike(this.props.totalNum);
         }
     render(){
         if(!storage.get('loggedInfo')) {

@@ -68,13 +68,16 @@ font-family: Noto Sans KR;
     font-weight: 300;
     font-size: 16px;
     line-height: 16px;
+    cursor: pointer;
     position: relative;
     word-wrap: break-word;
     /* padding-bottom: 10px; */
     white-space: pre-wrap;
     display: inline-block;
     color: #0CA678;
-
+    &:hover {
+        text-decoration-line: underline;
+    }
 `;
 const CommentBox = ({comment}) => {
     const {
@@ -86,10 +89,10 @@ const CommentBox = ({comment}) => {
     } = comment;
     return(
         <CommentView>
-            <CommentThumbnail id = {commentId} data-postid = {postId} data-userid = {profile.id} 
+            <CommentThumbnail onClick={()=>window.location.href=`/@:${profile.id}`} id = {commentId} data-postid = {postId} data-userid = {profile.id} 
             thumbnail = {profile.profile}/>
             <CommentInputBox id = {commentId} data-postid = {postId} data-userid = {profile.id}>
-            <CommentName id = {commentId} data-postid = {postId} data-userid = {profile.id}>{profile.name} </CommentName>
+            <CommentName onClick={()=>window.location.href=`/@:${profile.id}`} id = {commentId} data-postid = {postId} data-userid = {profile.id}>{profile.name} </CommentName>
                 {content}
             </CommentInputBox>
             <CommentTime>{dateString}</CommentTime>

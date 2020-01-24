@@ -17,16 +17,24 @@ setalarmMenuVisible,setfriendRequestVisible,setfollowMenuVisible} from '../Funct
 import {setAlarmTime,thumbnailClick,setUsername,alarmClick,setUserMenuVisible,setAlarmMenuVisible,
     setFollowMenuVisible,follow,setFollowNotificationUnavailable,friendRequestClick,handleClickHome,getFollowRequest} from '../Function/HeaderModule';
 class HeaderContainer extends Component {
-    componentDidMount() {
-        const{AlarmActions,SearchActions,FriendActions,username,BaseActions} = this.props;
+    componentDidMount= async()=> {
+        const{AlarmActions,SearchActions,FriendActions,BaseActions} = this.props;
         setAlarmActions(AlarmActions);
         setSearchActions(SearchActions);
         setFriendActions(FriendActions);
         setBaseActions(BaseActions);
-        getFollowRequest();
-        this.getAlarm();
-        setUsername(username);
+        await getFollowRequest();
+        await this.getAlarm();
+        setUsername(this.props.username);
+        this.timerId = setInterval(
+            ()=>this.getAlarm(),60000);
+        this.timer = setInterval(
+            ()=>getFollowRequest(),60000);
     }
+    componentWillUnmount() {
+        clearInterval(this.timerId);
+        clearInterval(this.timer);
+	}
     getAlarm = async() => {
         const {AlarmActions} = this.props;
         try{

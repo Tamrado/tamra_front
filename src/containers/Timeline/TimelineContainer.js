@@ -11,220 +11,96 @@ import * as baseActions from '../../redux/modules/base';
 import * as postActions from '../../redux/modules/post';
 import * as userActions from '../../redux/modules/user';
 import * as authActions from '../../redux/modules/auth';
-import {setUserActions,handleLogout} from '../Function/SignModule';
-import {dateTimeToFormatted} from '../Function/dateTimeModule';
-import storage from '../../lib/storage';
 import * as commentActions from '../../redux/modules/comment';
+import {setUserActions,setTimelineActions,setPostActions,setFriendActions,setLikeActions,setCommentActions} from '../Function/setActionModule';
+import {handleLogout} from '../Function/SignModule';
+import {setCommentTime,renderCommentListAfterCommentAdd,clickCommentAdd,returnCommentContextAndInitalize,setCommentListDisplay,initializeCommentList} from '../Function/CommentModule';
+import {setPostTime,getFeedList,overHashTag,outHashTag,handlePopupCancel,handlePopupOk,scrollAction,
+    clickLike,setTotalLikeAfterClickLike,clickUnLike} from '../Function/PostModule';
+import storage from '../../lib/storage';
+import { getProfileInfo,setProfileInfo,clickFollow } from '../Function/TimelineModule';
+
 class TimelineContainer extends Component{
-    componentDidMount=async()=>{
-        const {handleTimeline} = this;
+    componentDidMount=()=>{
         window.addEventListener("scroll", this.handleScroll);
-        await this.getFeedList();
-        setUserActions(this.props.UserActions);
+        const {UserActions,TimelineActions,PostActions,FriendActions,LikeActions,CommentActions} = this.props;
+        setUserActions(UserActions);
+        setTimelineActions(TimelineActions);
+        setPostActions(PostActions);
+        setFriendActions(FriendActions);
+        setLikeActions(LikeActions);
+        setCommentActions(CommentActions);
+        this.initialize();
+        
+    }
+    initialize=async()=>{
+        const {handleTimelineProfile} = this;
+        await getFeedList(1,true,this.props.userid);
+        await setPostTime('timeline',this.props.data);
+        this.timerId = setInterval(
+            ()=>setPostTime('timeline',this.props.data),60000);
         await this.props.TimelineActions.addPage();
-        await handleTimeline();
+        await handleTimelineProfile();
     }
     handleScroll = async(e) => {
-        const scrollTop =e.srcElement.scrollingElement.scrollTop;
-        const { innerHeight } = window;
-      const { scrollHeight } = document.body;
-    
-      if (scrollTop+innerHeight >scrollHeight && this.props.isTruePost ) {
-         this.getFeedList();
-         await this.props.TimelineActions.addPage();
-        }
+        const {isTruePost,page,userid} = this.props;
+        scrollAction(e,isTruePost,page,userid);
     }
-      getFeedList = async() => {
-        const{TimelineActions,page,isTruePost,userid} = this.props;
-        var username = userid.substr(1);
-        if(isTruePost){
-            try{
-                 await TimelineActions.getTimelineInformation(username,page);
-            }catch(e){
-                await TimelineActions.setFalsePost();
-            }
-            
-            
-        }
+      
+    handleTimelineProfile =async()=>{
+        await getProfileInfo(this.props.userid);
+        await setProfileInfo(this.props.result);
     }
-    overHashTag = (e) =>{
-        const {TimelineActions} = this.props;
-        TimelineActions.setHashDisplay('block');
-        TimelineActions.setKey(e.target.id);
-    }
-    outHashTag = () =>{
-        const {TimelineActions} = this.props;
-        TimelineActions.setHashDisplay('none');
-    }
-
-    handleTimeline =async()=>{
-        const {TimelineActions,FriendActions,userid} = this.props;
-        var id = userid.substr(1);
-        const {username} = storage.get('loggedInfo');
-        if(username === id)TimelineActions.setFollowDisplay('none');
-        else TimelineActions.setFollowDisplay('block');
-        try{
-        await FriendActions.getOtherInfoNum(id);
-        await TimelineActions.getTimelinePostNum(id);
-        await FriendActions.notifyIsFollowUser(id);
-        }catch(e){
-            console.log(e);
-            
-        }
-        const{result} = this.props;
-        TimelineActions.setComment(result.comment);
-        TimelineActions.setThumbnail(result.thumbnail);
-        TimelineActions.setUsername(result.username);
-        TimelineActions.setNickname(result.nickname);
-        
-
-    }
-
-    setTime = async() => {
-        const{data,TimelineActions} = this.props;
-                await Promise.all(
-                    data.map(
-                        async(feed,index) => {
-                            let time = feed.get('timestamp');
-                            let timestring = dateTimeToFormatted(time);
-                            await TimelineActions.setTimelineTime({timestring:timestring,index : index});
-                        }
-                    )
-                );
-    }
-    setCommentTime = async(id) => {
-        const{data,TimelineActions} = this.props;
-        let index = data.findIndex(item => item.get('postId')===parseInt(id));
-        const comments = data.getIn([index,'commentList']);
-                await Promise.all(
-                    comments.map(
-                        async(comment,commentIndex) => {
-                            let time = comment.timestamp;
-                            let timestring = dateTimeToFormatted(time);
-                            await TimelineActions.setTimelineCommentTime({timestring:timestring,index : index,commentIndex:commentIndex});
-                        }
-                    )
-                );
-    }
-    getSnapshotBeforeUpdate(prevProps, prevState) {
-        return prevProps.userid !== this.props.userid || prevProps.data !== this.props.data;
-    }
-   componentDidUpdate(prevProps, prevState, snapshot){
-        
-        if(snapshot && prevProps.userid !== this.props.userid){
-        const {handleTimeline} = this;
-        handleTimeline();
-        }
-        else if(snapshot && prevProps.data !== this.props.data){
-            this.setTime();
-        }
-    }
-    
     
     handleFollowClick =async()=>{
-        const {FriendActions,isfollow,userid} = this.props;
-        const id = userid.substr(1);
-        if(isfollow === '팔로우')
-            await FriendActions.follow(id);
-        else
-            await FriendActions.unfollow({'friendId': id});
-        await FriendActions.getOtherInfoNum(id);
+        const {isfollow,userid} = this.props;
+        clickFollow(isfollow,userid);
     }
     handleLikeClick = async(e) =>{
-        const {LikeActions,TimelineActions} = this.props;
-        const id = e.target.id;
-        await TimelineActions.setLikeKey(id);
-        await LikeActions.clickLike(id);
-        await TimelineActions.setTimelineLike('none');
-        try{
-        await LikeActions.getLikeAndUserList(id,1);
-        }catch(e){}
-        const {totalNum} = this.props;
-        await TimelineActions.setTimelineLikeNum(totalNum);
-           
+        await clickLike(e);
+        await setTotalLikeAfterClickLike(this.props.totalNum);      
     }
-    handleCancelClick =async(e) => {
-        const {LikeActions,TimelineActions} = this.props;
-        const id = e.target.id;
-        await TimelineActions.setLikeKey(id);
-        await LikeActions.cancelLike(id);
-        await TimelineActions.setTimelineLike('block');
-        try{
-        await LikeActions.getLikeAndUserList(id,1);
-        }catch(e){}
-        const {totalNum} = this.props;
-        await TimelineActions.setTimelineLikeNum(totalNum);
+    handleUnLikeClick =async(e) => {
+        await clickUnLike(e);
+        await setTotalLikeAfterClickLike(this.props.totalNum);
     }
     handleComment =async(e)=>{
-        const {CommentActions,TimelineActions,data} = this.props;
-        const {id} = e.target;
-        const {category} = e.target.dataset;
-        await TimelineActions.setCommentCategory(category);
-        await TimelineActions.setTimelineCommentDisplay(id);
-        const{commentdisplay} = this.props;
-        if(commentdisplay === 'block'){
-            let index = data.findIndex(item => item.get('postId')===parseInt(id));
-            let page = data.getIn([index,'commentPage']);
-            await CommentActions.showPostCommentList(id,page);
-            await TimelineActions.setTimelineCommentPage(id);
-            const{commentList,lastComment}=this.props;
-            if(lastComment)
-            await TimelineActions.setTimelineCommentList({'commentId' : id,'commentList':commentList,'trueComment' :false});
-            else
-            await TimelineActions.setTimelineCommentList({'commentId' : id,'commentList':commentList,'trueComment' :true});
-            await this.setCommentTime(id);
+        const{id} = e.target;
+        await setCommentListDisplay(e,'timeline');
+        const{commentdisplay,data} = this.props;
+        if(commentdisplay ==='block'){
+        await initializeCommentList(data,'timeline',id);
+        const{commentList,lastComment} = this.props;
+        await renderCommentListAfterCommentAdd('timeline',commentList,lastComment,id);
+        setCommentTime(null,'timeline',this.props.data,id);
+        this.commentTimer = setInterval(()=>setCommentTime(null,'timeline',this.props.data,id),60000);
         }
+    }
+    handleImage =(e) =>{
+        const {id} = e.target;
+        const {imageid} = e.target.dataset;
+        this.props.history.push(`/feed/@:${id}/image/:${imageid}`);
     }
     handleCommentAdd = async(e) =>{
-        const {id} = e.target;
-        const {TimelineActions,CommentActions,data} = this.props;
-        const index = data.findIndex(item => item.get('postId') ===parseInt(id));
-        if(data.getIn([index,'trueComment'])){
-            
-            const page = data.getIn([index,'commentPage']);
-            try{
-                await CommentActions.showPostCommentList(id,page);
-                await TimelineActions.setTimelineCommentPage(id);
-                const{commentList,lastComment}=this.props;
-            if(lastComment)
-            await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
-            else
-            await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
-            await this.setCommentTime(id);
-            }catch(e){
-                TimelineActions.setTimelineCommentFalse(id);
-            }
-        } 
+        const{id} = e.target;
+        await clickCommentAdd(e,this.props.data,'timeline');
+        const {commentList,lastComment,data} = this.props;
+        await renderCommentListAfterCommentAdd('timeline',commentList,lastComment,data,id);
     }
     enterComment = async(e) =>{
+        const{id} = e.target;
         if(window.event.keyCode === 13){
-            const {CommentActions,TimelineActions} = this.props;
-            const {innerText,id} = e.target;
-            var content = innerText;
-            content = content.replace(/\r/g, "");
-            content = content.replace(/\n/g, "");
-            await CommentActions.writeComment({id,content});
-            await CommentActions.showPostCommentList(id,1);
-            this.renewComment(id);
-            for(var i = 0; i < document.getElementsByName('^^comment').length; i++){
-                if(parseInt(document.getElementsByName('^^comment')[i].id) === parseInt(id)){
-                    document.getElementsByName('^^comment')[i].textContent = '';
-                    document.getElementsByName('^^comment')[i].blur();
-                }
-            }
-            await CommentActions.getCommentNum(id);
-            var {commentNum} = this.props;
-            await TimelineActions.setTimelineCommentNum({'commentNum':commentNum,'commentId':id});
-            await this.setCommentTime(id);
-            
+            returnCommentContextAndInitalize(e,null);
+        await this.renewComment(id);
+        var {TimelineActions,commentNum} = this.props;
+        await TimelineActions.setCommentNum({'commentNum':commentNum,'commentId':id});
         }
     }
-    renewComment=(id)=>
-        setTimeout(async()=>{
+    renewComment=async(id)=>{
             const {presentComment,TimelineActions} = this.props;
             await TimelineActions.renewTimelineComment({'commentId' : id,'presentComment':presentComment});
-            await this.setCommentTime(id);
-        },2000);
+            await setCommentTime(null,'timeline',this.props.data,id);
+        };
 
     shouldComponentUpdate(nextProps, nextState) {
         return this.props.data !== nextProps.data || this.props.result !== nextProps.result || 
@@ -305,11 +181,6 @@ class TimelineContainer extends Component{
         window.location.reload();
       }
 
-      handleImage =(e) =>{
-        const {id} = e.target;
-        const {imageid} = e.target.dataset;
-        this.props.history.push(`/feed/@:${id}/image/:${imageid}`);
-    }
     unavailableModify =(index,id) => {
         const {TimelineActions,data} = this.props;
         for(var i = 0; i < document.getElementsByName('^^content').length; i++){
@@ -390,17 +261,9 @@ class TimelineContainer extends Component{
             if(popupCategory === 'logout')
                 handleLogout();
         }
-        handlePopupCancel = () => {
-        const {PostActions} = this.props;
-        PostActions.setPostPopupDisplay('none');
-        }
-        handlePopupOk = () => {
-            const {PostActions} = this.props;
-        PostActions.setPopupDisplay('none');
-        }
+        
 
     render(){
-        
         const {data} = this.props;
         if(!storage.get('loggedInfo')) {
             
@@ -410,9 +273,9 @@ class TimelineContainer extends Component{
         const hostUser = storage.get('loggedInfo').username;
         const {hashdisplay,keyid,totalNum,postPopupDisplay,popupText,popupDisplay} = this.props;
         const {followNum,followerNum,thumbnail,comment,username,nickname,postNum,followDisplay,isfollow,commentCategory} = this.props;
-        const {handleFollowClick,overHashTag,outHashTag,handleLikeClick,handleCancelClick,enterComment,handleCommentAdd
-            ,handleComment,handleMenu,handleImageChange,handleImage,handleCancel,modifyClick,handlePopupOk
-            ,handleWriteInput,handleViewChange,handleShowLevel,handleOk,handlePopupCancel,buttonClick} = this;
+        const {handleFollowClick,handleLikeClick,handleUnLikeClick,enterComment,handleCommentAdd
+            ,handleComment,handleMenu,handleImageChange,handleCancel,modifyClick,handleImage
+            ,handleWriteInput,handleViewChange,handleShowLevel,handleOk,buttonClick} = this;
         return(
             <div>
             <PageWrapper>
@@ -421,7 +284,7 @@ class TimelineContainer extends Component{
             followNum = {followNum} followerNum = {followerNum}  followclick={handleFollowClick}
              followdisplay ={followDisplay} postNum={postNum} isfollow = {isfollow} like = {handleLikeClick}
              mainfeed={data} hashdisplay = {hashdisplay} hover = {overHashTag} handleComment = {handleComment}
-             nothover={outHashTag} keyid = {keyid} cancel = {handleCancelClick} totalNum = {totalNum}
+             nothover={outHashTag} keyid = {keyid} cancel = {handleUnLikeClick} totalNum = {totalNum}
              enterComment = {enterComment} handleCommentAdd={handleCommentAdd} commentCategory={commentCategory}
              handleMenu = {handleMenu} modifyClick={modifyClick} deleteClick = {buttonClick} handleImage={handleImage}
              handleCancel = {handleCancel} handleWrite={buttonClick} handleWriteInput={handleWriteInput} 
