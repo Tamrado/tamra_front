@@ -44,7 +44,7 @@ class Login extends Component {
     }
 
     handleLocalLogin = async () => {
-        const {form, AuthActions, UserActions} = this.props;
+        const {form, AuthActions} = this.props;
         const {id,password} = form.toJS();
         try{
             await AuthActions.localLogin({id, password});

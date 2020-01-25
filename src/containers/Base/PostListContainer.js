@@ -51,14 +51,13 @@ class PostListContainer extends Component{
         const{id} = e.target;
         await setCommentListDisplay(e,'postList');
         const{commentdisplay,data} = this.props;
-        if(commentdisplay === 'block'){
-        await initializeCommentList(data,'postList',id);
-        const{commentList,lastComment} = this.props;
-        console.log(this.props.data.toJS());
-        await renderCommentListAfterCommentAdd('postList',commentList,lastComment,id);
-        setCommentTime(null,'postList',this.props.data,id);
-        this.commentTimer = setInterval(()=>setCommentTime(null,'postList',this.props.data,id),60000);
-        }
+        if(commentdisplay === 'none') return;
+        try{
+            await initializeCommentList(data,'postList',id);
+            await renderCommentListAfterCommentAdd('postList',this.props.commentList,this.props.lastComment,id);
+            setCommentTime(null,'postList',this.props.data,id);
+            this.commentTimer = setInterval(()=>setCommentTime(null,'postList',this.props.data,id),60000);
+        }catch(e){}    
     }
     openWriteModal = () => {
         this.props.PostActions.setWriteDisplay('block');
@@ -82,10 +81,11 @@ class PostListContainer extends Component{
    
    
     handleCommentAdd = async(e) =>{
-        await clickCommentAdd(e,this.props.data,'postList');
-        const {commentList,lastComment,data} = this.props;
         const {id} = e.target;
-        await renderCommentListAfterCommentAdd('postList',commentList,lastComment,data,id);
+        await clickCommentAdd(e,this.props.data,'postList');
+        const {commentList,lastComment} = this.props;
+        await renderCommentListAfterCommentAdd('postList',commentList,lastComment,id);
+        await setCommentTime(null,'postList',this.props.data,id);
     }
     enterComment = async(e) =>{
         if(window.event.keyCode === 13){
@@ -121,7 +121,7 @@ class PostListContainer extends Component{
             <PageWrapper>
             <FeedList mainfeed={data} username = {username} onclick = {openWriteModal} stateclick={handleStateClick} content ={
                 writtenData.split('\n').map( (line,index) => {
-            return (<div key={index} style={style} >{line}<br/></div>)
+            return (<div style={style} >{line}<br/></div>)
           })}
            hover = {overHashTag} nothover={outHashTag} hashdisplay={hashdisplay} keyid = {keyid} like={handleLikeClick}
          category = {category} cancel={handleCancelClick} totalNum={totalNum} handleComment={handleComment} handleCommentAdd = {handleCommentAdd}

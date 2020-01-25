@@ -3,15 +3,6 @@ import {BaseActions,AlarmActions,FriendActions,SearchActions} from './setActionM
 
 let userMenuVisible,alarmMenuVisible,followMenuVisible,username;
 
-export const setUserMenuVisible = (UserMenuVisible)=>{
-    userMenuVisible = UserMenuVisible;
-}
-export const setAlarmMenuVisible = (AlarmMenuVisible)=>{
-    alarmMenuVisible = AlarmMenuVisible;
-}
-export const setFollowMenuVisible = (FollowMenuVisible)=>{
-    followMenuVisible = FollowMenuVisible;
-}
 export const setSearchActions=(searchActions)=>{
     SearchActions = searchActions;
 }
@@ -52,14 +43,14 @@ export const setFollowNotificationUnavailable = async(e) => {
         return;
     }
 }
-export const thumbnailClick = () => {
+export const thumbnailClick = (userMenuVisible) => {
     if(userMenuVisible === 'none')
         BaseActions.setUserMenuVisibility('block');
     
     else BaseActions.setUserMenuVisibility('none');
 }
 
-export const alarmClick = () => {
+export const alarmClick = (alarmMenuVisible) => {
  if(alarmMenuVisible === 'none'){
     BaseActions.setAlarmMenuVisible('block');
     BaseActions.setFollowMenuVisible('none');
@@ -69,7 +60,7 @@ export const alarmClick = () => {
     BaseActions.setAlarmMenuVisible('none');
 }
 
-const friendRequestClick = () => {
+const friendRequestClick = (followMenuVisible) => {
     if(followMenuVisible === 'none'){
         BaseActions.setAlarmMenuVisible('none');
     BaseActions.setFollowMenuVisible('block');

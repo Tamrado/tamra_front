@@ -19,7 +19,6 @@ const setCommentTime = async(commentList,category,data,id) => {
         comments = commentList;
     else 
         comments = returnCommentObject(index,category,data,'commentList');
-    console.log(comments.toJS());
         await Promise.all(
                 comments.map(
                     async(comment,commentIndex) => {
@@ -59,35 +58,31 @@ export const renderDetailCommentListAfterCommentAdd=async(comments,lastComment,i
 }
 export const clickCommentAdd = async(e,data,category)=>{
     const {id} = e.target;
-    const index = data.findIndex(item => returnObjecttoFindIndex(category,item) ===parseInt(id));
-if(returnCommentObject(index,category,data,'trueComment')){
-    const page = returnCommentObject(index,category,data,'commentPage');
+    const index = data.findIndex(item => returnObjecttoFindIndex(category,item) === parseInt(id));
+if(await returnCommentObject(index,category,data,'trueComment')){
+    const page = await returnCommentObject(index,category,data,'commentPage');
     try{
         await CommentActions.showPostCommentList(id,page);
         if(category === 'postList')
-        await TimelineActions.setCommentPage(id);
+            await TimelineActions.setCommentPage(id);
         else
-        await TimelineActions.setTimelineCommentPage(id);
+            await TimelineActions.setTimelineCommentPage(id);
     }catch(e){
-        if(category === 'postList')
-        TimelineActions.setCommentFalse(id);
-        else
-        TimelineActions.setTimelineCommentFalse(id);
     }
 }
 }
 export const renderCommentListAfterCommentAdd = async(category,commentList,lastComment,id)=>{
     if(lastComment){
         if(category === 'postList')
-        await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
+            await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
         else
-        await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
+            await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :false});
     }
     else{
         if(category === 'postList')
-        await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
+            await TimelineActions.setCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
         else
-        await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
+            await TimelineActions.setTimelineCommentList({'commentId':id,'commentList':commentList,'trueComment' :true});
     }
 }
 export const setCommentListDisplay = async(e,directory)=>{
@@ -100,18 +95,13 @@ export const setCommentListDisplay = async(e,directory)=>{
         await TimelineActions.setTimelineCommentDisplay(id);
 }
 export const initializeCommentList =async(data,directory,id)=>{
-    try{
-        let index = data.findIndex(item => returnObjecttoFindIndex(directory,item)===parseInt(id));
-        let page = returnCommentObject(index,directory,data,'commentPage');
-        await CommentActions.showPostCommentList(id,page);
-        if(directory === 'postList')
-        await TimelineActions.setCommentPage(id);
-        else
-        await TimelineActions.setTimelineCommentPage(id);
-    
-}catch(e){
-    
-}
+    let index = data.findIndex(item => returnObjecttoFindIndex(directory,item)===parseInt(id));
+    let page = returnCommentObject(index,directory,data,'commentPage');
+    await CommentActions.showPostCommentList(id,page);
+    if(directory === 'postList')
+    await TimelineActions.setCommentPage(id);
+    else
+    await TimelineActions.setTimelineCommentPage(id);
 }
 export const initializeDetailCommentList = async(presentPost,postid)=>{
     const id = postid.substr(1);

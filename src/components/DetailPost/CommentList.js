@@ -7,11 +7,11 @@ const CommentList = ({comments,mainfeed,addDisplay,commentThumbnail,enterComment
     const commentList = comments&& comments.size > 0 &&comments.map(
             (comment) => {
                  
-                return <CommentBox  comment={comment} />
+                return <CommentBox key = {comment.commentId} comment={comment} />
             }
         )
         return(
-            <CommentView handleCommentAdd={handleCommentAdd} userThumbnail = {commentThumbnail} postId={postId}
+            <CommentView key = {postId} handleCommentAdd={handleCommentAdd} userThumbnail = {commentThumbnail} postId={postId}
             mainfeed={mainfeed} addDisplay={addDisplay} enterComment={enterComment} trueComment={trueComment} like={like} cancel={cancel}>
                 {commentList}
             </CommentView>

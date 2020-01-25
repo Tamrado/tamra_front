@@ -13,11 +13,11 @@ handleWriteInput,handleViewChange,handleShowLevel}) => {
     const feedList = mainfeed.map(
         (feeds) => {
             const showLevelMenu = 
-            <ShowLevelMenu showDisplay = {feeds.get('showMenuVisible')} key = {'showLevelMenu'} postId={feeds.get('postId')}
+            <ShowLevelMenu showDisplay = {feeds.get('showMenuVisible')} key = {'showLevelMenu' + feeds.get('postId').toString()} postId={feeds.get('postId')}
             top = {'30px'} left = {'0'} onclick={handleShowLevel} />
             const commentList= 
-            <CommentList key = {'commentlist'} thumbnail = {thumbnail} commentThumbnail = {commentThumbnail}
-             handleCommentAdd = {handleCommentAdd} enterComment={enterComment} mainfeed={feeds}
+            <CommentList key = {'commentlist' + feeds.get('postId').toString()} thumbnail = {thumbnail} commentThumbnail = {commentThumbnail}
+             handleCommentAdd = {handleCommentAdd} enterComment={enterComment} mainfeed={feeds} postId={feeds.get('postId')}
               comments = {feeds.get('commentList')}/>;
             const postMenu =
             <PostMenu key = {'postMenu' + feeds.get('postId').toString()} mainfeed= {feeds} modifyClick = {modifyClick}

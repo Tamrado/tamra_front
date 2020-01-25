@@ -24,6 +24,7 @@ class PostDetailContainer extends Component{
         setCommentActions(this.props.CommentActions);
         await this.renderPageInfo();
         await this.renderCommentInfo();
+        this.commentTimer = setInterval(()=>setCommentTime(this.props.commentList,'detail',this.props.data,this.props.postid.substr(1)),60000);
     }
     componentWillUnmount() {
         clearInterval(this.timerId);
@@ -58,14 +59,14 @@ class PostDetailContainer extends Component{
         })
       }
     renderCommentInfo =async()=>{
-        console.log(1);
         const{presentPost,postid} = this.props;
         const id = postid.substr(1);
+        try{
         await initializeDetailCommentList(presentPost,postid);
         const{comments,lastComment}=this.props;
         await renderDetailCommentListAfterCommentAdd(comments,lastComment,id);
         await setCommentTime(this.props.commentList,'detail',this.props.data,id);
-        this.commentTimer = setInterval(()=>setCommentTime(this.props.commentList,'detail',this.props.data,id),60000);
+        }catch(e){}
     }
     setPostTime = async() => {
         const{presentPost,TimelineActions} = this.props;
@@ -123,10 +124,15 @@ class PostDetailContainer extends Component{
         }
     }
     renewComment=async(id)=>{
-            const {presentComment,TimelineActions,postid} = this.props;
+            const {presentComment,TimelineActions,commentdisplay,data} = this.props;
             await TimelineActions.renewDetailComment({'commentId' : id,'presentComment':presentComment});
-            await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
-            await setCommentTime(this.props.commentList,'detail',this.props.data,postid.substr(1));
+            await setCommentTime(this.props.commentList,'detail',this.props.data,id);
+            let index = data.findIndex(item=>item.getIn(['feed','postId'])===parseInt(id));
+            if(commentdisplay === 'block'|| data.getIn([index,'feed','commentList']).length > 0){
+                await TimelineActions.renewComment({'commentId' : id,'presentComment':presentComment});
+                await setCommentTime(this.props.commentList,'postList',this.props.data,id);
+            }
+            
         };
     handleLikeClick = async(e) =>{
         await clickLike(e);
@@ -164,6 +170,7 @@ export default connect(
         presentPost : state.timeline.get('presentPost'),
         lastComment : state.comment.get('lastComment'),
         comments : state.comment.get('commentList'),
+        commentdisplay : state.timeline.get('commentdisplay'),
         commentList : state.timeline.getIn(['presentPost','feed','commentList']),
         fileSize : state.post.get('fileSize'),
         commentNum : state.comment.get('commentNum'),

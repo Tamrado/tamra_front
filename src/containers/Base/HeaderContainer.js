@@ -14,8 +14,7 @@ import {setAlarmActions,setSearchActions,setFriendActions,setBaseActions} from '
 import {setUserAndRender,setHeaderVisible,setFriendRequestNum,setUserList,setHeaderContent,setAlarmNum,content,search,alarm,friendRequest,mypage,menu,searchButton,
     setuserMenuVisible,setAlarmNumVisible,setHandleThumbnailClick,setHandleAlarmClick,setHandleFriendRequestClick,
 setalarmMenuVisible,setfriendRequestVisible,setfollowMenuVisible} from '../Function/HeaderComponent';
-import {setAlarmTime,thumbnailClick,setUsername,alarmClick,setUserMenuVisible,setAlarmMenuVisible,
-    setFollowMenuVisible,follow,setFollowNotificationUnavailable,friendRequestClick,handleClickHome,getFollowRequest} from '../Function/HeaderModule';
+import {setAlarmTime,thumbnailClick,setUsername,alarmClick,follow,setFollowNotificationUnavailable,friendRequestClick,handleClickHome,getFollowRequest} from '../Function/HeaderModule';
 class HeaderContainer extends Component {
     componentDidMount= async()=> {
         const{AlarmActions,SearchActions,FriendActions,BaseActions} = this.props;
@@ -54,17 +53,17 @@ class HeaderContainer extends Component {
             AlarmActions.setAlarmNumVisible('none');
         }
     }
-    handleAlarmClick = ()=>{
-        setAlarmMenuVisible(this.props.alarmMenuVisible);
-        alarmClick();
+    handleAlarmClick = async()=>{
+        await alarmClick(this.props.alarmMenuVisible);
+        
     }
-    handleThumbnailClick = () => {
-        setUserMenuVisible(this.props.userMenuVisible);
-        thumbnailClick();
+    handleThumbnailClick = async() => {
+        await thumbnailClick(this.props.userMenuVisible);
+        
     }
-    handleFriendRequestClick = () => {
-        setFollowMenuVisible(this.props.followMenuVisible);
-        friendRequestClick();
+    handleFriendRequestClick = async() => {
+        await friendRequestClick(this.props.followMenuVisible);
+        
     }
     handleSearchClick = async() => {
         const {SearchActions,page,headerContent} = this.props;
@@ -85,10 +84,11 @@ class HeaderContainer extends Component {
         userList,headerContent,alarmList,alarmNum,userMenuVisible,followMenuVisible,friendRequestVisible,alarmNumVisible
         ,alarmNoneVisible,noFriendAddVisible} = this.props;
     const {handleThumbnailClick,handleAlarmClick,handleFriendRequestClick,handleAllRead,handleAlarmInfoClick} = this;
-    setUserAndRender(user);setFriendRequestNum(friendRequestNum);setHeaderVisible(headerVisible);setUserList(userList);setHeaderContent(headerContent);
-    setAlarmNum(alarmNum); setuserMenuVisible(userMenuVisible); setAlarmNumVisible(alarmNumVisible);setHandleAlarmClick(handleAlarmClick);
-    setHandleFriendRequestClick(handleFriendRequestClick); setHandleThumbnailClick(handleThumbnailClick);setalarmMenuVisible(alarmMenuVisible);
-    setfriendRequestVisible(friendRequestVisible); setfollowMenuVisible(followMenuVisible);
+    setFriendRequestNum(friendRequestNum);setHeaderVisible(headerVisible);setUserList(userList);setHeaderContent(headerContent);
+    setAlarmNum(alarmNum);  setAlarmNumVisible(alarmNumVisible);setHandleAlarmClick(handleAlarmClick);
+    setHandleFriendRequestClick(handleFriendRequestClick); setHandleThumbnailClick(handleThumbnailClick);
+    setfriendRequestVisible(friendRequestVisible); setalarmMenuVisible(alarmMenuVisible);setuserMenuVisible(userMenuVisible);
+    setfollowMenuVisible(followMenuVisible);setUserAndRender(user);
     
     if(!visible) return null;
 

@@ -15,7 +15,7 @@ const FeedList = ({cancel,like,mainfeed,username,onclick,content,enterComment,ha
     const feedList = mainfeed.map(
         (feeds) => {
             const commentList= 
-            <CommentList key = {'commentlist'} thumbnail = {thumbnail}
+            <CommentList key = {'commentlist'} thumbnail = {thumbnail} postId={feeds.getIn(['feed','postId'])}
              handleCommentAdd = {handleCommentAdd} enterComment={enterComment} mainfeed={feeds} comments = {feeds.getIn(['feed','commentList'])}/>;
             if(feeds && (keyid === feeds.getIn(['feed','postId']) && category === feeds.get('category'))){
                

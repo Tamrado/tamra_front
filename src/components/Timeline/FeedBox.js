@@ -440,8 +440,8 @@ handleViewChange}) => {
     const style = {
         lineHeight: '160%'
     };
-       const contents=content.split('\n').map( line => {
-        return (<div style={style} >{line}<br/></div>)
+       const contents=content.split('\n').map( (line,index) => {
+        return (<div key={line + index} style={style} >{line}<br/></div>)
       }); 
       let hostDisplay = 'none';
 

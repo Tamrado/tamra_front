@@ -9,8 +9,6 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as userActions from './redux/modules/user';
 
-
-
 class App extends Component {
 
     initializeUserInfo = async () => {
