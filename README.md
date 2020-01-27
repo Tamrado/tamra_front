@@ -1,11 +1,3 @@
-# 🔥 notice
-
-#### I haven't refactored yet so the code may look messy.
-
-
-#### I plan to complete the refactoring in early 2020.
-
-
 <br />
 
   <h1 align="center">TAMRA</h1>
