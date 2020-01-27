@@ -13,19 +13,21 @@ import * as userActions from '../../redux/modules/user';
 import * as authActions from '../../redux/modules/auth';
 import * as commentActions from '../../redux/modules/comment';
 import {setUserActions,setTimelineActions,setPostActions,setFriendActions,setLikeActions,setCommentActions,
-setBaseActions} from '../Function/setActionModule';
+setBaseActions,setAuthActions} from '../Function/setActionModule';
 import {handleLogout} from '../Function/SignModule';
 import {setCommentTime,renderCommentListAfterCommentAdd,clickCommentAdd,returnCommentContextAndInitalize,setCommentListDisplay,initializeCommentList} from '../Function/CommentModule';
 import {setPostTime,getFeedList,overHashTag,outHashTag,handlePopupCancel,handlePopupOk,scrollAction,
     clickLike,setTotalLikeAfterClickLike,clickUnLike} from '../Function/PostModule';
 import storage from '../../lib/storage';
-import { getProfileInfo,setProfileInfo,clickFollow,openOrCloseFeedMenu,modifyFeed,popupButtonClick,popupButtonDelete} 
-from '../Function/TimelineModule';
+import { getProfileInfo,setProfileInfo,clickFollow,openOrCloseFeedMenu,modifyFeed,popupButtonClick,popupButtonDelete,
+handleShowMenuVisible,handleWriteModifyLetter,modifyUserImage,changeUserInfoStorage,unavailableModify,postLetterToModify,
+modifyShowLevel} from '../Function/TimelineModule';
 
 class TimelineContainer extends Component{
     componentDidMount=()=>{
         window.addEventListener("scroll", this.handleScroll);
-        const {UserActions,TimelineActions,PostActions,FriendActions,LikeActions,CommentActions,BaseActions} = this.props;
+        const {UserActions,TimelineActions,PostActions,FriendActions,LikeActions,CommentActions,BaseActions,
+        AuthActions} = this.props;
         setUserActions(UserActions);
         setTimelineActions(TimelineActions);
         setPostActions(PostActions);
@@ -33,6 +35,7 @@ class TimelineContainer extends Component{
         setFriendActions(FriendActions);
         setLikeActions(LikeActions);
         setCommentActions(CommentActions);
+        setAuthActions(AuthActions);
         this.initialize();
         
     }
@@ -122,10 +125,8 @@ class TimelineContainer extends Component{
     }
 
     handleMenu = (e) => {
-        const {data} = this.props;
         const {id} = e.target;
-        openOrCloseFeedMenu(data,id);
-        
+        openOrCloseFeedMenu(this.props.data,id);
     }
 
     modifyClick = async(e) => {
@@ -134,10 +135,9 @@ class TimelineContainer extends Component{
     }
     
     buttonClick = (e) => {
-        const {data} = this.props;
         const {id} = e.target;
         const {category} = e.target.dataset;
-        popupButtonClick(data,id,category);
+        popupButtonClick(this.props.data,id,category);
     }
     deleteClick = async() => {
         const {data,userid,popupId} = this.props;
@@ -145,98 +145,48 @@ class TimelineContainer extends Component{
     }
 
     handleImageChange = async(e) => {
-        e.preventDefault();
-        const {AuthActions} = this.props;
-        let file = e.target.files[0];
-        var formdata = new FormData();
-        formdata.set('file',file);
-        await AuthActions.modifyUserImage(formdata);
-        const {userResult} = this.props;
-        storage.remove('loggedInfo');
-        storage.set('loggedInfo',userResult.toJS());
-        window.location.reload();
+        await modifyUserImage(e);
+        await new Promise(changeUserInfoStorage(this.props.userResult));
       }
 
-    unavailableModify =(index,id) => {
-        const {TimelineActions,data} = this.props;
-        for(var i = 0; i < document.getElementsByName('^^content').length; i++){
-            if(parseInt(document.getElementsByName('^^content')[i].id) === parseInt(id)){
-                document.getElementsByName('^^content')[i].textContent = data.getIn([index,'content']);
-                document.getElementsByName('^^content')[i].blur();
-            }
-        }
-        TimelineActions.setModifyVisible({'index' : index,'visible' : 'none'});
-    }
     handleCancel = (e) => {
         const {id} = e.target;
         const {data} = this.props;
         const index = data.findIndex(item => item.get('postId')===parseInt(id));
-        this.unavailableModify(index,id);
+        unavailableModify(index,id,data);
     }
     handleWrite = async() => {
-        const {TimelineActions,data,PostActions,popupId} = this.props;
+        const {TimelineActions,data,popupId} = this.props;
+        postLetterToModify(data,popupId);
         const index = data.findIndex(item => item.get('postId')===parseInt(popupId));
-        let showLevel = data.getIn([index,'showLevel']);
-        try{
-        await PostActions.modifyFeedInformation({'showLevel' : showLevel, 'postId' : popupId, 'content' : data.getIn([index,'modifyText'])});
-        }catch(e){
-            if(e.response.status === 409){
-                PostActions.setPopupText('글은 1000자 이하여야 합니다. 다시 입력해주세요.');
-                PostActions.setPopupDisplay('block');
-                return;
-            }
-        }
-        this.unavailableModify(index,popupId);
+        unavailableModify(index,popupId,this.props.data);
         TimelineActions.setFeedContext({'index': index,'text': data.getIn([index,'modifyText'])});
-        }
-        handleWriteInput = (e) => {
-            const {id,innerText} = e.target;
-            const {TimelineActions,data} = this.props;
-            const index = data.findIndex(item => item.get('postId')===parseInt(id));
-            TimelineActions.setModifyText({'index' : index, 'modifyText' : innerText});
-        }
+    }
+    handleWriteInput = (e) => {
+        const {id,innerText} = e.target;
+        handleWriteModifyLetter(this.props.data,innerText,id);
+    }
         
-        handleViewChange = (e) => {
-            const {id} = e.target;
-            const {TimelineActions,data,BaseActions} = this.props;
-            const index = data.findIndex(item => item.get('postId')===parseInt(id));
-        if(data.getIn([index,'showMenuVisible']) === 'none'){
-            TimelineActions.setShowMenuVisible({'index':index, 'visible':'block'});
-            BaseActions.setFollowMenuVisible('none');
-            BaseActions.setAlarmMenuVisible('none');
-            BaseActions.setUserMenuVisibility('none');
-            TimelineActions.setMenuVisible({'index':index, 'visible':'none'});
-        }
-        else{
-            TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
-        }
-        }
-        handleShowLevel = async(e) => {
-            const {id} = e.target;
-            const {postid} = e.target.dataset;
-            const {data,PostActions,TimelineActions} = this.props;
-            const index = data.findIndex(item => item.get('postId')===parseInt(postid));
-            try{
-            await PostActions.modifyFeedInformation({'showLevel' : id, 'postId' : postid, 'content' : data.getIn([index,'content'])});
-            }catch(e){
+    handleViewChange = (e) => {
+        const {id} = e.target;
+        handleShowMenuVisible(this.props.data,id);
+    }
+    handleShowLevel = async(e) => {
+        const {id} = e.target;
+        const {postid} = e.target.dataset;
+        modifyShowLevel(this.props.data,postid,id);
+    }
 
-            }
-            TimelineActions.setFeedShowlevel({'index':index,'showLevel':id});
-            TimelineActions.setShowMenuVisible({'index':index, 'visible':'none'});
+    handleOk = () => {
+        const {popupCategory,PostActions} = this.props;
+        PostActions.setPostPopupDisplay('none');
+        if(popupCategory === 'modify')
+            this.handleWrite();
+        if(popupCategory === 'delete')
+            this.deleteClick();
+        if(popupCategory === 'logout')
+            handleLogout();
         }
-
-        handleOk = () => {
-            const {popupCategory,PostActions} = this.props;
-            PostActions.setPostPopupDisplay('none');
-            if(popupCategory === 'modify')
-                this.handleWrite();
-
-            if(popupCategory === 'delete')
-                this.deleteClick();
-            if(popupCategory === 'logout')
-                handleLogout();
-        }
-        
 
     render(){
         const {data} = this.props;
