@@ -96,8 +96,8 @@ $ yarn start
 
 ### Features
 1. membership 
-	- sign up/ in/ out
-	- kakao sign up/ in/ out
+	- sign up/ in
+	- kakao sign up/ in
 	- upload/edit user image
 	- edit user info
 	- validation
