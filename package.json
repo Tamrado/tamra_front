@@ -21,7 +21,7 @@
     "redux-actions": "^2.6.5",
     "redux-pender": "^2.0.12",
     "styled-components": "^4.4.0",
-    "validator": "^11.1.0"
+    "validator": "^13.7.0"
   },
   "scripts": {
     "start": "cross-env NODE_PATH=src PORT=3000 react-scripts start",
